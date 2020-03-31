@@ -1,9 +1,17 @@
 package edu.utexas.tacc.tapis.systems.api.utils;
 
 import com.google.gson.JsonElement;
+import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
+import edu.utexas.tacc.tapis.shared.threadlocal.TapisThreadContext;
+import edu.utexas.tacc.tapis.sharedapi.security.AuthenticatedUser;
+import edu.utexas.tacc.tapis.sharedapi.utils.TapisRestUtils;
+import edu.utexas.tacc.tapis.systems.model.TSystem;
+import edu.utexas.tacc.tapis.systems.service.SystemsService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.Response;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -31,6 +39,38 @@ public class ApiUtils
   /* **************************************************************************** */
 
   /**
+   * Get a localized message using the specified key and parameters. Locale is null.
+   * Fill in first 4 parameters with user and tenant info from AuthenticatedUser
+   * If there is a problem an error is logged and a special message is constructed with as much info as can be provided.
+   * @param key
+   * @param parms
+   * @return
+   */
+  public static String getMsgAuth(String key, AuthenticatedUser authUser, Object... parms)
+  {
+    // Construct new array of parms. This appears to be most straightforward approach to modify and pass on varargs.
+    var newParms = new Object[4 + parms.length];
+    newParms[0] = authUser.getTenantId();
+    newParms[1] = authUser.getName();
+    newParms[2] = authUser.getOboTenantId();
+    newParms[3] = authUser.getOboUser();
+    System.arraycopy(parms, 0, newParms, 4, parms.length);
+    return getMsg(key, newParms);
+  }
+
+  /**
+   * Get a localized message using the specified key and parameters. Locale is null.
+   * If there is a problem an error is logged and a special message is constructed with as much info as can be provided.
+   * @param key
+   * @param parms
+   * @return
+   */
+  public static String getMsg(String key, Object... parms)
+  {
+    return getMsg(key, null, parms);
+  }
+
+  /**
    * Get a localized message using the specified locale, key and parameters.
    * If there is a problem an error is logged and a special message is constructed with as much info as can be provided.
    * @param locale
@@ -40,6 +80,7 @@ public class ApiUtils
    */
   public static String getMsg(String key, Locale locale, Object... parms)
   {
+    // TODO: Pull tenant name from thread context and include it in the message
     String msgValue = null;
 
     if (locale == null) locale = Locale.getDefault();
@@ -80,5 +121,76 @@ public class ApiUtils
   {
     if (jelem == null) return defaultVal;
     else return jelem.getAsString();
+  }
+
+  public static Response checkContext(TapisThreadContext threadContext, boolean prettyPrint)
+  {
+    // Validate call checks for tenantId, user and accountType
+    // If all OK return null, else return error response.
+    if (threadContext.validate()) return null;
+
+    String msg = MsgUtils.getMsg("TAPIS_INVALID_THREADLOCAL_VALUE", "validate");
+    _log.error(msg);
+    return Response.status(Response.Status.BAD_REQUEST).entity(TapisRestUtils.createErrorResponse(msg, prettyPrint)).build();
+  }
+
+  /**
+   * Check that system exists
+   * @param authenticatedUser - principal user containing tenant and user info
+   * @param systemName - name of the system to check
+   * @param prettyPrint - print flag used to construct response
+   * @param opName - operation name, for constructing response msg
+   * @return - null if all checks OK else Response containing info
+   */
+  public static Response checkSystemExists(SystemsService systemsService, AuthenticatedUser authenticatedUser,
+                                           String systemName, boolean prettyPrint, String opName)
+  {
+    String msg;
+    boolean systemExists;
+    try { systemExists = systemsService.checkForSystemByName(authenticatedUser, systemName); }
+    catch (Exception e)
+    {
+      msg = ApiUtils.getMsgAuth("SYSAPI_CHECK_ERROR", authenticatedUser, systemName, opName, e.getMessage());
+      _log.error(msg, e);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(TapisRestUtils.createErrorResponse(msg, prettyPrint)).build();
+    }
+    if (!systemExists)
+    {
+      msg = ApiUtils.getMsgAuth("SYSAPI_NOSYSTEM", authenticatedUser, systemName, opName);
+      _log.error(msg);
+      return Response.status(Response.Status.BAD_REQUEST).entity(TapisRestUtils.createErrorResponse(msg, prettyPrint)).build();
+    }
+    return null;
+  }
+
+  /**
+   * Check that both or neither of the secrets are blank.
+   * This is for PKI_KEYS and ACCESS_KEY where if one part of the secret is supplied the other must also be supplied
+   * @param systemName - name of the system, for constructing response msg
+   * @param userName - name of user associated with the perms request, for constructing response msg
+   * @param prettyPrint - print flag used to construct response
+   * @param secretType - secret type (PKI_KEYS, API_KEY), for constructing response msg
+   * @param secretName1 - secret name, for constructing response msg
+   * @param secretName2 - secret name, for constructing response msg
+   * @param secretVal1 - first secret
+   * @param secretVal2 - second secret
+   * @return - null if all checks OK else Response containing info
+   */
+  public static Response checkSecrets(AuthenticatedUser authenticatedUser, String systemName, String userName, boolean prettyPrint,
+                                      String secretType, String secretName1, String secretName2, String secretVal1, String secretVal2)
+  {
+    if ((!StringUtils.isBlank(secretVal1) && StringUtils.isBlank(secretVal2)))
+    {
+      String msg = ApiUtils.getMsgAuth("SYSAPI_CRED_SECRET_MISSING", authenticatedUser, systemName, secretType, secretName2, userName);
+      _log.error(msg);
+      return Response.status(Response.Status.BAD_REQUEST).entity(TapisRestUtils.createErrorResponse(msg, prettyPrint)).build();
+    }
+    if ((StringUtils.isBlank(secretVal1) && !StringUtils.isBlank(secretVal2)))
+    {
+      String msg = ApiUtils.getMsgAuth("SYSAPI_CRED_SECRET_MISSING", authenticatedUser, systemName, secretType, secretName1, userName);
+      _log.error(msg);
+      return Response.status(Response.Status.BAD_REQUEST).entity(TapisRestUtils.createErrorResponse(msg, prettyPrint)).build();
+    }
+    return null;
   }
 }

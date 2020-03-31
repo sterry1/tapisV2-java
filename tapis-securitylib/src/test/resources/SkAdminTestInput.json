@@ -1,0 +1,46 @@
+{
+    "secrets": {
+        "servicepwd":[
+            {
+                "tenant":     "dev",
+                "service":    "jobs",
+                "secretName": "mysecret1",
+                "password":   "abcdefghijklmnop"
+            },
+            {
+                "tenant":     "dev",
+                "service":    "jobs",
+                "secretName": "mysecret2",
+                "password":   "1234567890123456"
+            }
+        ],
+        
+        "user": [
+            {
+                "tenant":     "dev",
+                "user":       "bud",
+                "secretName": "budsecret",
+                "key":        "budkey",
+                "value":      ""
+            }
+        ],
+        
+        "jwtsigning": [
+            {
+                "tenant":     "dev",
+                "privateKey": "1234567890123456",
+                "secretName": "jwtcred"
+            }
+        ],
+        
+        "dbcredential":[
+            {
+                "dbservice":  "jobs",
+                "dbhost":     "myhost.com",
+                "dbname":     "mydb",
+                "dbuser":     "dba",
+                "secret":     "1234567890123456",
+                "secretName": "dbpassword"
+            }
+        ]    }
+}

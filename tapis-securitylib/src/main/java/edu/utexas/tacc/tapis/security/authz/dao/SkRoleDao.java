@@ -787,7 +787,6 @@ public final class SkRoleDao
       return getAncestorRoleNames(roleId);
   }
   
-  
   /* ---------------------------------------------------------------------- */
   /* getAncestorRoleNames:                                                  */
   /* ---------------------------------------------------------------------- */
@@ -856,6 +855,73 @@ public final class SkRoleDao
   }
   
   /* ---------------------------------------------------------------------- */
+  /* getImmediatePermissions:                                               */
+  /* ---------------------------------------------------------------------- */
+  /** Get only the permission values directly assigned to the specified role.
+   * 
+   * @param tenantId the requestor's tenant
+   * @param roleId the role id whose permissions are requested
+   * @return a non-null, ordered list of permissions
+   * @throws TapisException on error
+   */
+  public List<String> getImmediatePermissions(String tenantId, int roleId) 
+    throws TapisException
+  {
+      // Initialize result list.
+      ArrayList<String> perms = new ArrayList<>();
+      
+      // ------------------------- Call SQL ----------------------------
+      Connection conn = null;
+      try
+      {
+          // Get a database connection.
+          conn = getConnection();
+          
+          // Get the select command.
+          String sql = SqlStatements.ROLE_GET_IMMEDIATE_PERMISSIONS;
+          
+          // Prepare the statement and fill in the placeholders.
+          PreparedStatement pstmt = conn.prepareStatement(sql);
+          pstmt.setString(1, tenantId);
+          pstmt.setInt(2, roleId);
+                      
+          // Issue the call for the result set.
+          ResultSet rs = pstmt.executeQuery();
+          while (rs.next()) perms.add(rs.getString(1));
+          
+          // Close the result and statement.
+          rs.close();
+          pstmt.close();
+    
+          // Commit the transaction.
+          conn.commit();
+      }
+      catch (Exception e)
+      {
+          // Rollback transaction.
+          try {if (conn != null) conn.rollback();}
+              catch (Exception e1){_log.error(MsgUtils.getMsg("DB_FAILED_ROLLBACK"), e1);}
+          
+          String msg = MsgUtils.getMsg("SK_SELECT_IMMEDIATE_PERMISSIONS_ERROR", roleId, e.getMessage());
+          _log.error(msg, e);
+          throw new TapisException(msg, e);
+      }
+      finally {
+          // Always return the connection back to the connection pool.
+          try {if (conn != null) conn.close();}
+            catch (Exception e) 
+            {
+              // If commit worked, we can swallow the exception.  
+              // If not, the commit exception will be thrown.
+              String msg = MsgUtils.getMsg("DB_FAILED_CONNECTION_CLOSE");
+              _log.error(msg, e);
+            }
+      }
+      
+      return perms;
+  }
+  
+  /* ---------------------------------------------------------------------- */
   /* getTransitivePermissions:                                              */
   /* ---------------------------------------------------------------------- */
   /** Get all the permission values transitively associated with the 
@@ -865,13 +931,13 @@ public final class SkRoleDao
    *       see role information from another.
    * 
    * @param roleId the role id whose permissions are requested
-   * @return a non-null, ordered list of permission names
+   * @return a non-null, ordered list of permissions
    * @throws TapisException on error
    */
   public List<String> getTransitivePermissions(int roleId) throws TapisException
   {
       // Initialize result list.
-      ArrayList<String> list = new ArrayList<>();
+      ArrayList<String> perms = new ArrayList<>();
       
       // ------------------------- Call SQL ----------------------------
       Connection conn = null;
@@ -890,7 +956,7 @@ public final class SkRoleDao
                       
           // Issue the call for the result set.
           ResultSet rs = pstmt.executeQuery();
-          while (rs.next()) list.add(rs.getString(1));
+          while (rs.next()) perms.add(rs.getString(1));
           
           // Close the result and statement.
           rs.close();
@@ -921,7 +987,78 @@ public final class SkRoleDao
             }
       }
       
-      return list;
+      return perms;
+  }
+  
+  /* ---------------------------------------------------------------------- */
+  /* queryDB:                                                               */
+  /* ---------------------------------------------------------------------- */
+  /** Probe connectivity to the specified table.
+   * 
+   * @param tableName the tenant id
+   * @return 0 or 1 depending on whether the table is empty or not
+   * @throws TapisException on error
+   */
+  public int queryDB(String tableName) 
+    throws TapisException
+  {
+      // ------------------------- Check Input -------------------------
+      // Exceptions can be throw from here.
+      if (StringUtils.isBlank(tableName)) {
+          String msg = MsgUtils.getMsg("TAPIS_NULL_PARAMETER", "queryDB", "tableName");
+          _log.error(msg);
+          throw new TapisException(msg);
+      }
+      
+      // ------------------------- Call SQL ----------------------------
+      int rows = 0;
+      Connection conn = null;
+      try
+      {
+          // Get a database connection.
+          conn = getConnection();
+          
+          // Get the select command.
+          String sql = SqlStatements.SELECT_1;
+          sql = sql.replace(":table", tableName);
+          
+          // Prepare the statement and fill in the placeholders.
+          PreparedStatement pstmt = conn.prepareStatement(sql);
+                      
+          // Issue the call for the N row result set.
+          ResultSet rs = pstmt.executeQuery();
+          if (rs.next()) rows = rs.getInt(1);
+          
+          // Close the result and statement.
+          rs.close();
+          pstmt.close();
+    
+          // Commit the transaction.
+          conn.commit();
+      }
+      catch (Exception e)
+      {
+          // Rollback transaction.
+          try {if (conn != null) conn.rollback();}
+              catch (Exception e1){_log.error(MsgUtils.getMsg("DB_FAILED_ROLLBACK"), e1);}
+          
+          String msg = MsgUtils.getMsg("DB_SELECT_ID_ERROR", "tableName", tableName, e.getMessage());
+          _log.error(msg, e);
+          throw new TapisException(msg, e);
+      }
+      finally {
+          // Always return the connection back to the connection pool.
+          try {if (conn != null) conn.close();}
+            catch (Exception e) 
+            {
+              // If commit worked, we can swallow the exception.  
+              // If not, the commit exception will be thrown.
+              String msg = MsgUtils.getMsg("DB_FAILED_CONNECTION_CLOSE");
+              _log.error(msg, e);
+            }
+      }
+      
+      return rows;
   }
   
   /* ********************************************************************** */

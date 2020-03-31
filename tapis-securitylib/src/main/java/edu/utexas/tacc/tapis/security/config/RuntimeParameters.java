@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.utexas.tacc.tapis.security.secrets.IVaultManagerParms;
 import edu.utexas.tacc.tapis.shared.TapisConstants;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisException;
 import edu.utexas.tacc.tapis.shared.exceptions.runtime.TapisRuntimeException;
@@ -39,7 +40,7 @@ import edu.utexas.tacc.tapis.shared.uuid.UUIDType;
  * @author rcardone
  */
 public final class RuntimeParameters 
- implements EmailClientParameters
+ implements EmailClientParameters, IVaultManagerParms
 {
     /* ********************************************************************** */
     /*                               Constants                                */
@@ -64,18 +65,32 @@ public final class RuntimeParameters
     
     // Support defaults.
     private static final String DEFAULT_SUPPORT_NAME = "Oracle of Delphi";
+    
+    // Vault defaults.
+    private static final int DEFAULT_VAULT_OPEN_TIMEOUT_SECS = 20;
+    private static final int DEFAULT_VAULT_READ_TIMEOUT_SECS = 20;
      
+    // Vault token renewal defaults.
+    private static final int DEFAULT_VAULT_TOKEN_SECONDS = 28800; // 4 hours
+    private static final int MIN_VAULT_TOKEN_SECONDS = 60;        // 1 minute
+    private static final int DEFAULT_VAULT_TOKEN_THRESHOLD = 50;  // percent 
+    private static final int MIN_VAULT_TOKEN_THRESHOLD = 20;      // percent 
+    private static final int MAX_VAULT_TOKEN_THRESHOLD = 80;      // percent
+    
     /* ********************************************************************** */
     /*                                 Fields                                 */
     /* ********************************************************************** */
     // Globally unique id that identifies this JVM instance.
-    private static final TapisUUID id = new TapisUUID(UUIDType.JOB); 
+    private static final TapisUUID id = new TapisUUID(UUIDType.TAPIS_SECURITY_KERNEL); 
   
     // Singleton instance.
     private static RuntimeParameters _instance = initInstance();
   
     // Distinguished user-chosen name of this runtime instance.
     private String  instanceName;
+    
+    // Tenant service location.
+    private String  tenantBaseUrl;
   
 	// Database configuration.
 	private String  dbConnectionPoolName;
@@ -100,11 +115,25 @@ public final class RuntimeParameters
 	private String  supportEmail;
 	
 	// Allow test query parameters to be used.
-	private boolean allowTestQueryParms;
+	private boolean allowTestHeaderParms;
 	
 	// The slf4j/logback target directory and file.
 	private String  logDirectory;
 	private String  logFile;
+	
+	// Vault parameters.
+	private boolean vaultDisabled;       // disable vault processing
+	private String  vaultAddress;        // vault server address
+	private String  vaultRoleId;         // approle role id assigned to SK for logon
+	private String  vaultSecretId;       // approle secret id for logon
+	private int     vaultOpenTimeout;    // connection timeout in seconds
+	private int     vaultReadTimeout;    // read response timeout in seconds
+	private boolean vaultSslVerify;      // whether to use http or https
+	private String  vaultSslCertFile;    // certificate file containing vault's public key
+	private String  vaultSkKeyPemFile;   // PEM file containing SK's private key 
+	private int     vaultRenewSeconds;   // expiration time in seconds of SK token
+	private int     vaultRenewThreshold; // point at which token renewal begins,
+	                                     //   expressed as percent of expiration time
 	
 	/* ********************************************************************** */
 	/*                              Constructors                              */
@@ -119,6 +148,9 @@ public final class RuntimeParameters
 	private RuntimeParameters()
 	 throws TapisRuntimeException
 	{
+	  // Announce parameter initialization.
+	  _log.info(MsgUtils.getMsg("TAPIS_INITIALIZING_SERVICE", TapisConstants.SERVICE_NAME_SECURITY));
+	    
 	  // --------------------- Get Input Parameters ---------------------
 	  // Get the input parameter values from resource file and environment.
 	  TapisInput tapisInput = new TapisInput(TapisConstants.SERVICE_NAME_SECURITY);
@@ -178,11 +210,11 @@ public final class RuntimeParameters
     parm = inputProperties.getProperty(EnvVar.TAPIS_LOG_FILE.getEnvName());
     if (!StringUtils.isBlank(parm)) setLogFile(parm);
                  
-    // Optional test query parameter switch.
-    parm = inputProperties.getProperty(EnvVar.TAPIS_ENVONLY_ALLOW_TEST_QUERY_PARMS.getEnvName());
-    if (StringUtils.isBlank(parm)) setAllowTestQueryParms(false);
+    // Optional test header parameter switch.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_ENVONLY_ALLOW_TEST_HEADER_PARMS.getEnvName());
+    if (StringUtils.isBlank(parm)) setAllowTestHeaderParms(false);
       else {
-        try {setAllowTestQueryParms(Boolean.valueOf(parm));}
+        try {setAllowTestHeaderParms(Boolean.valueOf(parm));}
           catch (Exception e) {
             // Stop on bad input.
             String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
@@ -194,7 +226,12 @@ public final class RuntimeParameters
           }
       }
     
-	  // --------------------- DB Parameters ----------------------------
+    // --------------------- Tenant Parameters ------------------------
+    // We need to know where the tenant service is locaated.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_TENANT_SVC_BASEURL.getEnvName());
+    if (!StringUtils.isBlank(parm)) setTenantBaseUrl(parm);
+    
+	// --------------------- DB Parameters ----------------------------
     // User does not have to provide a pool size.
     parm = inputProperties.getProperty(EnvVar.TAPIS_DB_CONNECTION_POOL_SIZE.getEnvName());
     if (StringUtils.isBlank(parm)) setDbConnectionPoolSize(CONNECTION_POOL_SIZE);
@@ -360,7 +397,191 @@ public final class RuntimeParameters
     // Empty support email means no support emails will be sent.
     parm = inputProperties.getProperty(EnvVar.TAPIS_SUPPORT_EMAIL.getEnvName());
     if (!StringUtils.isBlank(parm)) setSupportEmail(parm);
-  }
+    
+    // --------------------- Vault Parameters -------------------------
+    // Determine whether the secrets subsystem is disabled.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_DISABLE.getEnvName());
+    if (StringUtils.isBlank(parm)) setVaultDisabled(false);
+      else {
+        try {setVaultDisabled(Boolean.valueOf(parm));}
+          catch (Exception e) {
+            // Stop on bad input.
+            String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                         TapisConstants.SERVICE_NAME_SECURITY,
+                                         "vaultDisabled",
+                                         e.getMessage());
+            _log.error(msg, e);
+            throw new TapisRuntimeException(msg, e);
+          }
+      }
+
+    // Make sure we have the address of the vault server (ex: http://myhost:8200)
+    // unless the secrets subsystem is disabled.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_ADDRESS.getEnvName());
+    if (!StringUtils.isBlank(parm)) setVaultAddress(parm);
+      else if (!vaultDisabled) {
+          // A vault server address is required.
+          String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                       TapisConstants.SERVICE_NAME_SECURITY,
+                                       "vaultAddress",
+                                       MsgUtils.getMsg("SK_VAULT_MISSING_VAULT_PARM", 
+                                          EnvVar.TAPIS_SK_VAULT_ADDRESS.getEnvName()));
+          _log.error(msg);
+          throw new TapisRuntimeException(msg);
+        }
+        
+    // Make sure we have the security kernel's role id unless the secrets subsystem is disabled.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_ROLE_ID.getEnvName());
+    if (!StringUtils.isBlank(parm)) setVaultRoleId(parm);
+      else if (!vaultDisabled) {
+          // A vault server address is required.
+          String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                       TapisConstants.SERVICE_NAME_SECURITY,
+                                       "vaultRoleId",
+                                       MsgUtils.getMsg("SK_VAULT_MISSING_VAULT_PARM",
+                                          EnvVar.TAPIS_SK_VAULT_ROLE_ID.getEnvName()));
+          _log.error(msg);
+          throw new TapisRuntimeException(msg);
+        }
+      
+    // Make sure we have the security kernel's secret id unless the secrets subsystem is disabled.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_SECRET_ID.getEnvName());
+    if (!StringUtils.isBlank(parm)) setVaultSecretId(parm);
+      else if (!vaultDisabled) {
+          // A vault server address is required.
+          String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                       TapisConstants.SERVICE_NAME_SECURITY,
+                                       "vaultSecretId",
+                                       MsgUtils.getMsg("SK_VAULT_MISSING_VAULT_PARM",
+                                          EnvVar.TAPIS_SK_VAULT_SECRET_ID.getEnvName()));
+          _log.error(msg);
+          throw new TapisRuntimeException(msg);
+        }
+    
+    // Get the open timeout.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_OPEN_TIMEOUT.getEnvName());
+    if (StringUtils.isBlank(parm)) setVaultOpenTimeout(DEFAULT_VAULT_OPEN_TIMEOUT_SECS);
+      else
+        try {setVaultOpenTimeout(Integer.valueOf(parm));}
+          catch (Exception e) {
+              // Stop on bad input.
+              String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                           TapisConstants.SERVICE_NAME_SECURITY,
+                                           "vaultOpenTimeout",
+                                           e.getMessage());
+              _log.error(msg, e);
+              throw new TapisRuntimeException(msg, e);
+          }
+    
+    // Get the read timeout.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_READ_TIMEOUT.getEnvName());
+    if (StringUtils.isBlank(parm)) setVaultReadTimeout(DEFAULT_VAULT_READ_TIMEOUT_SECS);
+      else
+        try {setVaultReadTimeout(Integer.valueOf(parm));}
+          catch (Exception e) {
+              // Stop on bad input.
+              String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                           TapisConstants.SERVICE_NAME_SECURITY,
+                                           "vaultReadTimeout",
+                                           e.getMessage());
+              _log.error(msg, e);
+              throw new TapisRuntimeException(msg, e);
+          }
+    
+    // Determine whether SSL certificate authentication is to be used.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_SSL_VERIFY.getEnvName());
+    if (StringUtils.isBlank(parm)) setVaultSslVerify(false);
+      else {
+        try {setVaultSslVerify(Boolean.valueOf(parm));}
+          catch (Exception e) {
+            // Stop on bad input.
+            String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                         TapisConstants.SERVICE_NAME_SECURITY,
+                                         "vaultSslVerity",
+                                         e.getMessage());
+            _log.error(msg, e);
+            throw new TapisRuntimeException(msg, e);
+          }
+      }
+
+    // Make sure we have a certificate file name unless SSL verify is off.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_SSL_CERT_FILE.getEnvName());
+    if (!StringUtils.isBlank(parm)) setVaultSslCertFile(parm);
+      else if (!vaultDisabled && vaultSslVerify) {
+          // A vault server address is required.
+          String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                       TapisConstants.SERVICE_NAME_SECURITY,
+                                       "vaultSslCertFile",
+                                       MsgUtils.getMsg("SK_VAULT_MISSING_VAULT_PARM",
+                                          EnvVar.TAPIS_SK_VAULT_SSL_CERT_FILE.getEnvName()));
+          _log.error(msg);
+          throw new TapisRuntimeException(msg);
+        }
+    
+    // Assign the expiration time on tokens we acquire. This duration can be no longer
+    // than what's configured in the sk-role.json file.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_TOKEN_RENEWAL_SECONDS.getEnvName());
+    if (StringUtils.isBlank(parm)) setVaultRenewSeconds(DEFAULT_VAULT_TOKEN_SECONDS);
+      else 
+          try {
+              int expiry = Integer.valueOf(parm);
+              if (expiry < MIN_VAULT_TOKEN_SECONDS) {
+                  String msg = MsgUtils.getMsg("TAPIS_PARAMETER_LESS_THAN_MIN",
+                                               EnvVar.TAPIS_SK_VAULT_TOKEN_RENEWAL_SECONDS.getEnvName(),
+                                               expiry,
+                                               MIN_VAULT_TOKEN_SECONDS);
+                   throw new IllegalArgumentException(msg);
+              }
+
+              // We're good.
+              setVaultRenewSeconds(expiry);
+          }
+          catch (Exception e) {
+              // Stop on bad input.
+              String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                           TapisConstants.SERVICE_NAME_SECURITY,
+                                           "vaultTokenSeconds",
+                                           e.getMessage());
+              _log.error(msg, e);
+              throw new TapisRuntimeException(msg, e);
+          }
+  
+    // Get the threshold after which we try to renew our token. The threshold is expressed
+    // as a percentage of the total ttl of the token.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_TOKEN_RENEWAL_THRESHOLD.getEnvName());
+    if (StringUtils.isBlank(parm)) setVaultRenewThreshold(DEFAULT_VAULT_TOKEN_THRESHOLD);
+      else 
+          try {
+              // Check that the parameter is an integer in range.
+              int threshold = Integer.valueOf(parm);
+              if (threshold < MIN_VAULT_TOKEN_THRESHOLD || 
+                  threshold > MAX_VAULT_TOKEN_THRESHOLD) {
+                  String msg = MsgUtils.getMsg("TAPIS_PARAMETER_OUT_OF_RANGE",
+                                               EnvVar.TAPIS_SK_VAULT_TOKEN_RENEWAL_THRESHOLD.getEnvName(),
+                                               threshold,
+                                               MIN_VAULT_TOKEN_THRESHOLD,
+                                               MAX_VAULT_TOKEN_THRESHOLD);
+                   throw new IllegalArgumentException(msg);
+              }
+                  
+              // We're good.
+              setVaultRenewThreshold(threshold);
+          }
+          catch (Exception e) {
+              // Stop on bad input.
+             String msg = MsgUtils.getMsg("TAPIS_SERVICE_PARM_INITIALIZATION_FAILED",
+                                          TapisConstants.SERVICE_NAME_SECURITY,
+                                          "vaultTokenThreshold",
+                                          e.getMessage());
+              _log.error(msg, e);
+              throw new TapisRuntimeException(msg, e);
+          }
+    
+    // Determine if a private key file has been specified.
+    // TODO: we'll probably need to adjust this when mutual auth is actually used.
+    parm = inputProperties.getProperty(EnvVar.TAPIS_SK_VAULT_SK_KEY_PEM_FILE.getEnvName());
+    if (StringUtils.isBlank(parm)) setVaultSkKeyPemFile(parm);
+   }
 	
     /* ---------------------------------------------------------------------- */
     /* getRuntimeInfo:                                                        */
@@ -384,6 +605,9 @@ public final class RuntimeParameters
         buf.append("\n------- Network -----------------------------------");
         buf.append("\nHost Addresses: ");
         buf.append(getNetworkAddresses());
+        
+        buf.append("\n------- Tenants -----------------------------------");
+        buf.append("\ntapis.tenant.svc.baseurl: ");
 	    
 	    buf.append("\n------- DB Configuration --------------------------");
 	    buf.append("\ntapis.db.jdbc.url: ");
@@ -395,6 +619,30 @@ public final class RuntimeParameters
 	    buf.append("\ntapis.db.meter.minutes: ");
 	    buf.append(this.getDbMeterMinutes());
 	    
+        buf.append("\n------- Vault Configuration -----------------------");
+        buf.append("\ntapis.sk.vault.disable: ");
+        buf.append(this.isVaultDisabled());
+        buf.append("\ntapis.sk.vault.address: ");
+        buf.append(this.getVaultAddress());
+        buf.append("\ntapis.sk.vault.roleid: ");
+        buf.append(this.getVaultRoleId() == null ? null : "****");
+        buf.append("\ntapis.sk.vault.secretid: ");
+        buf.append(this.getVaultSecretId() == null ? null : "****");
+        buf.append("\ntapis.sk.vault.open.timeout: ");
+        buf.append(this.getVaultOpenTimeout());
+        buf.append("\ntapis.sk.vault.read.timeout: ");
+        buf.append(this.getVaultReadTimeout());
+        buf.append("\ntapis.sk.vault.ssl.verify: ");
+        buf.append(this.isVaultSslVerify());
+        buf.append("\ntapis.sk.vault.ssl.cert: ");
+        buf.append(this.getVaultSslCertFile());
+        buf.append("\ntapis.sk.vault.sk.key.pem.file: ");
+        buf.append(this.getVaultSkKeyPemFile());
+        buf.append("\ntapis.sk.vault.token.seconds: ");
+        buf.append(this.getVaultRenewSeconds());
+        buf.append("\ntapis.sk.vault.token.renewal.threshold: ");
+        buf.append(this.getVaultRenewThreshold());
+        
 	    buf.append("\n------- Email Configuration -----------------------");
 	    buf.append("\ntapis.mail.provider: ");
 	    buf.append(this.getEmailProviderType().name());
@@ -420,8 +668,8 @@ public final class RuntimeParameters
 	    buf.append("\n------- EnvOnly Configuration ---------------------");
 	    buf.append("\ntapis.envonly.log.security.info: ");
 	    buf.append(RuntimeParameters.getLogSecurityInfo());
-	    buf.append("\ntapis.envonly.allow.test.query.parms: ");
-	    buf.append(this.isAllowTestQueryParms());
+	    buf.append("\ntapis.envonly.allow.test.header.parms: ");
+	    buf.append(this.isAllowTestHeaderParms());
 	    buf.append("\ntapis.envonly.jwt.optional: ");
 	    buf.append(TapisEnv.getBoolean(EnvVar.TAPIS_ENVONLY_JWT_OPTIONAL));
 	    buf.append("\ntapis.envonly.skip.jwt.verify: ");
@@ -606,12 +854,12 @@ public final class RuntimeParameters
 	    return id;
 	}
 
-	public boolean isAllowTestQueryParms() {
-	    return allowTestQueryParms;
+	public boolean isAllowTestHeaderParms() {
+	    return allowTestHeaderParms;
 	}
 
-	private void setAllowTestQueryParms(boolean allowTestQueryParms) {
-	    this.allowTestQueryParms = allowTestQueryParms;
+	private void setAllowTestHeaderParms(boolean allowTestHeaderParms) {
+	    this.allowTestHeaderParms = allowTestHeaderParms;
 	}
 
 	public int getDbMeterMinutes() {
@@ -716,5 +964,101 @@ public final class RuntimeParameters
 
     public void setLogFile(String logFile) {
         this.logFile = logFile;
+    }
+
+    public boolean isVaultDisabled() {
+        return vaultDisabled;
+    }
+
+    public void setVaultDisabled(boolean vaultDisabled) {
+        this.vaultDisabled = vaultDisabled;
+    }
+
+    public String getVaultAddress() {
+        return vaultAddress;
+    }
+
+    public void setVaultAddress(String vaultAddress) {
+        this.vaultAddress = vaultAddress;
+    }
+
+    public String getVaultRoleId() {
+        return vaultRoleId;
+    }
+
+    public void setVaultRoleId(String vaultRoleId) {
+        this.vaultRoleId = vaultRoleId;
+    }
+
+    public String getVaultSecretId() {
+        return vaultSecretId;
+    }
+
+    public void setVaultSecretId(String vaultSecretId) {
+        this.vaultSecretId = vaultSecretId;
+    }
+
+    public int getVaultOpenTimeout() {
+        return vaultOpenTimeout;
+    }
+
+    public void setVaultOpenTimeout(int vaultOpenTimeout) {
+        this.vaultOpenTimeout = vaultOpenTimeout;
+    }
+
+    public int getVaultReadTimeout() {
+        return vaultReadTimeout;
+    }
+
+    public void setVaultReadTimeout(int vaultReadTimeout) {
+        this.vaultReadTimeout = vaultReadTimeout;
+    }
+
+    public boolean isVaultSslVerify() {
+        return vaultSslVerify;
+    }
+
+    public void setVaultSslVerify(boolean vaultSslVerify) {
+        this.vaultSslVerify = vaultSslVerify;
+    }
+
+    public String getVaultSslCertFile() {
+        return vaultSslCertFile;
+    }
+
+    public void setVaultSslCertFile(String vaultSslCertFile) {
+        this.vaultSslCertFile = vaultSslCertFile;
+    }
+
+    public String getVaultSkKeyPemFile() {
+        return vaultSkKeyPemFile;
+    }
+
+    public void setVaultSkKeyPemFile(String vaultSkKeyPemFile) {
+        this.vaultSkKeyPemFile = vaultSkKeyPemFile;
+    }
+
+    public int getVaultRenewSeconds() {
+        return vaultRenewSeconds;
+    }
+
+    public void setVaultRenewSeconds(int vaultRenewSeconds) {
+        this.vaultRenewSeconds = vaultRenewSeconds;
+    }
+
+    public int getVaultRenewThreshold() {
+        return vaultRenewThreshold;
+    }
+
+    public void setVaultRenewThreshold(int vaultRenewThreshold) {
+        this.vaultRenewThreshold = vaultRenewThreshold;
+    }
+
+    public String getTenantBaseUrl() {
+        return tenantBaseUrl;
+    }
+
+    public void setTenantBaseUrl(String tenantBaseUrl) {
+        this.tenantBaseUrl = tenantBaseUrl;
     }
 }

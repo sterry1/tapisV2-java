@@ -1,15 +1,17 @@
 package edu.utexas.tacc.tapis.security.authz.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.shiro.authz.permission.WildcardPermission;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.utexas.tacc.tapis.security.authz.dao.SkRolePermissionDao;
 import edu.utexas.tacc.tapis.security.authz.dao.SkUserRoleDao;
+import edu.utexas.tacc.tapis.security.authz.permissions.ExtWildcardPermission;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisImplException;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisImplException.Condition;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisNotFoundException;
@@ -60,7 +62,7 @@ public final class UserImpl
     /*                             Public Methods                             */
     /* ********************************************************************** */
     /* ---------------------------------------------------------------------- */
-    /* getInstance:                                                          */
+    /* getInstance:                                                           */
     /* ---------------------------------------------------------------------- */
     public static UserImpl getInstance()
     {
@@ -130,7 +132,9 @@ public final class UserImpl
     /* ---------------------------------------------------------------------- */
     /* getUserPerms:                                                          */
     /* ---------------------------------------------------------------------- */
-    public List<String> getUserPerms(String tenant, String user) throws TapisImplException
+    public List<String> getUserPerms(String tenant, String user, String implies,
+                                     String impliedBy) 
+     throws TapisImplException
     {
         // Get the dao.
         SkUserRoleDao dao = null;
@@ -151,6 +155,10 @@ public final class UserImpl
                 throw new TapisImplException(msg, e, Condition.BAD_REQUEST);            
             }
 
+        // Optionally filter the list of permissions.
+        if (!StringUtils.isBlank(implies)) filterImpliesPermissions(perms, implies);
+        if (!StringUtils.isBlank(impliedBy)) filterImpliedByPermissions(perms, impliedBy);
+        
         return perms;
     }
 
@@ -195,9 +203,9 @@ public final class UserImpl
     }
 
     /* ---------------------------------------------------------------------- */
-    /* removeRole:                                                            */
+    /* revokeUserRole:                                                        */
     /* ---------------------------------------------------------------------- */
-    public int removeRole(String tenant, String user, String roleName) 
+    public int revokeUserRole(String tenant, String user, String roleName) 
       throws TapisImplException, TapisNotFoundException
     {
         // Get the role id.
@@ -235,8 +243,73 @@ public final class UserImpl
     }
     
     /* ---------------------------------------------------------------------- */
+    /* grantUserPermission:                                                   */
+    /* ---------------------------------------------------------------------- */
+    /** Grant a permission by assigning the permission to the user's default
+     * role, creating and granting that role to the user if it doesn't already
+     * exist.
+     * 
+     * @param tenant the user's tenant
+     * @param requestor the grantor
+     * @param user the grantee
+     * @param permSpec the permission specification
+     * @return the number of database updates
+     * @throws TapisImplException on general errors
+     */
+    public int grantUserPermission(String tenant, String requestor, 
+                                   String user, String permSpec)
+        throws TapisImplException
+    {
+        // Check user name length before using it to construct the user's default role.
+        if (user.length() > MAX_USER_NAME_LEN) {
+            String msg = MsgUtils.getMsg("SK_USER_NAME_LEN", tenant, user, MAX_USER_NAME_LEN);
+            _log.error(msg);
+            throw new TapisImplException(msg, Condition.BAD_REQUEST);
+        }
+        
+        // Construct the user's default role name.
+        String roleName = getUserDefaultRolename(user);
+        
+        // Perform an optimistic assignment that works only if the user's 
+        // default role exists and has already been assigned to the user.
+        // If the first attempt fails, we try one more time after creating
+        // and assigning the user's default role.
+        int rows = 0;
+        for (int i = 0; i < 2; i++) {
+            try {
+                // See if we can assign the permission to the role.
+                rows += grantRoleWithPermission(tenant, requestor, user,
+                                                roleName, permSpec);
+                
+                // This try worked!
+                break;
+            } 
+            catch (TapisNotFoundException e) {
+                // The role does not exist, so let's create it and
+                // assign it to the user in one atomic operation.
+                // Any failure here aborts the whole operation.
+                rows = createAndAssignRole(tenant, requestor, user, roleName);
+            }
+        }
+        
+        return rows;
+    }
+    
+    /* ---------------------------------------------------------------------- */
     /* grantRoleWithPermission:                                               */
     /* ---------------------------------------------------------------------- */
+    /** Grant an existing role to a user after inserting the permission into the
+     * role.
+     * 
+     * @param tenant the user's tenant
+     * @param requestor the grantor
+     * @param user the grantee
+     * @param roleName existing role name
+     * @param permSpec the permission specification
+     * @return the number of database updates
+     * @throws TapisImplException on general errors
+     * @throws TapisNotFoundException the role does not exist
+     */
     public int grantRoleWithPermission(String tenant, String requestor, 
                                        String user, String roleName, String permSpec)
         throws TapisImplException, TapisNotFoundException
@@ -354,7 +427,8 @@ public final class UserImpl
             }
             catch (Exception e) {
                 _log.error(e.getMessage());
-                throw new TapisImplException(e.getMessage(), e, Condition.INTERNAL_SERVER_ERROR);             }
+                throw new TapisImplException(e.getMessage(), e, Condition.INTERNAL_SERVER_ERROR);
+            }
         
         return users;
     }
@@ -495,7 +569,7 @@ public final class UserImpl
         // Create a permission cache that allows us to allocate at most
         // one wildcard object for each assigned permission.  The cache
         // is only useful if more than 1 permSpec might get tested.
-        HashMap<String,WildcardPermission> assignedPermMap;
+        HashMap<String,ExtWildcardPermission> assignedPermMap;
         if (permSpecs.length > 1) 
             assignedPermMap = new HashMap<>(1 + 2 * assignedPerms.size());
           else assignedPermMap = null;
@@ -532,11 +606,11 @@ public final class UserImpl
     /* matchPermission:                                                             */
     /* ---------------------------------------------------------------------------- */
     /** Perform the extended Shiro-base permission checking.  All permission checking
-     * is case-sensitive.  
+     * is case-sensitive.  Exceptions are logged and not rethrown. 
      * 
      * The caller may provide a map to use as a cache for permission objects.  A cache 
-     * will reduce the number of object created when this method is going to be called
-     * with different reqPermStr's in a row, all using the same set of assignedPermStrs.
+     * will reduce the number of objects created when this method is called with 
+     * different reqPermStr's in a row, all using the same set of assignedPermStrs.
      * 
      * @param reqPermStr the spec to be matched on a user request
      * @param assignedPermStrs the user's assigned permissions
@@ -544,35 +618,145 @@ public final class UserImpl
      * @return true if permSpec matches one of the perms, false otherwise
      */
     private boolean matchPermission(String reqPermStr, List<String> assignedPermStrs,
-                                    HashMap<String,WildcardPermission> assignedPermMap)
+                                    HashMap<String,ExtWildcardPermission> assignedPermMap)
     {
         // Create a case-sensitive request permission.
-        WildcardPermission reqPerm = new WildcardPermission(reqPermStr, true);
+        ExtWildcardPermission reqPerm;
+        try {reqPerm = new ExtWildcardPermission(reqPermStr, true);}
+            catch (Exception e) {
+                String msg = MsgUtils.getMsg("SK_PERM_CREATE_ERROR", reqPermStr,
+                                             e.getMessage());            
+                _log.error(msg, e);
+                return false;
+            }
         
         // See if any of the user's assigned permissions match the request spec.
         for (String curAssignedPermStr : assignedPermStrs) 
         {
             // Declare the current perm object.
-            WildcardPermission curAssignedPerm;
+            ExtWildcardPermission curAssignedPerm;
             
             // If caching is activated, determine if we've already created a 
             // perm object for this assigned perm string.
-            if (assignedPermMap != null) {
-                curAssignedPerm = assignedPermMap.get(curAssignedPermStr);
-                if (curAssignedPerm == null) {
-                    // Create and cache the perm object.
-                    curAssignedPerm = new WildcardPermission(curAssignedPermStr, true);
-                    assignedPermMap.put(curAssignedPermStr, curAssignedPerm);
+            try {
+                if (assignedPermMap != null) {
+                    curAssignedPerm = assignedPermMap.get(curAssignedPermStr);
+                    if (curAssignedPerm == null) {
+                        // Create and cache the perm object.
+                        curAssignedPerm = new ExtWildcardPermission(curAssignedPermStr, true);
+                        assignedPermMap.put(curAssignedPermStr, curAssignedPerm);
+                    }
                 }
+                else curAssignedPerm = new ExtWildcardPermission(curAssignedPermStr, true);
             }
-            else curAssignedPerm = new WildcardPermission(curAssignedPermStr, true);
+            catch (Exception e) {
+                String msg = MsgUtils.getMsg("SK_PERM_CREATE_ERROR", curAssignedPermStr,
+                                             e.getMessage());            
+                _log.error(msg, e);
+                continue;
+            }
             
             // Check the request permission and return as soon 
-            // as we find a match.
-            if (curAssignedPerm.implies(reqPerm)) return true;
+            // as we find a match. Runtime exceptions can be thrown.
+            try {if (curAssignedPerm.implies(reqPerm)) return true;}
+                catch (Exception e) {
+                    // Just log the exception.
+                    String msg = MsgUtils.getMsg("SK_PERM_MATCH_ERROR", curAssignedPermStr,
+                                                 reqPermStr, e.getMessage());            
+                    _log.error(msg, e);
+                }
         }
         
         // No match if we get here.
         return false;
+    }
+    
+    /* ---------------------------------------------------------------------------- */
+    /* createAndAssignRole:                                                         */
+    /* ---------------------------------------------------------------------------- */
+    private int createAndAssignRole(String tenant, String requestor, String user, 
+                                    String roleName) 
+     throws TapisImplException
+    {
+        // Get the dao.
+        SkUserRoleDao userDao = null;
+        try {userDao = getSkUserRoleDao();}
+            catch (Exception e) {
+                String msg = MsgUtils.getMsg("DB_DAO_ERROR", "userRoles");
+                _log.error(msg, e);
+                throw new TapisImplException(e.getMessage(), e, Condition.INTERNAL_SERVER_ERROR); 
+            }
+
+        // Create and assign the role.
+        String desc = "Default role for user " + user;
+        int rows = 0;
+        try {rows = userDao.createAndAssignRole(tenant, requestor, user, roleName, desc);}
+            catch (Exception e) {
+                // Interpret all errors as client request problems.
+                throw new TapisImplException(e.getMessage(), Condition.BAD_REQUEST);
+            }
+        return rows;
+    }
+    
+    /* ---------------------------------------------------------------------------- */
+    /* filterImpliesPermissions:                                                    */
+    /* ---------------------------------------------------------------------------- */
+    /** Remove permissions from the list that are not implied by the implies 
+     * permission parameter.  The result is a possibly altered permissions list.
+     * 
+     * @param perms List of permissions to be filtered
+     * @param implies a permission string that implies each entry in the final perms list
+     */
+    private void filterImpliesPermissions(List<String> perms, String implies)
+    {
+        // Is there anything to do?
+        if (perms.isEmpty()) return;
+        
+        // Put the match filter in a list.
+        var impliesList = new ArrayList<String>(1);
+        impliesList.add(implies);
+        
+        // Create a permission cache that allows us to allocate at most
+        // one wildcard object for the match permission.  The cache
+        // is only useful if more than 1 permission might get tested.
+        HashMap<String,ExtWildcardPermission> impliesPermMap;
+        if (perms.size() > 1) impliesPermMap = new HashMap<>(3);
+          else impliesPermMap = null;
+        
+        // Iterate through the list removing permissions that don't match.
+        var it = perms.listIterator();
+        while (it.hasNext()) {
+            String curPerm = it.next();
+            if (!matchPermission(curPerm, impliesList, impliesPermMap)) it.remove();
+        }
+    }
+    
+    /* ---------------------------------------------------------------------------- */
+    /* filterImpliedByPermissions:                                                  */
+    /* ---------------------------------------------------------------------------- */
+    /** Remove permissions from the list that don't imply the impliedBy permission
+     * parameter.  The result is a possibly altered permissions list.  
+     * 
+     * Note that no caching of permission objects occurs on this path. If this becomes
+     * a problem, we should only create the impliedBy permission object once. 
+     * 
+     * @param perms List of permissions to be filtered
+     * @param impliedBy a permission string that is implied by each entry in the final perms list
+     */
+    private void filterImpliedByPermissions(List<String> perms, String impliedBy)
+    {
+        // Is there anything to do?
+        if (perms.isEmpty()) return;
+        
+        // For each permission in the perms list, see if it implies 
+        // the impliedBy permission parameter.
+        var impliesList = new ArrayList<String>(1);  
+        var it = perms.listIterator();
+        while (it.hasNext()) {
+            String curPerm = it.next();
+            impliesList.clear();
+            impliesList.add(curPerm);
+            if (!matchPermission(impliedBy, impliesList, null)) it.remove();
+        }
     }
 }
