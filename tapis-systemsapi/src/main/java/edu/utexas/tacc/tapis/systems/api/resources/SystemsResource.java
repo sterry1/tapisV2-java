@@ -1,7 +1,7 @@
 package edu.utexas.tacc.tapis.systems.api.resources;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.ServletContext;
+//import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -90,10 +90,10 @@ public class SystemsResource
   private UriInfo _uriInfo;
   @Context
   private SecurityContext _securityContext;
-  @Context
-  private ServletContext _servletContext;
-  @Context
-  private HttpServletRequest _request;
+//  @Context
+//  private ServletContext _servletContext;
+//  @Context
+//  private HttpServletRequest _request;
 
   /* **************************************************************************** */
   /*                                Public Methods                                */
@@ -115,9 +115,9 @@ public class SystemsResource
     // Trace this request.
     if (_log.isTraceEnabled())
     {
-      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(), "hello",
-                                   "  " + _request.getRequestURL());
-      _log.trace(msg);
+//      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(), "hello",
+//                                   "  " + _request.getRequestURL());
+//      _log.trace(msg);
     }
 
     // ---------------------------- Success -------------------------------

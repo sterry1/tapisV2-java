@@ -10,7 +10,7 @@
   </parent>
   
   <groupId>edu.utexas.tacc.tapis</groupId>
-  <artifactId>tapis-systems</artifactId>
+  <artifactId>tapis-systemsapi</artifactId>
   <packaging>war</packaging>
   
   <name>Tapis Systems API</name>
@@ -21,14 +21,58 @@
     <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
     <replacer.version>1.5.3</replacer.version>
     <swagger-ui.version>3.23.8</swagger-ui.version>
+<!-- RESTEasy ******************************************** -->
+    <resteasy.version>4.3.1.Final</resteasy.version>
+<!-- RESTEasy ******************************************** -->
   </properties>
 
+
+<!-- RESTEasy ******************************************** -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-bom</artifactId>
+        <version>${resteasy.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+<!--
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-core</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
+-->
+    </dependencies>
+  </dependencyManagement>
+<!-- RESTEasy ******************************************** -->
+
   <dependencies>
+
+  <!-- RESTEasy ******************************************** -->
+<!--
+  <dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-core-spi</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-core</artifactId>
+  </dependency>
+-->
+  <dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-guice</artifactId>
+  </dependency>
+<!-- RESTEasy ******************************************** -->
+
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
       <version>${javax.ws.rs-api.version}</version>
     </dependency>
+<!--
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
@@ -40,6 +84,7 @@
       <artifactId>jersey-container-servlet</artifactId>
       <version>${jersey-container-servlet.version}</version>
     </dependency>
+-->
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-jaxrs2</artifactId>
@@ -180,7 +225,17 @@
       <!-- ********************* End swagger-ui integration ************************** -->
     </plugins>
 
-    <finalName>systems</finalName>
+    <finalName>systemsapi</finalName>
   </build>
+
+
+<!-- RESTEasy ********************************************
+  <repositories>
+    <repository>
+      <id>jboss</id>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>
+ RESTEasy ******************************************** -->
 
 </project>

@@ -4,8 +4,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.ServletContext;
+//import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
@@ -90,10 +90,10 @@ public class SystemResource
   private UriInfo _uriInfo;
   @Context
   private SecurityContext _securityContext;
-  @Context
-  private ServletContext _servletContext;
-  @Context
-  private HttpServletRequest _request;
+//  @Context
+//  private ServletContext _servletContext;
+//  @Context
+//  private HttpServletRequest _request;
 
   // TODO Remove hard coded values
   private static final String tenant = "tenant1";
@@ -146,9 +146,9 @@ public class SystemResource
     // Trace this request.
     if (_log.isTraceEnabled())
     {
-      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(), "createSystem",
-                                   "  " + _request.getRequestURL());
-      _log.trace(msg);
+//      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(), "createSystem",
+//                                   "  " + _request.getRequestURL());
+//      _log.trace(msg);
     }
 
     // ------------------------- Validate Payload -------------------------
@@ -298,9 +298,9 @@ public class SystemResource
     // Trace this request.
     if (_log.isTraceEnabled())
     {
-      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(), "getSystemByName",
-                                   "  " + _request.getRequestURL());
-      _log.trace(msg);
+//      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(), "getSystemByName",
+//                                   "  " + _request.getRequestURL());
+//      _log.trace(msg);
     }
 
     // TODO Use static factory method, or better yet use DI, maybe Guice
@@ -359,9 +359,9 @@ public class SystemResource
     // Trace this request.
     if (_log.isTraceEnabled())
     {
-      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(), "getSystems",
-                                   "  " + _request.getRequestURL());
-      _log.trace(msg);
+//      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(), "getSystems",
+//                                   "  " + _request.getRequestURL());
+//      _log.trace(msg);
     }
 
     // ------------------------- Retrieve all records -----------------------------
