@@ -6,15 +6,15 @@
 
     <parent>
         <groupId>edu.utexas.tacc.tapis</groupId>
-        <artifactId>tapis</artifactId>
+        <artifactId>tapisV2</artifactId>
         <version>0.0.1</version>
     </parent>
 
 
-    <artifactId>meta</artifactId>
+    <artifactId>metaV3</artifactId>
     <packaging>war</packaging>
 
-    <name>Tapis Meta API</name>
+    <name>Tapis V3 Meta API</name>
     <description>Tapis Meta V3 web application</description>
 
     <properties>
@@ -27,6 +27,18 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>edu.utexas.tacc.aloe</groupId>
+            <artifactId>aloe-shared</artifactId>
+            <version>2.4.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>edu.utexas.tacc.aloe</groupId>
+            <artifactId>aloe-sharedapi</artifactId>
+            <version>2.4.2</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

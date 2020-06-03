@@ -6,7 +6,7 @@
 #  for future Tapis services and building an image from a
 #  set of maven artifacts.
 #
-# environment : TAPIS_VERSION set to the version in tapis/pom.xml 
+# environment : VER set to the version in tapis/pom.xml
 #
 # usage : $TAPIS_ROOT/deployment/build-metaapi.sh
 #
@@ -49,13 +49,14 @@ echo "***      removing any old service war meta directory from Docker build con
 echo "***      $IMAGE_BUILD_DIR/$WAR_NAME "
 if test -d "$IMAGE_BUILD_DIR/$WAR_NAME"; then
      rm -rf $IMAGE_BUILD_DIR/$WAR_NAME
+     echo " removed $IMAGE_BUILD_DIR/$WAR_NAME "
 fi
 
 echo "";echo ""
 
 echo "***          copy the new service package directory to our docker build directory "
 echo "***   cp -r $SRVC_DIR/$WAR_NAME ${IMAGE_BUILD_DIR}/ "
-            cp -r $SRVC_DIR/$WAR_NAME ${IMAGE_BUILD_DIR}/
+           cp -r $SRVC_DIR/$WAR_NAME ${IMAGE_BUILD_DIR}/
 
 echo "";echo ""
 
@@ -66,12 +67,12 @@ echo "";echo ""
 
 echo "***      building the docker image from deployment directory docker build tapis-${SRVC_API}/Dockerfile"
 echo "***      docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV . "
-               docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV .
+ds               docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV .
 echo "";echo ""
 
 echo "***    push the image to docker hub "
 echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
-               docker push "$TAG-$TAPIS_ENV"
+#               docker push "$TAG-$TAPIS_ENV"
 
 
 # echo "***      export the image file name and tag as META_IMAGE "
@@ -81,8 +82,6 @@ echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
 
 
 # echo "image file written : $(cat image.txt)"
-
-
 
 echo "***      "
 echo "***      rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}"

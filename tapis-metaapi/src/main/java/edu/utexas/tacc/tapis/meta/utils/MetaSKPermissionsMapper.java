@@ -4,12 +4,14 @@ import java.util.StringTokenizer;
 
 public class MetaSKPermissionsMapper {
   private String uriPath;
-  public String meta = "meta";
-  public String op = "GET";
-  public String tenant;
-  public String db="";
-  public String collection="";
-  public String document="";
+  private String meta = "meta";
+  private String op = "GET";
+  private String tenant;
+  private String db="";
+  private String collection="";
+  private String document="";
+  private String permSpec="";
+  
   // public String
   
   /**
@@ -31,36 +33,38 @@ public class MetaSKPermissionsMapper {
   public String convert(String op){
     String pems = "";
     if(notNull(uriPath )&& notEmpty(tenant)){
-      String processed = uriPath.replace("/v3/meta/", "");
-      
+      String processed = uriPath.replace(MetaAppConstants.V2_URI_BASEPATH, "");
       
       StringTokenizer st = new StringTokenizer(processed,"/");
       
       int resources = st.countTokens();
       switch(resources){
         case 0 : {
-          return pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
+          pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
+          this.permSpec = pems;
+          return pems;
         }
         case 1 : {
           db = st.nextToken();
-          return pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
+          pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
+          this.permSpec = pems;
+          return pems;
         }
         case 2 : {
           db = st.nextToken();
           collection = st.nextToken();
-          return pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
+          pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
+          this.permSpec = pems;
+          return pems;
         }
-        case 3 : {
-          db = st.nextToken();
-          collection = st.nextToken();
-          document = st.nextToken();
-          return pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
-        }
+        case 3 :
         case 4 : {
           db = st.nextToken();
           collection = st.nextToken();
           document = st.nextToken();
-          return pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
+          pems = meta+":"+tenant+":"+op+":"+db+":"+collection+":"+document;
+          this.permSpec = pems;
+          return pems;
         }
       }
     }
@@ -88,60 +92,31 @@ public class MetaSKPermissionsMapper {
     }
   }
   
-  public String getMeta() {
-    return meta;
-  }
+  public String getMeta() { return meta; }
   
-  public void setMeta(String meta) {
-    this.meta = meta;
-  }
+  public void setMeta(String meta) { this.meta = meta; }
   
-  public String getOp() {
-    return op;
-  }
+  public String getOp() { return op; }
   
-  public void setOp(String op) {
-    this.op = op;
-  }
+  public void setOp(String op) { this.op = op; }
   
-  public String getTenant() {
-    return tenant;
-  }
+  public String getTenant() { return tenant; }
   
-  public void setTenant(String tenant) {
-    this.tenant = tenant;
-  }
+  public void setTenant(String tenant) { this.tenant = tenant; }
   
-  public String getDb() {
-    return db;
-  }
+  public String getDb() { return db; }
   
-  public void setDb(String db) {
-    this.db = db;
-  }
+  public void setDb(String db) { this.db = db; }
   
-  public String getCollection() {
-    return collection;
-  }
+  public String getCollection() { return collection; }
   
-  public void setCollection(String collection) {
-    this.collection = collection;
-  }
+  public void setCollection(String collection) { this.collection = collection; }
   
-  public String getDocument() {
-    return document;
-  }
+  public String getDocument() { return document; }
   
-  public void setDocument(String document) {
-    this.document = document;
-  }
+  public void setDocument(String document) { this.document = document; }
   
-  public static void main(String[] args) {
-    String uri1 = "/v3/meta/StreamsTACCDB/Proj1/5e29fa28a93eebf39fba927b";
-    // String uri1 = "/v3/meta/";
-    // String uri1 = "/v3/meta/StreamsTACCDB/Proj1";
-    MetaSKPermissionsMapper mapper = new MetaSKPermissionsMapper(uri1,"dev");
-    String permSpec = mapper.convert("GET");
-    System.out.println(permSpec);
-  }
+  public String getPermSpec() { return permSpec; }
+  
+  public void setPermSpec(String permSpec) { this.permSpec = permSpec; }
 }
