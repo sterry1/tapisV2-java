@@ -78,10 +78,11 @@ public class RuntimeParameters {
     }
   
     //----------------------   Input parameters   ----------------------
-    // String parm = inputProperties.getProperty(TapisEnv.EnvVar.TAPIS_LOG_DIRECTORY.getEnvName());
+
     String parm = inputProperties.getProperty("tapis.meta.core.server");
     if (!StringUtils.isBlank(parm)) setCoreServer(parm);
   
+    // String parm = inputProperties.getProperty(TapisEnv.EnvVar.TAPIS_LOG_DIRECTORY.getEnvName());
     parm = inputProperties.getProperty("tapis.meta.log.directory");
     if (!StringUtils.isBlank(parm)) setLogDirectory(parm);
   

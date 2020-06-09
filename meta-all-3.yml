@@ -1,0 +1,61 @@
+   # security container and core container for Aloe development
+   # environment tag 0.0.1-T2dev to distinguish from regular metaV3 security contatiner.
+   #
+   #  export 'JAVA_MEM=-Xms2G -Xmx2G'
+   #  Usage :
+   #    down :
+   #      > export JAVA_MEM='-Xms2G -Xmx2G'; docker-compose -f meta-all-3.yml -p lcl down
+   #    mongodb up alone :
+   #      > export JAVA_MEM='-Xms2G -Xmx2G'; docker-compose -f meta-all-3.yml -p lcl up -d mongodb
+   #
+   #    restheart mongodb up :
+   #      > export JAVA_MEM='-Xms2G -Xmx2G'; docker-compose -f meta-all-3.yml -p lcl up -d restheart mongodb
+   #
+   #    all 3 up :
+   #      > export JAVA_MEM='-Xms2G -Xmx2G'; docker-compose -f meta-all-3.yml -p lcl up -d
+
+
+meta-security:
+   image: tapis/metaapi:0.0.1-T2dev
+   container_name: meta-tapis-security
+   ports:
+      - "8199:8080"
+   links:
+      - restheart
+   environment:
+      - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
+      - 'aloe.envonly.skip.jwt.verify=false'
+   volumes:
+      - '/tmp/log/splunk/meta-security:/opt/tomcat/logs'
+      - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
+
+restheart:
+   image: tapis/tapis-meta-rh-core:4.1.6
+   container_name: restheart-core
+   command: java ${JAVA_MEM} -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties
+   links:
+      - mongodb
+   ports:
+      - "8080:8080"
+   environment:
+      - 'MONGO_URI=mongodb://tapisadmin:d3fault@mongodb:27017/?authSource=admin'
+      # - 'MONGO_URI=mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin'
+   volumes:
+      - './deployment/core/etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
+      - './deployment/core/etc/config.properties:/opt/restheart/etc/config.properties:ro'
+
+mongodb:
+   image: mongo:4.2
+   container_name: restheart-mongo
+   command: "mongod --auth --bind_ip_all"
+   environment:
+      MONGO_INITDB_ROOT_USERNAME: 'tapisadmin'
+      MONGO_INITDB_ROOT_PASSWORD: 'd3fault'
+   volumes:
+      - "./mongodb/dbdata:/data/db"
+   ### mongodb port must be mapped for the test to run
+   ports:
+      - "27017:27017"
+
+
+

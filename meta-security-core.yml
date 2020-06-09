@@ -1,0 +1,28 @@
+# security container and core container for Aloe development
+# environment tag 0.0.1-T2dev to distinguish from regular metaV3 security contatiner.
+#
+meta-security:
+   image: tapis/metaapi:0.0.1-T2dev
+   container_name: meta-tapis-security
+   links:
+      - restheart
+   ports:
+      - "8199:8080"
+   environment:
+      - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
+      - 'aloe.envonly.skip.jwt.verify=true'
+   volumes:
+      - '/tmp/log/splunk/meta-security:/opt/tomcat/logs'
+      - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
+
+restheart:
+   image: tapis/tapis-meta-rh-core:4.1.6
+   container_name: restheart-core
+   command: 'java -Xms2G -Xmx2G -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
+   ports:
+      - "8080:8080"
+   environment:
+      - 'MONGO_URI=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin'
+   volumes:
+      - './deployment/core/etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
+      - './deployment/core/etc/config.properties:/opt/restheart/etc/config.properties:ro'

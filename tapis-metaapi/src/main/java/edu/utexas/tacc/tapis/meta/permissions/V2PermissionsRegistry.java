@@ -1,8 +1,15 @@
 package edu.utexas.tacc.tapis.meta.permissions;
 
+import edu.utexas.tacc.tapis.meta.api.jaxrs.filters.MetaPermissionsRequestFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class V2PermissionsRegistry {
+  // Tracing.
+  private static final Logger _log = LoggerFactory.getLogger(V2PermissionsRegistry.class);
+  
   private static Map<String, ArrayList<V2PermissionsDefinition>> map = new HashMap<String, ArrayList<V2PermissionsDefinition>>();
   private static V2PermissionsRegistry INSTANCE;
   
@@ -25,31 +32,78 @@ public class V2PermissionsRegistry {
 
   private void fillMap() {
     // here comes file reading code with loop
-    // permissions spec meta:master:GET:StreamsTACCDB:wq_demo_project:
+    // ex. permissions spec meta:master:GET:StreamsTACCDB:wq_demo_project:
     // this is currently hard coded to test feasiblility
     // master tenant for key
     // the operation, one of GET,PUT,POST,PATCH and DELETE
-    String tenantKey = "dev";
-    String role1 = "Internal/vdj";
-    String role2 = "Internal/everyone";
+    String devTenant = "dev";
+    String vdjTenant = "vdjserver.org";
+    String dsTenant = "designsafe";
+    String vdjAdminRole = "Internal/vdjserver-org-services-admin";
+    String vdjUser = "Internal/vdj";
+    String  dsUser = "Internal/designsafe";
+    String  dsAdmin= "Internal/designsafe-services-admin";
+
     
     ArrayList<V2PermissionsDefinition> permsList = new ArrayList<V2PermissionsDefinition>();
     V2PermissionsDefinition mpd = new V2PermissionsDefinition();
+    // everyone role, for tenant dev and db v1airr all of these must be true along with a GET op
+    // for this to work.
     mpd.setOps(new ArrayList<String>(Arrays.asList(OP.GET.toString())));
-    mpd.setRole(role2);
-    mpd.setTenant(tenantKey);
-    mpd.setDb("StreamsTACCDB");
+    mpd.setRole(vdjUser); // everyone
+    mpd.setTenant(vdjTenant);
+    mpd.setDb("v1airr");
     permsList.add(mpd);
   
+    // role of vdjAdmin, for tenant dev and db v1airr
     mpd = new V2PermissionsDefinition();
     mpd.setOps(new ArrayList<String>(Arrays.asList(OP.GET.toString(),OP.PUT.toString(),OP.POST.toString(),OP.PATCH.toString(),OP.DELETE.toString())));
-    mpd.setRole(role1);
-    mpd.setTenant(tenantKey);
-    mpd.setDb("StreamsTACCDB");
+    mpd.setRole(vdjAdminRole);
+    mpd.setTenant(vdjTenant); // dev
+    mpd.setDb("v1airr");
+    permsList.add(mpd);
+  
+    map.put(vdjTenant, permsList);
+  
+    permsList = new ArrayList<V2PermissionsDefinition>();
+    mpd = new V2PermissionsDefinition();
+    // everyone role, for tenant dev and db v1airr all of these must be true along with a GET op
+    // for this to work.
+    mpd.setOps(new ArrayList<String>(Arrays.asList(OP.GET.toString())));
+    mpd.setRole(vdjUser); // everyone
+    mpd.setTenant(vdjTenant);
+    mpd.setDb("v1airr");
+    permsList.add(mpd);
+  
+    // role of vdjAdmin, for tenant dev and db v1airr
+    mpd = new V2PermissionsDefinition();
+    mpd.setOps(new ArrayList<String>(Arrays.asList(OP.GET.toString(),OP.PUT.toString(),OP.POST.toString(),OP.PATCH.toString(),OP.DELETE.toString())));
+    mpd.setRole(vdjAdminRole);
+    mpd.setTenant(vdjTenant); // dev
+    mpd.setDb("v1airr");
+    permsList.add(mpd);
+  
+    map.put(devTenant, permsList);
+  
+    permsList = new ArrayList<V2PermissionsDefinition>();
+    // role of dsUser , for tenant dev and db DSdbs
+    mpd = new V2PermissionsDefinition();
+    mpd.setOps(new ArrayList<String>(Arrays.asList(OP.GET.toString())));
+    mpd.setRole(dsUser);
+    mpd.setTenant(dsTenant); // dev
+    mpd.setDb("DSdbs");
+    permsList.add(mpd);
+  
+    // role of dsAdmin , for tenant dev and db DSdbs
+    mpd = new V2PermissionsDefinition();
+    mpd.setOps(new ArrayList<String>(Arrays.asList(OP.GET.toString(),OP.PUT.toString(),OP.POST.toString(),OP.PATCH.toString(),OP.DELETE.toString())));
+    mpd.setRole(dsAdmin);
+    mpd.setTenant(dsTenant); // dev
+    mpd.setDb("DSdbs");
     permsList.add(mpd);
     
-    map.put(tenantKey, permsList);
-    
+    map.put(dsTenant, permsList);
+    System.out.println();
   }
   
    //
@@ -79,6 +133,11 @@ public class V2PermissionsRegistry {
      //  });
      //}
      boolean isPermitted = false;
+     if(permissionsList == null || permissionsList.isEmpty()){
+       _log.debug("No permissions found for "+v2PermissionsRequest.getTenant()+" tenant.");
+       return isPermitted;
+     }
+     
      for (V2PermissionsDefinition permDefinition : permissionsList) {
        System.out.println(permDefinition.getRole());
        boolean foundPermitted = permDefinition.isPermitted(v2PermissionsRequest);

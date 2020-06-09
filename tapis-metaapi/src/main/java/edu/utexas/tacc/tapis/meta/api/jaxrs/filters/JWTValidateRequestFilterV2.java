@@ -82,8 +82,10 @@ public class JWTValidateRequestFilterV2
     public void filter(ContainerRequestContext requestContext)
     {
         // Tracing.
-        if (_log.isTraceEnabled())
+        if (_log.isTraceEnabled()){
             _log.trace("Executing JAX-RX request filter: " + this.getClass().getSimpleName() + ".");
+            _log.trace("The request : "+requestContext.getUriInfo().getAbsolutePath().toString());
+        }
         
         // Skip JWT processing for non-authenticated requests.
         if (isNoAuthRequest(requestContext)) return;
@@ -107,7 +109,8 @@ public class JWTValidateRequestFilterV2
                 List<String> values = entry.getValue();
                 if ((values != null) && !values.isEmpty())
                     encodedJWT = values.get(0);
-                
+                    
+                _log.debug(key+":"+encodedJWT);
                 // We're done.
                 break;
             }

@@ -1,10 +1,16 @@
 package edu.utexas.tacc.tapis.meta.permissions;
 
+import edu.utexas.tacc.tapis.meta.api.jaxrs.filters.MetaPermissionsRequestFilter;
 import edu.utexas.tacc.tapis.meta.utils.MetaSKPermissionsMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class V2PermissionsRequest {
+  // Tracing.
+  private static final Logger _log = LoggerFactory.getLogger(V2PermissionsRequest.class);
+  
   private static String service = "meta";
   private String tenant;
   private List<String> roleList;

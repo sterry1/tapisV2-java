@@ -52,9 +52,6 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     //   get the path and jwt from runtime parameters
     RuntimeParameters runTime = RuntimeParameters.getInstance();
     
-    //   Use Meta master token for call to SK
-    //SKClient skClient = new SKClient(runTime.getSkSvcURL(), runTime.getSeviceToken());
-    
     //   map the request to permissions need the user roles, tenant and request information
     V2PermissionsRequest
         permissionsRequest = mapRequestToPermissions(requestContext,threadContext.getTenantId(),threadContext.getRoleList());
@@ -63,15 +60,6 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     boolean isPermitted = false;
     V2PermissionsRegistry permissionsRegistry = V2PermissionsRegistry.getInstance();
     isPermitted = permissionsRegistry.isPermitted(permissionsRequest);
-    // Is this a request with a Service token?
-    // if(threadContext.getAccountType() == TapisThreadContext.AccountType.service){
-      //isPermitted = serviceJWT(threadContext, skClient, permissionsSpec);
-    //}
-    
-    // Is this a request with a User token?
-    //if(threadContext.getAccountType() == TapisThreadContext.AccountType.user){
-      //isPermitted = userJWT(threadContext, skClient, permissionsSpec);
-    //}
     
     if(!isPermitted){
       String uri = requestContext.getUriInfo().getPath();
@@ -82,7 +70,7 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
           .append(" is NOT permitted.");
       
       _log.debug(msg.toString());
-      requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).entity(msg.toString()).build());
+      requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).entity("{\"NOT PERMITTED\":\""+msg.toString()+"\"}").build());
       return;
     }
     
@@ -180,6 +168,7 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     // getting the tenant info
     // TODO pull tenant info for checking permissions
     MetaSKPermissionsMapper mapper = new MetaSKPermissionsMapper(requestUri, tenantId);
+    mapper.setOp(requestMethod);
     String permSpec = mapper.convert(requestMethod);
     V2PermissionsRequest metaPermissionsRequest = new V2PermissionsRequest(mapper,roleList);
     
