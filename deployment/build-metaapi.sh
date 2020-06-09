@@ -7,6 +7,9 @@
 #  set of maven artifacts.
 #
 # environment : VER set to the version in tapis/pom.xml
+#               TAPIS_ENV sets the environment target the image is created to run in
+#               for Aloe dev this "T2dev". We need to distinguish images for this version
+#               of the security container from Tapis V3 versions.
 #
 # usage : $TAPIS_ROOT/deployment/build-metaapi.sh
 #
@@ -67,7 +70,7 @@ echo "";echo ""
 
 echo "***      building the docker image from deployment directory docker build tapis-${SRVC_API}/Dockerfile"
 echo "***      docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV . "
-ds               docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV .
+               docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV .
 echo "";echo ""
 
 echo "***    push the image to docker hub "

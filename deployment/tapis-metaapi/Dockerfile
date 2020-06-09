@@ -20,7 +20,7 @@ ARG GIT_COMMIT
 MAINTAINER CIC Support <cicsupport@tacc.utexas.edu>
 
 # add
-COPY meta /usr/local/tomcat/webapps/v3/
+COPY meta /usr/local/tomcat/webapps/meta
 
 # Set environment and turn on remote debug
 ENV CATALINA_HOME /usr/local/tomcat
