@@ -1,0 +1,6 @@
+###   sanity check on aloe.dev.2 rh container
+GET http://aloe-dev02.tacc.utexas.edu:8199/
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+###
