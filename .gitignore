@@ -72,3 +72,5 @@ Icon
 /tapis-metaapi/http.testing/archive-env.json
 /tapis-metaapi/http.testing/rest-client.private.env.json
 /http.testing/rest-client.private.env.json
+/keystores/
+/mongodb/dbdata/
