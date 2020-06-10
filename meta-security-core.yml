@@ -2,7 +2,7 @@
 # environment tag 0.0.1-T2dev to distinguish from regular metaV3 security contatiner.
 #
 meta-security:
-   image: tapis/metaapi:0.0.1-T2dev
+   image: jenkins2.tacc.utexas.edu:5000/tapis/metaapi:0.0.1-T2dev
    container_name: meta-tapis-security
    links:
       - restheart

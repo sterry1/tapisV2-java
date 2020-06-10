@@ -632,8 +632,27 @@ public class ResourceBucket {
     return javax.ws.rs.core.Response.status(200).entity("{ TODO }").build();
   }
   
+  // TODO ----------------  delete an aggregation ----------------
+  @GET
+  @Path("/{db}/{collection}/_aggr/{aggregation}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public javax.ws.rs.core.Response deleteAggregation(@PathParam("db") String db,
+                                                  @PathParam("collection") String collection,
+                                                  @PathParam("aggregation") String aggregation,
+                                                  @QueryParam("avars") String agvars) {
+    // Trace this request.
+    if (_log.isTraceEnabled()) {
+      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
+          "deleteAggregation", _request.getRequestURL());
+      _log.trace(msg);
+      _log.trace("Delete aggregation in " + db + "/" + collection);
+    }
+    
+    return javax.ws.rs.core.Response.status(200).entity("{ TODO }").build();
+  }
   
-    private void requestDump() {
+  
+  private void requestDump() {
 
     String pathUri = _request.getRequestURI();
     StringBuffer pathUrl = _request.getRequestURL();

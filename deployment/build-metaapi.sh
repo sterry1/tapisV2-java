@@ -75,18 +75,13 @@ echo "";echo ""
 
 echo "***    push the image to docker hub "
 echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
-#               docker push "$TAG-$TAPIS_ENV"
-
-
-# echo "***      export the image file name and tag as META_IMAGE "
-# echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
-#                export META_IMAGE=$TAG-$TAPIS_ENV
-#                echo "$META_IMAGE" > "$WORKSPACE"/image.txt
-
-
-# echo "image file written : $(cat image.txt)"
+               export META_IMAGE=$TAG-$TAPIS_ENV
+echo "         push docker hub  -  $META_IMAGE"
+               # docker push "$META_IMAGE"
+echo "         tag image for our private repository  -  jenkins2.tacc.utexas.edu:5000/$META_IMAGE"
+               docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
+               docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
 
 echo "***      "
 echo "***      rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}"
              #  rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}
-
