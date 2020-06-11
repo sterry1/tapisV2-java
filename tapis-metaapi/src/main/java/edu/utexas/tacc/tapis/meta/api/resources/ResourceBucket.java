@@ -180,10 +180,10 @@ public class ResourceBucket {
       _log.trace("List documents in " + db +"/"+collection);
     }
   
-    StringBuffer pathUrl = new StringBuffer(_request.getRequestURI());
+    StringBuilder pathUrl = new StringBuilder(_request.getRequestURI());
 
     if(!StringUtils.isEmpty(_request.getQueryString())){
-      pathUrl.append("?"+_request.getQueryString());
+      pathUrl.append("?").append(_request.getQueryString());
     }
     
     // Proxy the GET request and handle any exceptions
@@ -209,12 +209,11 @@ public class ResourceBucket {
       _log.trace(msg);
       _log.trace("List documents in " + db +"/"+collection);
     }
-    
-    StringBuffer pathUrl = new StringBuffer(_request.getRequestURI());
-    pathUrl.append("?"+_request.getQueryString());
-    
+  
     // Proxy the GET request and handle any exceptions
-    CoreRequest coreRequest = new CoreRequest(pathUrl.toString());
+    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" + _request.getQueryString()
+        // Proxy the GET request and handle any exceptions
+    );
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
     
     // TODO ---------------------------- Response -------------------------------
@@ -235,12 +234,11 @@ public class ResourceBucket {
       _log.trace(msg);
       _log.trace("List documents in " + db +"/"+collection);
     }
-    
-    StringBuffer pathUrl = new StringBuffer(_request.getRequestURI());
-    pathUrl.append("?"+_request.getQueryString());
-    
+  
     // Proxy the GET request and handle any exceptions
-    CoreRequest coreRequest = new CoreRequest(pathUrl.toString());
+    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" + _request.getQueryString()
+        // Proxy the GET request and handle any exceptions
+    );
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
     
     // TODO ---------------------------- Response -------------------------------
@@ -271,7 +269,7 @@ public class ResourceBucket {
   
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(payload));
-      String line = null;
+      String line;
       while ((line = in.readLine()) != null) {
         jsonPayloadToProxy.append(line);
       }
@@ -286,7 +284,7 @@ public class ResourceBucket {
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyPostRequest(jsonPayloadToProxy.toString());
   
-    String result = null;
+    String result;
     String etag = coreResponse.getEtag();
     String location = coreResponse.getLocationFromHeaders();
     
@@ -309,9 +307,7 @@ public class ResourceBucket {
       responseBuilder.header("location",location);
     }
   
-    Response response = responseBuilder.build();
-  
-    return response;
+    return responseBuilder.build();
   }
   
   //----------------  Delete a collection  ----------------
@@ -361,11 +357,10 @@ public class ResourceBucket {
       _log.trace("List indexes in " + db +"/"+collection);
     }
   
-    StringBuffer pathUrl = new StringBuffer(_request.getRequestURI());
-    pathUrl.append("?"+_request.getQueryString());
-  
     // Proxy the GET request and handle any exceptions
-    CoreRequest coreRequest = new CoreRequest(pathUrl.toString());
+    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" + _request.getQueryString()
+        // Proxy the GET request and handle any exceptions
+    );
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
   
     // TODO ---------------------------- Response -------------------------------
@@ -395,7 +390,7 @@ public class ResourceBucket {
     
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(payload));
-      String line = null;
+      String line;
       while ((line = in.readLine()) != null) {
         jsonPayloadToProxy.append(line);
       }
@@ -481,7 +476,7 @@ public class ResourceBucket {
     
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(payload));
-      String line = null;
+      String line;
       while ((line = in.readLine()) != null) {
         jsonPayloadToProxy.append(line);
       }
@@ -522,7 +517,7 @@ public class ResourceBucket {
     
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(payload));
-      String line = null;
+      String line;
       while ((line = in.readLine()) != null) {
         jsonPayloadToProxy.append(line);
       }
@@ -563,8 +558,8 @@ public class ResourceBucket {
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody());
-    Response response = responseBuilder.build();
-    return response;
+
+    return responseBuilder.build();
   }
   
   
@@ -594,7 +589,7 @@ public class ResourceBucket {
   
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(payload));
-      String line = null;
+      String line;
       while ((line = in.readLine()) != null) {
         jsonPayloadToProxy.append(line);
       }
@@ -633,7 +628,7 @@ public class ResourceBucket {
   }
   
   // TODO ----------------  delete an aggregation ----------------
-  @GET
+  @DELETE
   @Path("/{db}/{collection}/_aggr/{aggregation}")
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response deleteAggregation(@PathParam("db") String db,
