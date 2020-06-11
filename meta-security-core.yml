@@ -12,11 +12,11 @@ meta-security:
       - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
       - 'aloe.envonly.skip.jwt.verify=true'
    volumes:
-      - '/tmp/log/splunk/meta-security:/opt/tomcat/logs'
+      - '/var/log/splunk/meta-security:/opt/tomcat/logs'
       - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
 
 restheart:
-   image: tapis/tapis-meta-rh-core:4.1.6
+   image: jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-rh-core:4.1.6
    container_name: restheart-core
    command: 'java -Xms2G -Xmx2G -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
    ports:
@@ -24,5 +24,6 @@ restheart:
    environment:
       - 'MONGO_URI=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin'
    volumes:
-      - './deployment/core/etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
-      - './deployment/core/etc/config.properties:/opt/restheart/etc/config.properties:ro'
+      - './etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
+      - './etc/config.properties:/opt/restheart/etc/config.properties:ro'
+      - '/var/log/splunk/meta-security:/var/log'
