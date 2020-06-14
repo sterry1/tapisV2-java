@@ -74,3 +74,4 @@ Icon
 /http.testing/rest-client.private.env.json
 /keystores/
 /mongodb/dbdata/
+/tapis-metaapi/src/main/java/edu/utexas/tacc/tapis/meta/api/resources/tmp.txt
