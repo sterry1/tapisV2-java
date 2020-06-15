@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -48,6 +49,10 @@ public class CoreRequest {
         .url(pathURL)
         .build();
   
+    okHttpClient = new OkHttpClient.Builder()
+        .readTimeout(15, TimeUnit.MINUTES)
+        .build();
+    
     Response response = null;
     CoreResponse coreResponse = new CoreResponse();
     try {

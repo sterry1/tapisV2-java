@@ -37,7 +37,7 @@ public class V2PermissionsRegistry {
     // master tenant for key
     // the operation, one of GET,PUT,POST,PATCH and DELETE
     String devTenant = "dev";
-    String vdjTenant = "vdjserver.org";
+    String vdjTenant = "vdj.org";
     String dsTenant = "designsafe";
     String vdjAdminRole = "Internal/vdjserver-org-services-admin";
     String vdjUser = "Internal/vdj";
@@ -79,7 +79,7 @@ public class V2PermissionsRegistry {
     mpd = new V2PermissionsDefinition();
     mpd.setOps(new ArrayList<String>(Arrays.asList(OP.GET.toString(),OP.PUT.toString(),OP.POST.toString(),OP.PATCH.toString(),OP.DELETE.toString())));
     mpd.setRole(vdjAdminRole);
-    mpd.setTenant(vdjTenant); // dev
+    mpd.setTenant(vdjTenant); //
     mpd.setDb("v1airr");
     permsList.add(mpd);
   
