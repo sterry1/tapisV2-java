@@ -1,10 +1,10 @@
-###
-GET http://localhost:8199/meta/v3/v1airr/rearrangement/_aggrs/_meta
+###   will list aggrs and other properties for this collection
+GET http://localhost:8199/meta/v3/v1airr/rearrangement/_meta
 X-JWT-Assertion-dev: {{jwt}}
 Content-Type: application/json
 ###
 
-###  short version of post
+###  shortest version of post for facets aggr
 POST http://localhost:8199/meta/v3/v1airr/rearrangement/_aggrs/facets
 X-JWT-Assertion-dev: {{jwt}}
 Content-Type: application/json

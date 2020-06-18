@@ -53,9 +53,10 @@ public class RuntimeParameters {
   private ServiceJWT serviceJWT;
   
   // The slf4j/logback target directory and file.
-  private String  logDirectory;
-  private String  logFile;
-  private String  coreServer;
+  private String  logDirectory ="/tmp/meta";
+  private String  logFile ="meta-service.log";
+  // default core server setup
+  private String  coreServer = "http://restheart:8080/";
   
   
   // these need to move to shared library
@@ -79,7 +80,7 @@ public class RuntimeParameters {
   
     //----------------------   Input parameters   ----------------------
 
-    String parm = inputProperties.getProperty("tapis.meta.core.server");
+    String parm = System.getenv("tapis.meta.core.server");
     if (!StringUtils.isBlank(parm)) setCoreServer(parm);
   
     // String parm = inputProperties.getProperty(TapisEnv.EnvVar.TAPIS_LOG_DIRECTORY.getEnvName());
@@ -88,9 +89,11 @@ public class RuntimeParameters {
   
     parm = inputProperties.getProperty("tapis.meta.log.file");
     if (!StringUtils.isBlank(parm)) setLogFile(parm);
-  
+    
+/*
     parm = inputProperties.getProperty("tapis.meta.service.token");
     if (!StringUtils.isBlank(parm)) setMetaToken(parm);
+*/
   
   
   

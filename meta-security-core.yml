@@ -11,6 +11,9 @@ meta-security:
    environment:
       - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
       - 'aloe.envonly.skip.jwt.verify=true'
+      - 'tapis.meta.core.server=http://restheart:8080/'
+      - 'tapis.meta.log.directory=/tmp/meta'
+      - 'tapis.meta.log.file=meta-service.log'
    volumes:
       - '/var/log/splunk/meta-security:/opt/tomcat/logs'
       - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
