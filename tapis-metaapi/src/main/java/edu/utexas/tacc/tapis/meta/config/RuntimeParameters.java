@@ -1,5 +1,6 @@
 package edu.utexas.tacc.tapis.meta.config;
 
+import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisException;
 import edu.utexas.tacc.tapis.shared.exceptions.runtime.TapisRuntimeException;
 import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
@@ -89,6 +90,10 @@ public class RuntimeParameters {
   
     parm = inputProperties.getProperty("tapis.meta.log.file");
     if (!StringUtils.isBlank(parm)) setLogFile(parm);
+  
+    //----------------------   Initialize Permissions Registry   ----------------------
+    // 1. initialize Registry
+    
     
 /*
     parm = inputProperties.getProperty("tapis.meta.service.token");

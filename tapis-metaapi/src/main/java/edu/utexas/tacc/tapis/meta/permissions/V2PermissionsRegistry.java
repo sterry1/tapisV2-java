@@ -1,9 +1,14 @@
 package edu.utexas.tacc.tapis.meta.permissions;
 
-import edu.utexas.tacc.tapis.meta.api.jaxrs.filters.MetaPermissionsRequestFilter;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 public class V2PermissionsRegistry {
@@ -106,7 +111,41 @@ public class V2PermissionsRegistry {
     System.out.println();
   }
   
-   //
+  /* ---------------------------------------------------------------------------- */
+  /* initPermissions :                                                        */
+  /* ---------------------------------------------------------------------------- */
+  private ArrayList<V2PermissionsDefinition> initPermissions(){
+    
+    String permissionsFile = System.getenv("permissions.file");
+    ArrayList<V2PermissionsDefinition> permsList = null;
+    
+    if(permissionsFile.isEmpty()){
+      // TODO log no permissions file
+    }
+    
+    File file = new File(permissionsFile);
+    Gson gson = new Gson();
+    V2PermissionsDefinition permDef = null;
+  
+    // Open, read and close the permissions file.
+    JsonArray jsonArray;
+    try {
+      jsonArray = gson.fromJson(new FileReader(file), JsonArray.class);
+      Iterator<JsonElement> it = jsonArray.iterator();
+      while (it.hasNext()) {
+        JsonElement element = it.next();
+        String result = gson.toJson(element);
+        permDef = gson.fromJson(result, V2PermissionsDefinition.class);
+        // add definition to the tenant permsList
+      }
+    } catch (FileNotFoundException e) {
+      // TODO log exeception
+      e.printStackTrace();
+    }
+    return permsList;
+  }
+  
+  //
    public static boolean isPermitted(V2PermissionsRequest v2PermissionsRequest){
      // Our permission request has the request path and valid roles for the user
      //  we compare the permissions request object to our

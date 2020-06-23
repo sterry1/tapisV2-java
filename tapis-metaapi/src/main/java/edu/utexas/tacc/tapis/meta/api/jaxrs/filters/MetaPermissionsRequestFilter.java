@@ -56,6 +56,14 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     V2PermissionsRequest
         permissionsRequest = mapRequestToPermissions(requestContext,threadContext.getTenantId(),threadContext.getRoleList());
     
+    // if the request coming in is a POST to a {db}/{collection}/_filter
+    // then we need to check the permissions as if it was a GET request instead of POST.
+    // meta:dev:POST:v1airr:rearrangement:_filter
+    
+    if(permissionsRequest.getPermSpec().contains("_filter") && permissionsRequest.getPermSpec().contains("POST")){
+      doPostToGetTransform(permissionsRequest);
+    }
+    
     // is this request permitted
     boolean isPermitted = false;
     V2PermissionsRegistry permissionsRegistry = V2PermissionsRegistry.getInstance();
@@ -83,6 +91,13 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     _log.debug(msg.toString());
   }
   
+  private void doPostToGetTransform(V2PermissionsRequest permissionsRequest) {
+    // transform this into a GET request for permissions
+    permissionsRequest.setOp("GET");
+    String newSpec = permissionsRequest.getPermSpec().replace("POST", "GET");
+    permissionsRequest.setPermSpec(newSpec);
+  }
+  
   /**
    * Check Permissions based on service JWT from request.
    * make an isPermitted request of the SK
@@ -90,6 +105,7 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
    * @param skClient
    * @param permissionsSpec
    */
+/*
   private boolean serviceJWT(TapisThreadContext threadContext, SKClient skClient, String permissionsSpec){
     // 1. If a service receives a request that contains a service JWT,
     //    the request is rejected if it does not have the X-Tapis-Tenant and X-Tapis-User headers set.
@@ -152,6 +168,7 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     
     return isPermitted;
   }
+*/
   
   
   /**

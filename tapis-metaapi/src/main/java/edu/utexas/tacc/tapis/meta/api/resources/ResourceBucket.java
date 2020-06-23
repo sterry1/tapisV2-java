@@ -120,7 +120,6 @@ public class ResourceBucket {
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
   }
   
-  
   // TODO ----------------  Create DB ----------------
   @PUT
   @Path("/{db}")
@@ -640,7 +639,7 @@ public class ResourceBucket {
   @Path("/{db}/{collection}/_aggrs/{aggregation}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public javax.ws.rs.core.Response submitAggregation(@PathParam("db") String db,
+  public javax.ws.rs.core.Response submitLargeAggregation(@PathParam("db") String db,
                                                   @PathParam("collection") String collection,
                                                   @PathParam("aggregation") String aggregation,
                                                   InputStream payload) {
@@ -734,39 +733,26 @@ public class ResourceBucket {
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
     
-    // Proxy the POST request and handle any exceptions
-    // we will always return a response for a request that means something
-     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
-     CoreResponse coreResponse = coreRequest.proxyPostRequest(jsonPayloadToProxy.toString());
+    // we change here from a POST request to a GET request.
+    // RH core will except URL GET filter request without the URL limitation.
+     String inComingRequest = _request.getRequestURI();
+     inComingRequest = inComingRequest.replace("_filter", "?filter=");
+     StringBuilder newUriPath = new StringBuilder(); ///meta/v3/v1airr/rearrangement/_filter
+     newUriPath.append(inComingRequest)
+               .append(jsonPayloadToProxy.toString()).append("&sort={}");
+     CoreRequest coreRequest = new CoreRequest(newUriPath.toString());
+     CoreResponse coreResponse = coreRequest.proxyGetRequest();
     
     String result;
-    //String etag = coreResponse.getEtag();
-    //String location = coreResponse.getLocationFromHeaders();
-    
-    
-//    if(basic){
-//      result = coreResponse.getBasicResponse(location);
-//    }else {
-//      result =  coreResponse.getCoreResponsebody();
-//    }
+    result =  coreResponse.getCoreResponsebody();
     
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
-//    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(result);
-//
-//    if(!StringUtils.isBlank(etag)){
-//      responseBuilder.tag(etag);
-//    }
-//
-//    if(!StringUtils.isBlank(location)){
-//      responseBuilder.header("location",location);
-//    }
+    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(result);
     
-    //return responseBuilder.build();
-    return null;
+    return responseBuilder.build();
+
   }
-  
-  
   
   private void requestDump() {
 

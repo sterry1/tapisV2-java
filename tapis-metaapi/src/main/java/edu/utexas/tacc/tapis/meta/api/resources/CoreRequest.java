@@ -50,7 +50,7 @@ public class CoreRequest {
         .build();
   
     okHttpClient = new OkHttpClient.Builder()
-        .readTimeout(15, TimeUnit.MINUTES)
+        .readTimeout(3, TimeUnit.MINUTES)
         .build();
     
     Response response = null;

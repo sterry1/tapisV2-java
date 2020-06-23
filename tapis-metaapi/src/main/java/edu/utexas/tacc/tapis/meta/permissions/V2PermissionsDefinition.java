@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class V2PermissionsDefinition {
-  private static String service = "meta";
+  private static final String service = "meta";
   private String tenant;
   private String role;
   private List<String> ops;
   private String db = "";
   private String collection = "";
+  
+  public V2PermissionsDefinition(){}
   
   public boolean isPermitted(V2PermissionsRequest request){
     // we already know the meta and tenant match
