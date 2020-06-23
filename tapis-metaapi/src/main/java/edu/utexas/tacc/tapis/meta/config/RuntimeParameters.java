@@ -1,6 +1,5 @@
 package edu.utexas.tacc.tapis.meta.config;
 
-import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisException;
 import edu.utexas.tacc.tapis.shared.exceptions.runtime.TapisRuntimeException;
 import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
@@ -58,7 +57,7 @@ public class RuntimeParameters {
   private String  logFile ="meta-service.log";
   // default core server setup
   private String  coreServer = "http://restheart:8080/";
-  
+  private String coreserver_connection_timeout="3";   // default 3 minutes
   
   // these need to move to shared library
   public static final String SERVICE_NAME_META  = "meta";
@@ -90,6 +89,9 @@ public class RuntimeParameters {
   
     parm = inputProperties.getProperty("tapis.meta.log.file");
     if (!StringUtils.isBlank(parm)) setLogFile(parm);
+  
+    parm = inputProperties.getProperty("tapis.meta.coreserver.connection.timeout");
+    if (!StringUtils.isBlank(parm)) setCoreserver_connection_timeout(parm);
   
     //----------------------   Initialize Permissions Registry   ----------------------
     // 1. initialize Registry
@@ -265,6 +267,10 @@ public class RuntimeParameters {
   public void setCoreServer(String coreServer) {
     this.coreServer = coreServer;
   }
+  
+  public String getCoreserver_connection_timeout() { return coreserver_connection_timeout; }
+  
+  public void setCoreserver_connection_timeout(String coreserver_connection_timeout) { this.coreserver_connection_timeout = coreserver_connection_timeout; }
   
   public void setServiceJWT(){
     _log.debug("calling setServiceJWT ...");

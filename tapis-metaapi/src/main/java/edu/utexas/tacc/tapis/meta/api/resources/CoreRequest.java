@@ -49,8 +49,10 @@ public class CoreRequest {
         .url(pathURL)
         .build();
   
+    // set runtime parameter for connection tineout setting from
+    long connection_timeout = Long.parseLong(RuntimeParameters.getInstance().getCoreserver_connection_timeout());
     okHttpClient = new OkHttpClient.Builder()
-        .readTimeout(3, TimeUnit.MINUTES)
+        .readTimeout(connection_timeout, TimeUnit.MINUTES)
         .build();
     
     Response response = null;
@@ -61,8 +63,8 @@ public class CoreRequest {
       String sb = coreResponse.getCoreResponsebody();
       
     } catch (IOException e) {
-      // todo log message
-      // todo throw a custom exception about request failure to core
+      // TODO log message
+      // TODO throw a custom exception about request failure to core
       e.printStackTrace();
     }
     
