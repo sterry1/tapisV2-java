@@ -80,7 +80,7 @@ echo "         push docker hub  -  $META_IMAGE"
                # docker push "$META_IMAGE"
 echo "         tag image for our private repository  -  jenkins2.tacc.utexas.edu:5000/$META_IMAGE"
                docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
-               docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
+               # docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
 
 echo "***      "
 echo "***      rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}"

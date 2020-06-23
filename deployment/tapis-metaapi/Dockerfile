@@ -26,7 +26,7 @@ COPY meta /usr/local/tomcat/webapps/meta
 ENV CATALINA_HOME /usr/local/tomcat
 
 # Set most Java options here.
-ENV CATALINA_OPTS -Xms4g -Xmx4g
+ENV CATALINA_OPTS -Xms2g -Xmx2g
 
 # Debug port and http port
 EXPOSE 8000

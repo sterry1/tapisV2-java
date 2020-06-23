@@ -11,17 +11,20 @@ meta-security:
    environment:
       - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
       - 'aloe.envonly.skip.jwt.verify=true'
+      - 'aloe_envonly_jwt_optional=false'
       - 'tapis.meta.core.server=http://restheart:8080/'
       - 'tapis.meta.log.directory=/tmp/meta'
       - 'tapis.meta.log.file=meta-service.log'
    volumes:
-      - '/var/log/splunk/meta-security:/opt/tomcat/logs'
+      - '/tmp/log/splunk/meta-security:/opt/tomcat/logs'
       - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
+      - './etc/permissions.json:/opt/tomcat/etc/permissions.json'
 
 restheart:
    image: jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-rh-core:4.1.6
    container_name: restheart-core
-   command: 'java -Xms2G -Xmx2G -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
+   # command: 'java -Xms2G -Xmx2G -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
+   command: 'java -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
    ports:
       - "8080:8080"
    environment:
@@ -29,4 +32,4 @@ restheart:
    volumes:
       - './etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
       - './etc/config.properties:/opt/restheart/etc/config.properties:ro'
-      - '/var/log/splunk/meta-security:/var/log'
+      - '/tmp/log/splunk/meta-security:/var/log'
