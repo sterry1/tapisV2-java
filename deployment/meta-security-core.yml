@@ -3,7 +3,7 @@
 #
 meta-security:
    image: jenkins2.tacc.utexas.edu:5000/tapis/metaapi:0.0.1-T2dev
-   container_name: meta-tapis-security
+   container_name: metav3-tapisv2-security
    links:
       - restheart
    ports:
@@ -13,6 +13,7 @@ meta-security:
       - 'aloe.envonly.skip.jwt.verify=true'
       - 'aloe_envonly_jwt_optional=false'
       - 'tapis.meta.core.server=http://restheart:8080/'
+      - 'tapis.meta.coreserver.connection.timeout=4'
       - 'tapis.meta.log.directory=/tmp/meta'
       - 'tapis.meta.log.file=meta-service.log'
    volumes:
@@ -22,7 +23,7 @@ meta-security:
 
 restheart:
    image: jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-rh-core:4.1.6
-   container_name: restheart-core
+   container_name: metav3-tapisv2-core
    # command: 'java -Xms2G -Xmx2G -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
    command: 'java -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
    ports:
