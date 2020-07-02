@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
 
@@ -52,7 +53,11 @@ public class CoreRequest {
     // set runtime parameter for connection tineout setting from
     long connection_timeout = Long.parseLong(RuntimeParameters.getInstance().getCoreserver_connection_timeout());
     okHttpClient = new OkHttpClient.Builder()
+        .connectTimeout(connection_timeout, TimeUnit.MINUTES)
         .readTimeout(connection_timeout, TimeUnit.MINUTES)
+        .writeTimeout(connection_timeout, TimeUnit.MINUTES)
+        .retryOnConnectionFailure(false)
+
         .build();
     
     Response response = null;
@@ -62,12 +67,16 @@ public class CoreRequest {
       coreResponse.mapResponse(response);
       String sb = coreResponse.getCoreResponsebody();
       
+    } catch (SocketTimeoutException e){
+      _log.debug("socket exception");
+      e.printStackTrace();
     } catch (IOException e) {
       // TODO log message
       // TODO throw a custom exception about request failure to core
+      _log.debug("io exception");
       e.printStackTrace();
     }
-    
+  
     _log.debug("call to host : GET "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
     
     return coreResponse;

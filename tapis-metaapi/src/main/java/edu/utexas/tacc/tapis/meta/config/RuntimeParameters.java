@@ -57,7 +57,7 @@ public class RuntimeParameters {
   private String  logFile ="meta-service.log";
   // default core server setup
   private String  coreServer = "http://restheart:8080/";
-  private String coreserver_connection_timeout="3";   // default 3 minutes
+  private String coreserver_connection_timeout="3";   // default 2 minutes
   
   // these need to move to shared library
   public static final String SERVICE_NAME_META  = "meta";
@@ -90,8 +90,14 @@ public class RuntimeParameters {
     parm = inputProperties.getProperty("tapis.meta.log.file");
     if (!StringUtils.isBlank(parm)) setLogFile(parm);
   
-    parm = inputProperties.getProperty("tapis.meta.coreserver.connection.timeout");
-    if (!StringUtils.isBlank(parm)) setCoreserver_connection_timeout(parm);
+    parm = System.getenv("tapis.meta.coreserver.connection.timeout");
+    if (!StringUtils.isBlank(parm)){
+      setCoreserver_connection_timeout(parm);
+    }else{
+      parm = inputProperties.getProperty("tapis.meta.coreserver.connection.timeout");
+      if (!StringUtils.isBlank(parm)) setCoreserver_connection_timeout(parm);
+    }
+    
   
     //----------------------   Initialize Permissions Registry   ----------------------
     // 1. initialize Registry

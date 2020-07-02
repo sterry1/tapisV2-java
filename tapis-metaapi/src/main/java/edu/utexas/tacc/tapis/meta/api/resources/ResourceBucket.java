@@ -671,7 +671,7 @@ public class ResourceBucket {
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
     
-    // Proxy the PUT request and handle any exceptions
+    // Proxy the POST request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI()+jsonPayloadToProxy);
     
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
