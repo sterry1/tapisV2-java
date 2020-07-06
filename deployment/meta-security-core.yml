@@ -13,7 +13,7 @@ meta-security:
       - 'aloe.envonly.skip.jwt.verify=true'
       - 'aloe_envonly_jwt_optional=false'
       - 'tapis.meta.core.server=http://restheart:8080/'
-      - 'tapis.meta.coreserver.connection.timeout=4'
+      - 'tapis.meta.coreserver.connection.timeout=3'
       - 'tapis.meta.log.directory=/tmp/meta'
       - 'tapis.meta.log.file=meta-service.log'
    volumes:

@@ -42,10 +42,10 @@ public class V2PermissionsRegistry {
     // master tenant for key
     // the operation, one of GET,PUT,POST,PATCH and DELETE
     String devTenant = "dev";
-    String vdjTenant = "vdj.org";
+    String vdjTenant = "vdjserver.org";
     String dsTenant = "designsafe";
     String vdjAdminRole = "Internal/vdjserver-org-services-admin";
-    String vdjUser = "Internal/vdj";
+    String vdjUser = "Internal/everyone";
     String  dsUser = "Internal/designsafe";
     String  dsAdmin= "Internal/designsafe-services-admin";
 
@@ -116,7 +116,7 @@ public class V2PermissionsRegistry {
   /* ---------------------------------------------------------------------------- */
   private ArrayList<V2PermissionsDefinition> initPermissions(){
     
-    String permissionsFile = System.getenv("permissions.file");
+    String permissionsFile = System.getenv("tapis.meta.security.permissions.file");
     ArrayList<V2PermissionsDefinition> permsList = null;
     
     if(permissionsFile.isEmpty()){
