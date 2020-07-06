@@ -5,7 +5,7 @@
 
 ###  sanity test to see if service is alive  token is from rhtestuser
 #
-# use rhtestuser-prod environment.
+# use rhtestuser-prod environment. vdj-agave-api.tacc.utexas.edu
 GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr
 Authorization: Bearer {{token}}
 Content-Type: application/json

@@ -5,7 +5,7 @@
 # dsadmin modified jwt  roles "Internal/designsafe-services-admin,Internal/designsafe,Internal/everyone"
 #
 ### use vdjuser.jwt.mod
-GET http://localhost:8199/meta/v3/v1airr
+GET http://api-prod-agave.tacc.utexas.edu:81/meta/v3/v1airr
 X-JWT-Assertion-dev: {{jwt}}
 Content-Type: application/json
 
@@ -48,7 +48,7 @@ Content-Type: application/json
 
 ### use vdjadmin.jwt.mod
 GET http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr
-X-JWT-Assertion-dev: {{jwt}}
+X-JWT-Assertion-vdj.org: {{jwt}}
 Content-Type: application/json
 
 > {%

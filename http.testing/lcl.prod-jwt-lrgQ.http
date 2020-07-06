@@ -5,8 +5,8 @@
 ##############################################################
 
 ###   will list collections under v1airr
-GET http://api-prod-agave.tacc.utexas.edu:8198/meta/v3/v1airr
-X-JWT-Assertion-dev: {{jwt}}
+GET http://api-prod-agave.tacc.utexas.edu:81/meta/v3/v1airr
+X-JWT-Assertion-vdj.org: {{jwt}}
 Content-Type: application/json
 ###
 
