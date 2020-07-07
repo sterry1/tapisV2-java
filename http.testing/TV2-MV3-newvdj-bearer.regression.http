@@ -114,7 +114,7 @@ Content-Type: application/json
 ##############################################################
 
 ###   db list collections
-GET https://vdj-agave-api.tacc.utexas.edu/v3/meta/{{db}}
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -127,7 +127,7 @@ Content-Type: application/json
 ###
 
 ###   db metadata
-GET https://vdj-agave-api.tacc.utexas.edu/v3/meta/{{db}}/_meta
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/_meta
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -143,10 +143,10 @@ Content-Type: application/json
 #     Collection endpoints
 ##############################################################
 #
-#  get a document list under {{db}}/{{collection}} /v3/meta/{{db}}/{{collection}}
+#  get a document list under {{db}}/{{collection}} /meta/v3/{{db}}/{{collection}}
 #
 ###
-GET https://vdj-agave-api.tacc.utexas.edu/v3/meta/{{db}}/{{collection}}
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -159,10 +159,10 @@ Content-Type: application/json
 ###
 
 #
-#  get metadata for {{db}}/{{collection}} /v3/meta/{{db}}/{{collection}}
+#  get metadata for {{db}}/{{collection}} /meta/v3/{{db}}/{{collection}}
 #
 ###
-GET https://vdj-agave-api.tacc.utexas.edu/v3/meta/{{db}}/{{collection}}/_meta
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}/_meta
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -173,9 +173,9 @@ Content-Type: application/json
 %}
 ###
 
-#  query for list under {{db}}/{{collection}} /v3/meta/{{db}}/{{collection}}
+#  query for list under {{db}}/{{collection}} /meta/v3/{{db}}/{{collection}}
 ###
-GET https://vdj-agave-api.tacc.utexas.edu/v3/meta/{{db}}/{{collection}}?filter={"_id": "tstDoc"}
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}?filter={"_id": "5ee00294b4d63a007f633320"}
 Authorization: Bearer {{token}}
 
 Content-Type: application/json
@@ -191,7 +191,7 @@ Content-Type: application/json
 #     Document endpoints
 ##############################################################
 ###
-GET https://vdj-agave-api.tacc.utexas.edu/v3/meta/{{db}}/{{collection}}/tstDoc
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}/tstDoc
 Authorization: Bearer {{token}}
 
 Content-Type: application/json
@@ -204,7 +204,7 @@ Content-Type: application/json
 ###
 
 ###
-GET https://vdj-agave-api.tacc.utexas.edu/v3/meta/{{db}}/{{collection}}?filter={"_id": "tstDoc"}
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}?filter={"_id": "tstDoc"}
 Authorization: Bearer {{token}}
 
 Content-Type: application/json
@@ -217,7 +217,7 @@ Content-Type: application/json
 ###
 
 ###
-DELETE https://vdj-agave-api.tacc.utexas.edu/v3/meta/{{db}}/{{collection}}/tstDoc
+DELETE https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}/tstDoc
 Authorization: Bearer {{token}}
 
 Content-Type: application/json
