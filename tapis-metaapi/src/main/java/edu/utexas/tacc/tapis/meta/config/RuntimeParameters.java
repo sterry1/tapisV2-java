@@ -1,5 +1,6 @@
 package edu.utexas.tacc.tapis.meta.config;
 
+import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisException;
 import edu.utexas.tacc.tapis.shared.exceptions.runtime.TapisRuntimeException;
 import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
@@ -101,7 +102,7 @@ public class RuntimeParameters {
   
     //----------------------   Initialize Permissions Registry   ----------------------
     // 1. initialize Registry
-    
+    // V2PermissionsRegistry registry = V2PermissionsRegistry.getInstance();
     
 /*
     parm = inputProperties.getProperty("tapis.meta.service.token");

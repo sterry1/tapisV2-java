@@ -20,7 +20,8 @@ public class V2PermissionsRegistry {
   
   private V2PermissionsRegistry(){
     // initialize our registry of permissions by tenant
-    fillMap();
+    // fillMap();
+    initPermissions();
   }
   
   public static V2PermissionsRegistry getInstance() {
@@ -114,12 +115,13 @@ public class V2PermissionsRegistry {
   /* ---------------------------------------------------------------------------- */
   /* initPermissions :                                                        */
   /* ---------------------------------------------------------------------------- */
-  private ArrayList<V2PermissionsDefinition> initPermissions(){
+  private void initPermissions(){
     
     String permissionsFile = System.getenv("tapis.meta.security.permissions.file");
-    ArrayList<V2PermissionsDefinition> permsList = null;
+    // ArrayList<V2PermissionsDefinition> permsList = null;
     
     if(permissionsFile.isEmpty()){
+      // of course it's empty it is the first time in
       // TODO log no permissions file
     }
     
@@ -142,7 +144,7 @@ public class V2PermissionsRegistry {
       // TODO log exeception
       e.printStackTrace();
     }
-    return permsList;
+    // return permsList;
   }
   
   //
