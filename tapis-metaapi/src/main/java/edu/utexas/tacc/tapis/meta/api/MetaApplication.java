@@ -24,9 +24,10 @@ public class MetaApplication extends ResourceConfig {
   
   public MetaApplication() throws TapisException {
     // Log our existence.
-    System.out.println("**** Starting aloe-metaapi-v3 ****");
+    System.out.println("**** Starting tapisv2-metaapiv3 ****");
     
     // load our runtime parameters
+    System.out.println("**** Loading Runtime parameters ...");
     RuntimeParameters runtimeParameters = RuntimeParameters.getInstance();
   
     // Register the swagger resources that allow the

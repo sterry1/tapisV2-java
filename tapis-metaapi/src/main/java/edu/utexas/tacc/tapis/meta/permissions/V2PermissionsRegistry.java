@@ -3,6 +3,8 @@ package edu.utexas.tacc.tapis.meta.permissions;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
+import edu.utexas.tacc.tapis.shared.exceptions.runtime.TapisRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +22,6 @@ public class V2PermissionsRegistry {
   
   private V2PermissionsRegistry(){
     // initialize our registry of permissions by tenant
-    // fillMap();
     initPermissions();
   }
   
@@ -115,10 +116,10 @@ public class V2PermissionsRegistry {
   /* ---------------------------------------------------------------------------- */
   /* initPermissions :                                                        */
   /* ---------------------------------------------------------------------------- */
-  private void initPermissions(){
-    
+  private void initPermissions() {
+    _log.debug("Initializing permissions ...");
     String permissionsFile = System.getenv("tapis.meta.security.permissions.file");
-    // ArrayList<V2PermissionsDefinition> permsList = null;
+    ArrayList<V2PermissionsDefinition> permsList = null;
     
     if(permissionsFile.isEmpty()){
       // of course it's empty it is the first time in
@@ -126,25 +127,43 @@ public class V2PermissionsRegistry {
     }
     
     File file = new File(permissionsFile);
+    FileReader reader = null;
+    try {
+      reader = new FileReader(file);
+      
+    } catch (FileNotFoundException e) {
+      // T
+      String msg = "Permissions definition file not found "
+          + RuntimeParameters.SERVICE_NAME_META +"\n"
+          + e.getMessage();
+      _log.error(msg);
+      throw new TapisRuntimeException(msg, e);
+    }
+    
     Gson gson = new Gson();
     V2PermissionsDefinition permDef = null;
   
     // Open, read and close the permissions file.
     JsonArray jsonArray;
-    try {
-      jsonArray = gson.fromJson(new FileReader(file), JsonArray.class);
-      Iterator<JsonElement> it = jsonArray.iterator();
-      while (it.hasNext()) {
-        JsonElement element = it.next();
-        String result = gson.toJson(element);
-        permDef = gson.fromJson(result, V2PermissionsDefinition.class);
-        // add definition to the tenant permsList
+    jsonArray = gson.fromJson(reader, JsonArray.class);
+    Iterator<JsonElement> it = jsonArray.iterator();
+    while (it.hasNext()) {
+      JsonElement element = it.next();
+      String result = gson.toJson(element);
+      permDef = gson.fromJson(result, V2PermissionsDefinition.class);
+      // get the tenant from permDef and add to map of tenant permissions
+      String tenant = permDef.getTenant();
+      // if tenant key not in map already add the key and empty permissionsList to tenant permissions.
+      if(map.containsKey(tenant)){
+        // if tenant key already in map add the permDef
+        map.get(tenant).add(permDef);
+      }else{
+        // if tenant key not in map already add the key and empty permissionsList to tenant permissions
+        // and add definition to the tenant permsList
+        map.put(tenant,new ArrayList<V2PermissionsDefinition>());
+        map.get(tenant).add(permDef);
       }
-    } catch (FileNotFoundException e) {
-      // TODO log exeception
-      e.printStackTrace();
     }
-    // return permsList;
   }
   
   //

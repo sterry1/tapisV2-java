@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.text.NumberFormat;
 import java.util.Properties;
 
@@ -102,7 +103,16 @@ public class RuntimeParameters {
   
     //----------------------   Initialize Permissions Registry   ----------------------
     // 1. initialize Registry
-    // V2PermissionsRegistry registry = V2PermissionsRegistry.getInstance();
+    V2PermissionsRegistry registry = null;
+    try {
+      registry = V2PermissionsRegistry.getInstance();
+    }catch (Exception e){
+      String msg = "METAV3 PERMISSIONS REGISTRY INITIALIZATION FAILED \n"
+          + RuntimeParameters.SERVICE_NAME_META +"\n"
+          + e.getMessage();
+      _log.error(msg, e);
+      throw new TapisRuntimeException(msg, e);
+    }
     
 /*
     parm = inputProperties.getProperty("tapis.meta.service.token");
