@@ -16,8 +16,9 @@ meta-security:
       - 'tapis.meta.coreserver.connection.timeout=3'
       - 'tapis.meta.log.directory=/tmp/meta'
       - 'tapis.meta.log.file=meta-service.log'
+      - 'tapis.meta.security.permissions.file=/opt/tomcat/etc/permissions.json'
    volumes:
-      - '/tmp/log/splunk/meta-security:/opt/tomcat/logs'
+      - '/var/log/splunk/meta-security:/opt/tomcat/logs'
       - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
       - './etc/permissions.json:/opt/tomcat/etc/permissions.json'
 
@@ -29,8 +30,8 @@ restheart:
    ports:
       - "8080:8080"
    environment:
-      - 'MONGO_URI=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin'
+      - 'MONGO_URI=mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin'
    volumes:
       - './etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
       - './etc/config.properties:/opt/restheart/etc/config.properties:ro'
-      - '/tmp/log/splunk/meta-security:/var/log'
+      - '/var/log/splunk/meta-security:/var/log'

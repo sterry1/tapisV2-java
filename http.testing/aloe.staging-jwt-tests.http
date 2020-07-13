@@ -1,7 +1,7 @@
 ############   modified jwts the jwt verify flag must be set to false on the app for these jwts to work
 
 ### use vdjuser.jwt.mod
-GET http://aloe-dev06.tacc.utexas.edu:8199/meta/v3/v1airr
+GET http://aloe-dev06.tacc.utexas.edu/meta/v3/v1airr
 X-JWT-Assertion-dev: {{jwt}}
 Content-Type: application/json
 
