@@ -10,9 +10,42 @@ Content-Type: application/json
 
 ###
 
+##############################################################
+#
+#   Find or filter Simple Queries ( not Aggregations )
+#
+##############################################################
+
+###   1. short version  simple find/filter query using vdjadmin doesn't break the URL size limit
+GET http://api-prod-agave.tacc.utexas.edu:32770/v1airr/rearrangement?filter={"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}}&sort={}&page=1&pagesize=1
+Content-Type: application/json
+###
+
 ###   filter test
-GET http://api-prod-agave.tacc.utexas.edu:32770/v1airr/rearrangement?filter={"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}}&sort={}
+GET http://api-prod-agave.tacc.utexas.edu:32770/v1airr/rearrangement?filter={"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}}&page=3&pagesize=3&sort={}
 Content-Type: application/json
 
 ###
+
+##############################################################
+#
+#   Aggregation Queries
+#
+##############################################################
+
+###   1. short version  using vdjadmin and vdjuser
+GET http://api-prod-agave.tacc.utexas.edu:32770/v1airr/rearrangement/_aggrs/facets?avars={"match":{"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}},"field":"$repertoire_id"}&page=1&pagesize=1
+Content-Type: application/json
+
+### Response code: 200; Time: 902ms; Content length: 305 bytes
+
+
+###  shortest version of post for facets aggr  vdjuser
+POST http://api-prod-agave.tacc.utexas.edu:32770/v1airr/rearrangement/_aggrs/facets
+Content-Type: application/json
+
+{"match":{"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}},"field":"$repertoire_id"}
+
+###
+
 
