@@ -639,10 +639,12 @@ public class ResourceBucket {
   @Path("/{db}/{collection}/_aggrs/{aggregation}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public javax.ws.rs.core.Response submitLargeAggregation(@PathParam("db") String db,
-                                                  @PathParam("collection") String collection,
-                                                  @PathParam("aggregation") String aggregation,
-                                                  InputStream payload) {
+  public javax.ws.rs.core.Response submitLargeAggregation( @PathParam("db") String db,
+                                                           @PathParam("collection") String collection,
+                                                           @PathParam("aggregation") String aggregation,
+                                                           @QueryParam("page") String page,
+                                                           @QueryParam("pagesize") String pagesize,
+                                                           InputStream payload ) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
@@ -670,10 +672,22 @@ public class ResourceBucket {
     }
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
+  
+    String inComingRequest = _request.getRequestURI();
+    StringBuilder newUriPath = new StringBuilder(); ///meta/v3/v1airr/rearrangement/_aggrs/facets
+    newUriPath.append(inComingRequest)
+              .append(jsonPayloadToProxy.toString());
+    // add page parameter if exists
+    if(page != null && !page.isEmpty()){
+      newUriPath.append("&page="+page);
+    }
+    // add pagesize parameter if exists
+    if(pagesize != null && !pagesize.isEmpty()){
+      newUriPath.append("&pagesize="+page);
+    }
     
     // Proxy the POST request and handle any exceptions
-    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI()+jsonPayloadToProxy);
-    
+    CoreRequest coreRequest = new CoreRequest(newUriPath.toString());
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
     
     // TODO ---------------------------- Response -------------------------------
@@ -702,13 +716,15 @@ public class ResourceBucket {
   
   //----------------  large query submission ----------------
   // this endpoint takes a valid mongodb query document and submits it to
-  // the database via a mongodb java driver
+  // the core server
   @POST
   @Path("/{db}/{collection}/_filter")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response submitLargeQuery(@PathParam("db") String db,
-                                                  @PathParam("collection") String collection,
+                                                    @PathParam("collection") String collection,
+                                                    @QueryParam("page") String page,
+                                                    @QueryParam("pagesize") String pagesize,
                                                   InputStream payload) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
@@ -740,6 +756,16 @@ public class ResourceBucket {
      StringBuilder newUriPath = new StringBuilder(); ///meta/v3/v1airr/rearrangement/_filter
      newUriPath.append(inComingRequest)
                .append(jsonPayloadToProxy.toString()).append("&sort={}");
+
+    // add page parameter if exists
+    if(page != null && !page.isEmpty()){
+      newUriPath.append("&page="+page);
+    }
+    // add pagesize parameter if exists
+    if(pagesize != null && !pagesize.isEmpty()){
+      newUriPath.append("&pagesize="+page);
+    }
+     
      CoreRequest coreRequest = new CoreRequest(newUriPath.toString());
      CoreResponse coreResponse = coreRequest.proxyGetRequest();
     

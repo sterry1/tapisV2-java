@@ -151,47 +151,27 @@ public class RuntimeParameters {
   public void getRuntimeInfo(StringBuilder buf)
   {
     buf.append("\n------- Logging -----------------------------------");
-    buf.append("\ntapis.log.directory: ");
+    buf.append("\ntapis.meta.log.directory: ");
     buf.append(this.getLogDirectory());
-    buf.append("\ntapis.log.file: ");
+    buf.append("\ntapis.meta.log.file: ");
     buf.append(this.getLogFile());
     
-    buf.append("\n------- Network -----------------------------------");
+    buf.append("\n\n------- Network -----------------------------------");
     buf.append("\nHost Addresses: ");
     // buf.append(getNetworkAddresses());
     
-    buf.append("\n------- Tenants -----------------------------------");
+    buf.append("\n\n------- Tenants -----------------------------------");
     buf.append("\ntapis.tenant.svc.baseurl: ");
+    buf.append(this.getTenantBaseUrl());
     
-    buf.append("\n------- DB Configuration --------------------------");
-
-/*
-    buf.append("\n------- Email Configuration -----------------------");
-    buf.append("\ntapis.mail.provider: ");
-    buf.append(this.getEmailProviderType().name());
-    buf.append("\ntapis.smtp.auth: ");
-    buf.append(this.isEmailAuth());
-    buf.append("\ntapis.smtp.host: ");
-    buf.append(this.getEmailHost());
-    buf.append("\ntapis.smtp.port: ");
-    buf.append(this.getEmailPort());
-    buf.append("\ntapis.smtp.user: ");
-    buf.append(this.getEmailUser());
-    buf.append("\ntapis.smtp.from.name: ");
-    buf.append(this.getEmailFromName());
-    buf.append("\ntapis.smtp.from.address: ");
-    buf.append(this.getEmailFromAddress());
-*/
+    buf.append("\n\n------- Core Server Configuration --------------------------");
+    buf.append("\ntapis.meta.core.server: ");
+    buf.append(this.getCoreServer());
+    buf.append("\ntapis.meta.coreserver.connection.timeout: ");
+    buf.append(this.getCoreserver_connection_timeout());
+  
     
-/*
-    buf.append("\n------- Support Configuration ---------------------");
-    buf.append("\ntapis.support.name: ");
-    // buf.append(this.getSupportName());
-    buf.append("\ntapis.support.email: ");
-    // buf.append(this.getSupportEmail());
-*/
-    
-    buf.append("\n------- EnvOnly Configuration ---------------------");
+    buf.append("\n\n------- EnvOnly Configuration ---------------------");
     buf.append("\ntapis.envonly.log.security.info: ");
     buf.append(RuntimeParameters.getLogSecurityInfo());
     buf.append("\ntapis.envonly.allow.test.header.parms: ");
@@ -201,7 +181,7 @@ public class RuntimeParameters {
     buf.append("\ntapis.envonly.skip.jwt.verify: ");
     buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_SKIP_JWT_VERIFY));
     
-    buf.append("\n------- Java Configuration ------------------------");
+    buf.append("\n\n------- Java Configuration ------------------------");
     buf.append("\njava.version: ");
     buf.append(System.getProperty("java.version"));
     buf.append("\njava.vendor: ");
@@ -225,7 +205,7 @@ public class RuntimeParameters {
     buf.append("\nuser.dir: ");
     buf.append(System.getProperty("user.dir"));
     
-    buf.append("\n------- JVM Runtime Values ------------------------");
+    buf.append("\n\n------- JVM Runtime Values ------------------------");
     NumberFormat formatter = NumberFormat.getIntegerInstance();
     buf.append("\navailableProcessors: ");
     buf.append(formatter.format(Runtime.getRuntime().availableProcessors()));

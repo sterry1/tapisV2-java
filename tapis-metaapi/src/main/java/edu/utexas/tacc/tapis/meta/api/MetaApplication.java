@@ -29,6 +29,18 @@ public class MetaApplication extends ResourceConfig {
     // load our runtime parameters
     System.out.println("**** Loading Runtime parameters ...");
     RuntimeParameters runtimeParameters = RuntimeParameters.getInstance();
+    StringBuilder buf = new StringBuilder(2500); // capacity to avoid resizing
+    buf.append("\n------- Starting Meta Service ");
+    buf.append(" -------");
+
+  
+    // Dump the runtime configuration.
+    runtimeParameters.getRuntimeInfo(buf);
+    buf.append("\n---------------------------------------------------\n");
+  
+    // Write the output information.
+    System.out.println(buf.toString());
+  
   
     // Register the swagger resources that allow the
     // documentation endpoints to be automatically generated.
