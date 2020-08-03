@@ -11,6 +11,8 @@
 #               for Aloe dev this "T2dev". We need to distinguish images for this version
 #               of the security container from Tapis V3 versions.
 #
+# export VER=0.0.1
+# export TAPIS_ENV=T2dev
 # usage : $TAPIS_ROOT/deployment/build-metaapi.sh
 #
 ###########################################################
@@ -76,7 +78,7 @@ echo "";echo ""
 echo "***    push the image to docker hub "
 echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
                export META_IMAGE=$TAG-$TAPIS_ENV
-echo "         push docker hub  -  $META_IMAGE"
+echo "         push docker hub  -  $META_IMAGE   currently NA "
                # docker push "$META_IMAGE"
 echo "         tag image for our private repository  -  jenkins2.tacc.utexas.edu:5000/$META_IMAGE"
                docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
