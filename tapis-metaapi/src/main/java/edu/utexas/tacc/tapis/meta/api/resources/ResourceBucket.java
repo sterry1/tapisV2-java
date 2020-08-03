@@ -145,20 +145,21 @@ public class ResourceBucket {
   @Path("/{db}/{collection}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public javax.ws.rs.core.Response createCollection(@PathParam("db") String db, @PathParam("collection") String collection) {
-  
+  public javax.ws.rs.core.Response createCollection(@PathParam("db") String db,
+                                                    @PathParam("collection") String collection) {
+    
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "createCollection", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("create collection "+collection+" in " + db);
+      _log.trace("create collection " + collection + " in " + db);
     }
     
     // Proxy the PUTT request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyPutRequest("{}");
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -176,22 +177,91 @@ public class ResourceBucket {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "listDocuments", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("List documents in " + db +"/"+collection);
+      _log.trace("List documents in " + db + "/" + collection);
     }
-  
+    
     StringBuilder pathUrl = new StringBuilder(_request.getRequestURI());
-
-    if(!StringUtils.isEmpty(_request.getQueryString())){
+    
+    if (!StringUtils.isEmpty(_request.getQueryString())) {
       pathUrl.append("?").append(_request.getQueryString());
     }
     
     // Proxy the GET request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(pathUrl.toString());
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
+  }
+  
+  //----------------  large query submission ----------------
+  // this endpoint takes a valid mongodb query document and submits it to
+  // the core server
+  @POST
+  @Path("/{db}/{collection}/_filter")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public javax.ws.rs.core.Response submitLargeQuery(@PathParam("db") String db,
+                                                    @PathParam("collection") String collection,
+                                                    @QueryParam("page") String page,
+                                                    @QueryParam("pagesize") String pagesize,
+                                                    InputStream payload) {
+    // Trace this request.
+    if (_log.isTraceEnabled()) {
+      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
+          "submitLargeQuery", _request.getRequestURL());
+      _log.trace(msg);
+      _log.trace("Submit a query larger than the url query param limitation for HTTP to " + collection);
+    }
+    
+    // Get the json payload to proxy to back end
+    StringBuilder jsonPayloadToProxy = new StringBuilder();
+    
+    try {
+      BufferedReader in = new BufferedReader(new InputStreamReader(payload));
+      String line;
+      while ((line = in.readLine()) != null) {
+        jsonPayloadToProxy.append(line);
+      }
+    } catch (Exception e) {
+      _log.debug("Error Parsing: - ");
+    }
+    
+    _log.debug("Data Received: " + jsonPayloadToProxy.toString());
+    
+    // we change here from a POST request to a GET request.
+    // RH core will except URL GET filter request without the URL limitation.
+    String inComingRequest = _request.getRequestURI();
+    inComingRequest = inComingRequest.replace("_filter", "?filter=");
+    StringBuilder newUriPath = new StringBuilder(); ///meta/v3/v1airr/rearrangement/_filter
+    newUriPath.append(inComingRequest)
+              .append(jsonPayloadToProxy.toString()).append("&" + _request.getQueryString() + "&sort={}");
+     
+/*
+    // add page parameter if exists
+    if(page != null && !page.isEmpty()){
+      newUriPath.append("&page="+page);
+    }
+    // add pagesize parameter if exists
+    if(pagesize != null && !pagesize.isEmpty()){
+      newUriPath.append("&pagesize="+page);
+    }
+*/
+    
+    CoreRequest coreRequest = new CoreRequest(newUriPath.toString());
+    CoreResponse coreResponse = coreRequest.proxyGetRequest();
+    
+    String result;
+    result = coreResponse.getCoreResponsebody();
+    
+    // TODO ---------------------------- Response -------------------------------
+    // just return whatever core server sends to us
+    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(
+        result);
+    
+    return responseBuilder.build();
+    
   }
   
   // ----------------  Get the number of documents in Collection ----------------
@@ -199,16 +269,16 @@ public class ResourceBucket {
   @Path("/{db}/{collection}/_size")
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response getCollectionSize(@PathParam("db") String db,
-                                                 @PathParam("collection") String collection,
-                                                 @QueryParam("filter") String filter) {
+                                                     @PathParam("collection") String collection,
+                                                     @QueryParam("filter") String filter) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "listDocuments", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("List documents in " + db +"/"+collection);
+      _log.trace("List documents in " + db + "/" + collection);
     }
-  
+    
     // Proxy the GET request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" + _request.getQueryString()
         // Proxy the GET request and handle any exceptions
@@ -231,9 +301,9 @@ public class ResourceBucket {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "listDocuments", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("List documents in " + db +"/"+collection);
+      _log.trace("List documents in " + db + "/" + collection);
     }
-  
+    
     // Proxy the GET request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" + _request.getQueryString()
         // Proxy the GET request and handle any exceptions
@@ -260,12 +330,12 @@ public class ResourceBucket {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "createDocument", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Create document  in " + collection );
+      _log.trace("Create document  in " + collection);
     }
-  
+    
     // Get the json payload to proxy to back end
     StringBuilder jsonPayloadToProxy = new StringBuilder();
-  
+    
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(payload));
       String line;
@@ -275,37 +345,38 @@ public class ResourceBucket {
     } catch (Exception e) {
       _log.debug("Error Parsing: - ");
     }
-  
+    
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
-
+    
     // Proxy the POST request and handle any exceptions
     // we will always return a response for a request that means something
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyPostRequest(jsonPayloadToProxy.toString());
-  
+    
     String result;
     String etag = coreResponse.getEtag();
     String location = coreResponse.getLocationFromHeaders();
     
-  
-    if(basic){
+    
+    if (basic) {
       result = coreResponse.getBasicResponse(location);
-    }else {
-      result =  coreResponse.getCoreResponsebody();
+    } else {
+      result = coreResponse.getCoreResponsebody();
     }
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
-    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(result);
+    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(
+        result);
     
-    if(!StringUtils.isBlank(etag)){
-     responseBuilder.tag(etag);
+    if (!StringUtils.isBlank(etag)) {
+      responseBuilder.tag(etag);
     }
     
-    if(!StringUtils.isBlank(location)){
-      responseBuilder.header("location",location);
+    if (!StringUtils.isBlank(location)) {
+      responseBuilder.header("location", location);
     }
-  
+    
     return responseBuilder.build();
   }
   
@@ -321,7 +392,7 @@ public class ResourceBucket {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "deleteCollection", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Delete collection "+collection+" in " + db );
+      _log.trace("Delete collection " + collection + " in " + db);
     }
     // Get the json payload to proxy to back end
     
@@ -330,7 +401,7 @@ public class ResourceBucket {
     // Proxy the POST request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyDeleteRequest(_httpHeaders);
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -340,28 +411,28 @@ public class ResourceBucket {
   /*************************************************
    *    Index endpoints
    *************************************************/
-
+  
   //----------------  List Indexes ----------------
   @GET
   @Path("/{db}/{collection}/_indexes")
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response listIndexes(@PathParam("db") String db,
                                                @PathParam("collection") String collection) {
-  
+    
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "listIndexes", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("List indexes in " + db +"/"+collection);
+      _log.trace("List indexes in " + db + "/" + collection);
     }
-  
+    
     // Proxy the GET request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" + _request.getQueryString()
         // Proxy the GET request and handle any exceptions
     );
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -381,9 +452,9 @@ public class ResourceBucket {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "createIndex", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Create index "+indexName+" in " + db +"/"+collection);
+      _log.trace("Create index " + indexName + " in " + db + "/" + collection);
     }
-  
+    
     // Get the json payload to proxy to back end
     StringBuilder jsonPayloadToProxy = new StringBuilder();
     
@@ -402,7 +473,7 @@ public class ResourceBucket {
     // Proxy the POST request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyPutRequest(jsonPayloadToProxy.toString());
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -421,7 +492,7 @@ public class ResourceBucket {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "deleteIndex", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Delete index "+indexName+" in " + db +"/"+collection);
+      _log.trace("Delete index " + indexName + " in " + db + "/" + collection);
     }
     
     // Proxy the DELETE request and handle any exceptions
@@ -432,11 +503,11 @@ public class ResourceBucket {
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
   }
-
+  
   /*************************************************
    *    Document endpoints
    *************************************************/
-
+  
   //----------------  Get a specific Document ----------------
   @GET
   @Path("/{db}/{collection}/{documentId}")
@@ -447,7 +518,7 @@ public class ResourceBucket {
     // Proxy the GET request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -459,15 +530,15 @@ public class ResourceBucket {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response replaceDocument(@PathParam("db") String db,
-                                                 @PathParam("collection") String collection,
-                                                 @PathParam("documentId") String documentId,
-                                                 InputStream payload) {
+                                                   @PathParam("collection") String collection,
+                                                   @PathParam("documentId") String documentId,
+                                                   InputStream payload) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "putDocument", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Put a document in " + db +"/"+ collection);
+      _log.trace("Put a document in " + db + "/" + collection);
     }
     
     // Get the json payload to proxy to back end
@@ -500,15 +571,15 @@ public class ResourceBucket {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response modifyDocument(@PathParam("db") String db,
-                                                 @PathParam("collection") String collection,
-                                                 @PathParam("documentId") String documentId,
-                                                 InputStream payload) {
+                                                  @PathParam("collection") String collection,
+                                                  @PathParam("documentId") String documentId,
+                                                  InputStream payload) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "patchDocument", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Patch document in " + db +"/"+ collection);
+      _log.trace("Patch document in " + db + "/" + collection);
     }
     
     // Get the json payload to proxy to back end
@@ -529,7 +600,7 @@ public class ResourceBucket {
     // Proxy the POST request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyPatchRequest(jsonPayloadToProxy.toString());
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -540,24 +611,25 @@ public class ResourceBucket {
   @Path("/{db}/{collection}/{documentId}")
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response deleteDocument(@PathParam("db") String db,
-                                               @PathParam("collection") String collection,
-                                               @PathParam("documentId") String documentId) {
+                                                  @PathParam("collection") String collection,
+                                                  @PathParam("documentId") String documentId) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "deleteDocument", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Delete document "+ documentId +" in "+ db +"/"+ collection);
+      _log.trace("Delete document " + documentId + " in " + db + "/" + collection);
     }
-  
+    
     // Proxy the GET request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyDeleteRequest(_httpHeaders);
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
-    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody());
-
+    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(
+        coreResponse.getCoreResponsebody());
+    
     return responseBuilder.build();
   }
   
@@ -572,20 +644,20 @@ public class ResourceBucket {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response addAggregation(@PathParam("db") String db,
-                                                   @PathParam("collection") String collection,
-                                                   @PathParam("aggregation") String aggregation,
-                                                   InputStream payload) {
+                                                  @PathParam("collection") String collection,
+                                                  @PathParam("aggregation") String aggregation,
+                                                  InputStream payload) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "addAggregation", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Add an aggregation in " + db +"/"+ collection);
+      _log.trace("Add an aggregation in " + db + "/" + collection);
     }
-  
+    
     // Get the json payload to proxy to back end
     StringBuilder jsonPayloadToProxy = new StringBuilder();
-  
+    
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(payload));
       String line;
@@ -595,13 +667,13 @@ public class ResourceBucket {
     } catch (Exception e) {
       _log.debug("Error Parsing: - ");
     }
-  
+    
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
-  
+    
     // Proxy the PUT request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyPutRequest(jsonPayloadToProxy.toString());
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -620,14 +692,14 @@ public class ResourceBucket {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "getAggregation", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Get aggregation "+ aggregation+" in " + db + "/" + collection);
-      _log.trace("avars: "+avars);
+      _log.trace("Get aggregation " + aggregation + " in " + db + "/" + collection);
+      _log.trace("avars: " + avars);
     }
-  
+    
     // Proxy the GET request and handle any exceptions
-    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI()+"?avars="+avars);
+    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?avars=" + avars);
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
-  
+    
     // TODO ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -639,18 +711,18 @@ public class ResourceBucket {
   @Path("/{db}/{collection}/_aggrs/{aggregation}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public javax.ws.rs.core.Response submitLargeAggregation( @PathParam("db") String db,
-                                                           @PathParam("collection") String collection,
-                                                           @PathParam("aggregation") String aggregation,
-                                                           @QueryParam("page") String page,
-                                                           @QueryParam("pagesize") String pagesize,
-                                                           InputStream payload ) {
+  public javax.ws.rs.core.Response submitLargeAggregation(@PathParam("db") String db,
+                                                          @PathParam("collection") String collection,
+                                                          @PathParam("aggregation") String aggregation,
+                                                          @QueryParam("page") String page,
+                                                          @QueryParam("pagesize") String pagesize,
+                                                          InputStream payload) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "addAggregation", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("Add an aggregation in " + db +"/"+ collection);
+      _log.trace("Add an aggregation in " + db + "/" + collection);
     }
     // we want to capture the oversize avars parameter in a request body
     // to use as a submission to RH core server in a GET.
@@ -666,17 +738,17 @@ public class ResourceBucket {
       while ((line = in.readLine()) != null) {
         jsonPayloadToProxy.append(line);
       }
-      
     } catch (Exception e) {
       _log.debug("Error Parsing: - ");
     }
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
-  
+    
     String inComingRequest = _request.getRequestURI();
     StringBuilder newUriPath = new StringBuilder(); ///meta/v3/v1airr/rearrangement/_aggrs/facets
     newUriPath.append(inComingRequest)
-              .append(jsonPayloadToProxy.toString());
+              .append(jsonPayloadToProxy.toString()).append("&" + _request.getQueryString());
+/*
     // add page parameter if exists
     if(page != null && !page.isEmpty()){
       newUriPath.append("&page="+page);
@@ -685,6 +757,7 @@ public class ResourceBucket {
     if(pagesize != null && !pagesize.isEmpty()){
       newUriPath.append("&pagesize="+page);
     }
+*/
     
     // Proxy the POST request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(newUriPath.toString());
@@ -700,9 +773,9 @@ public class ResourceBucket {
   @Path("/{db}/{collection}/_aggr/{aggregation}")
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response deleteAggregation(@PathParam("db") String db,
-                                                  @PathParam("collection") String collection,
-                                                  @PathParam("aggregation") String aggregation,
-                                                  @QueryParam("avars") String agvars) {
+                                                     @PathParam("collection") String collection,
+                                                     @PathParam("aggregation") String aggregation,
+                                                     @QueryParam("avars") String agvars) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
@@ -714,74 +787,9 @@ public class ResourceBucket {
     return javax.ws.rs.core.Response.status(200).entity("{ TODO }").build();
   }
   
-  //----------------  large query submission ----------------
-  // this endpoint takes a valid mongodb query document and submits it to
-  // the core server
-  @POST
-  @Path("/{db}/{collection}/_filter")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public javax.ws.rs.core.Response submitLargeQuery(@PathParam("db") String db,
-                                                    @PathParam("collection") String collection,
-                                                    @QueryParam("page") String page,
-                                                    @QueryParam("pagesize") String pagesize,
-                                                  InputStream payload) {
-    // Trace this request.
-    if (_log.isTraceEnabled()) {
-      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
-          "submitLargeQuery", _request.getRequestURL());
-      _log.trace(msg);
-      _log.trace("Submit a query larger than the url query param limitation for HTTP to " + collection );
-    }
-    
-    // Get the json payload to proxy to back end
-    StringBuilder jsonPayloadToProxy = new StringBuilder();
-    
-    try {
-      BufferedReader in = new BufferedReader(new InputStreamReader(payload));
-      String line;
-      while ((line = in.readLine()) != null) {
-        jsonPayloadToProxy.append(line);
-      }
-    } catch (Exception e) {
-      _log.debug("Error Parsing: - ");
-    }
-    
-    _log.debug("Data Received: " + jsonPayloadToProxy.toString());
-    
-    // we change here from a POST request to a GET request.
-    // RH core will except URL GET filter request without the URL limitation.
-     String inComingRequest = _request.getRequestURI();
-     inComingRequest = inComingRequest.replace("_filter", "?filter=");
-     StringBuilder newUriPath = new StringBuilder(); ///meta/v3/v1airr/rearrangement/_filter
-     newUriPath.append(inComingRequest)
-               .append(jsonPayloadToProxy.toString()).append("&sort={}");
-
-    // add page parameter if exists
-    if(page != null && !page.isEmpty()){
-      newUriPath.append("&page="+page);
-    }
-    // add pagesize parameter if exists
-    if(pagesize != null && !pagesize.isEmpty()){
-      newUriPath.append("&pagesize="+page);
-    }
-     
-     CoreRequest coreRequest = new CoreRequest(newUriPath.toString());
-     CoreResponse coreResponse = coreRequest.proxyGetRequest();
-    
-    String result;
-    result =  coreResponse.getCoreResponsebody();
-    
-    // TODO ---------------------------- Response -------------------------------
-    // just return whatever core server sends to us
-    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(result);
-    
-    return responseBuilder.build();
-
-  }
   
   private void requestDump() {
-
+    
     String pathUri = _request.getRequestURI();
     StringBuffer pathUrl = _request.getRequestURL();
     String queryString = _request.getQueryString();

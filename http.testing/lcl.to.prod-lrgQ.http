@@ -32,7 +32,7 @@ Content-Type: application/json
 #  Response code: 400; Time: 52ms; Content length: 1904 bytes   ERROR  Request header is too large
 
 ###  3. POST of oversize simple find query
-POST http://localhost:8199/meta/v3/v1airr/rearrangement/_filter&page=3&pagesize=1
+POST http://localhost:8199/meta/v3/v1airr/rearrangement/_filter?page=4&pagesize=1
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
