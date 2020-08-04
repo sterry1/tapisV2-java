@@ -16,8 +16,9 @@
 # usage : $TAPIS_ROOT/deployment/build-metaapi.sh
 #
 ###########################################################
-export VER=$VER
-export TAPIS_ENV=$TAPIS_ENV
+# VER=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
+VER=$VER
+TAPIS_ENV=$TAPIS_ENV
 export SRVC=meta
 export SRVC_API=${SRVC}api
 export TAPIS_ROOT=$(pwd)
