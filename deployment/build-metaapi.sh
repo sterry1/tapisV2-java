@@ -73,7 +73,7 @@ echo "";echo ""
 
 echo "***      building the docker image from deployment directory docker build tapis-${SRVC_API}/Dockerfile"
 echo "***      docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV . "
-               # docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV .
+               docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV .
 echo "";echo ""
 
 echo "***    push the image to docker hub "
@@ -82,8 +82,8 @@ echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
 echo "         push docker hub  -  $META_IMAGE   currently NA "
                # docker push "$META_IMAGE"
 echo "         tag image for our private repository  -  jenkins2.tacc.utexas.edu:5000/$META_IMAGE"
-               # docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
-               # docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
+               #docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
+               #docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
 
 echo "***      "
 echo "***      rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}"
