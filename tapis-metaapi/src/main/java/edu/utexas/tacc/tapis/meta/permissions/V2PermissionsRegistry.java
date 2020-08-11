@@ -113,17 +113,28 @@ public class V2PermissionsRegistry {
     System.out.println();
   }
   
-  /* ---------------------------------------------------------------------------- */
-  /* initPermissions :                                                        */
-  /* ---------------------------------------------------------------------------- */
+  
+  /*-------------------------------------------------------
+   * initPermissions
+   * ------------------------------------------------------*/
   private void initPermissions() {
     _log.debug("Initializing permissions ...");
     String permissionsFile = System.getenv("tapis.meta.security.permissions.file");
+    
+    if(permissionsFile.isEmpty()){
+      String msg = "Permissions definition file environment variable not set "
+          + RuntimeParameters.SERVICE_NAME_META +"\n";
+      _log.error(msg);
+      throw new TapisRuntimeException(msg);
+    }
+    
     ArrayList<V2PermissionsDefinition> permsList = null;
     
     if(permissionsFile.isEmpty()){
-      // of course it's empty it is the first time in
-      // TODO log no permissions file
+      String msg = "Permissions definition file is empty. "
+          + RuntimeParameters.SERVICE_NAME_META +"\n";
+      _log.error(msg);
+      throw new TapisRuntimeException(msg);
     }
     
     File file = new File(permissionsFile);
@@ -132,7 +143,6 @@ public class V2PermissionsRegistry {
       reader = new FileReader(file);
       
     } catch (FileNotFoundException e) {
-      // T
       String msg = "Permissions definition file not found "
           + RuntimeParameters.SERVICE_NAME_META +"\n"
           + e.getMessage();
@@ -166,8 +176,8 @@ public class V2PermissionsRegistry {
     }
   }
   
-  //
-   public static boolean isPermitted(V2PermissionsRequest v2PermissionsRequest){
+  /*-------------------------------------------------------
+   * isPermitted
      // Our permission request has the request path and valid roles for the user
      //  we compare the permissions request object to our
      // list of permissions by tenant (ex. dev) and iterate over our permissions
@@ -175,6 +185,9 @@ public class V2PermissionsRegistry {
      // with role Internal/vdj until
      // we need to search the users role list for a valid role in this tenant.
      // the valid role will be found from the list of permission definitions for the tenant.
+
+   * ------------------------------------------------------*/
+   public static boolean isPermitted(V2PermissionsRequest v2PermissionsRequest){
      
      ArrayList<V2PermissionsDefinition> permissionsList = map.get(v2PermissionsRequest.getTenant());
      
@@ -185,13 +198,7 @@ public class V2PermissionsRegistry {
      // 1. get a list of definitions that match the role (may need to iterate)
      // 2. does the request op match anything in the op list for the definition (only one match)
      // 3. do the db's match
-     // ArrayList<V2PermissionsDefinition> definitions =  getDefinitionsByRole();
-     // possible iteration over list
-     //if(definitions != null || !definitions.isEmpty()){
-     //  definitions.forEach(matchingDefinition -> {
-     // there is at least one matching definition
-     //  });
-     //}
+     
      boolean isPermitted = false;
      if(permissionsList == null || permissionsList.isEmpty()){
        _log.debug("No permissions found for "+v2PermissionsRequest.getTenant()+" tenant.");

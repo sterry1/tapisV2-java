@@ -13,6 +13,10 @@ public class V2PermissionsDefinition {
   
   public V2PermissionsDefinition(){}
   
+  /*-------------------------------------------------------
+  *                    Public Methods
+  * ------------------------------------------------------*/
+  
   public boolean isPermitted(V2PermissionsRequest request){
     // we already know the meta and tenant match
     boolean foundRoleMatch = request.getRoleList().contains(role);
