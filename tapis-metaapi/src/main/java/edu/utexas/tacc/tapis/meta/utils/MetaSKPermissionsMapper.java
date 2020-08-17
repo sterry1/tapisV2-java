@@ -9,7 +9,7 @@ public class MetaSKPermissionsMapper {
   private String tenant;
   private String db="";
   private String collection="";
-  private String document="";
+  private String document="";  // this is the resource place holder for documentId, _aggrs or _filter resources.
   private String permSpec="";
   
   // public String

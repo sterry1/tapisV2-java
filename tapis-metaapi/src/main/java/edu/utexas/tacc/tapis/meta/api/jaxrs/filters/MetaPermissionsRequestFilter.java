@@ -56,11 +56,11 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     V2PermissionsRequest
         permissionsRequest = mapRequestToPermissions(requestContext,threadContext.getTenantId(),threadContext.getRoleList());
     
-    // if the request coming in is a POST to a {db}/{collection}/_filter
+    // if the request coming in is a POST to a {db}/{collection}/_filter or {db}/{collection}/_aggrs
     // then we need to check the permissions as if it was a GET request instead of POST.
     // meta:dev:POST:v1airr:rearrangement:_filter
     
-    if(permissionsRequest.getPermSpec().contains("_filter") && permissionsRequest.getPermSpec().contains("POST")){
+    if(permissionsRequest.getPermSpec().contains("_filter") || permissionsRequest.getPermSpec().contains("_aggrs") && permissionsRequest.getPermSpec().contains("POST")){
       doPostToGetTransform(permissionsRequest);
     }
     

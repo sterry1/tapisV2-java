@@ -10,6 +10,7 @@ public class V2PermissionsDefinition {
   private List<String> ops;
   private String db = "";
   private String collection = "";
+  private String docAggrFilter = "";
   
   public V2PermissionsDefinition(){}
   
@@ -65,6 +66,10 @@ public class V2PermissionsDefinition {
   public String getRole() { return role; }
   
   public void setRole(String role) { this.role = role; }
+  
+  public String getDocAggrFilter() { return docAggrFilter; }
+  
+  public void setDocAggrFilter(String docAggrFilter) { this.docAggrFilter = docAggrFilter; }
   
   public int isDbSet(){
     if(!db.isEmpty()){

@@ -17,6 +17,7 @@ public class V2PermissionsRequest {
   private String op;
   private String db;
   private String collection;
+  private String docAggrFilter;
   private String permSpec;
   
   public V2PermissionsRequest(MetaSKPermissionsMapper mapper, List<String> _roleList) {
@@ -25,6 +26,7 @@ public class V2PermissionsRequest {
     this.op = mapper.getOp();
     this.db = mapper.getDb();
     this.collection = mapper.getCollection();
+    this.docAggrFilter = mapper.getDocument();
     this.permSpec = mapper.getPermSpec();
   }
   
@@ -63,4 +65,8 @@ public class V2PermissionsRequest {
   public String getPermSpec() { return permSpec; }
   
   public void setPermSpec(String permSpec) { this.permSpec = permSpec; }
+  
+  public String getDocAggrFilter() { return docAggrFilter; }
+  
+  public void setDocAggrFilter(String docAggrFilter) { this.docAggrFilter = docAggrFilter; }
 }
