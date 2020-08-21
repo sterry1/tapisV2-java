@@ -230,4 +230,18 @@ Content-Type: application/json
 ###
 
 
+###   0. aggregations list
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_meta
+Authorization: Bearer {{token}}
+Content-Type: application/json
+### Response code: 200; Time: 598ms; Content length: 305 bytes
+
+###  4. POST of oversize simple find query with sort={} Scott's email
+POST https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_filter?sort={}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"vdjserver_junction_suffixes":{"$regex":"^SLQGATEAF"}}
+
+###  timeout for filter but used vdj-guest prod jwt to check perms
 

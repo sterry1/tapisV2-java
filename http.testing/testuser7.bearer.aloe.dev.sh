@@ -46,3 +46,5 @@ curl -X GET -H "Accept: application/json" -H "Authorization : Bearer $tok" "$hos
 ​
 # get the binary of a file /api/mybucket.files/jenkins-the-definitive-guide.pdf
 # curl -H "Accept: application/json" -H "Authorization : Bearer $tok" "$host/$base"/api/mybucket.files/jenkins-the-definitive-guide.pdf/binary > tmp.pdf
+
+

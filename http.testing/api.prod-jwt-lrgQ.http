@@ -68,7 +68,7 @@ Content-Type: application/json
 
 
 ###  shortest version of post for facets aggr  vdjuser
-POST http://api-prod-agave.tacc.utexas.edu:8198/meta/v3/v1airr/rearrangement/_aggrs/facets
+POST http://api-prod-agave.tacc.utexas.edu:8198/meta/v3/v1airr/rearrangement_1/_aggrs/facets
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
