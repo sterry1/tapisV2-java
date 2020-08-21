@@ -57,7 +57,6 @@ public class CoreRequest {
         .readTimeout(connection_timeout, TimeUnit.MINUTES)
         .writeTimeout(connection_timeout, TimeUnit.MINUTES)
         .retryOnConnectionFailure(false)
-
         .build();
     
     Response response = null;
@@ -66,12 +65,10 @@ public class CoreRequest {
       response = okHttpClient.newCall(coreRequest).execute();
       coreResponse.mapResponse(response);
       String sb = coreResponse.getCoreResponsebody();
-      
     } catch (SocketTimeoutException e){
-      _log.debug("socket exception");
-      e.printStackTrace();
+      _log.debug("Timeout exception thrown because core server timed out the request.");
+      _log.debug("Request that timed out: \n"+coreRequest.toString());
     } catch (IOException e) {
-      // TODO log message
       // TODO throw a custom exception about request failure to core
       _log.debug("io exception");
       e.printStackTrace();

@@ -46,10 +46,10 @@ public class ResourceBucket {
   @Context
   private HttpServletRequest _request;
   
-  /*************************************************
-   *    Root endpoints
-   *************************************************/
-  // TODO ----------------  List DBs in server ----------------
+  /*-------------------------------------------------------
+   *   Root endpoints
+   * ------------------------------------------------------*/
+  //----------------  List DBs in server ----------------
   @GET
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
@@ -658,7 +658,6 @@ public class ResourceBucket {
   /*************************************************
    *    Aggregation endpoints
    *************************************************/
-  
   // ----------------  Put an aggregation ----------------
   @PUT
   @Path("/{db}/{collection}/_aggr/{aggregation}")
@@ -795,23 +794,6 @@ public class ResourceBucket {
     }
     
     return javax.ws.rs.core.Response.status(200).entity("{ TODO }").build();
-  }
-  
-  
-  private void requestDump() {
-    
-    String pathUri = _request.getRequestURI();
-    StringBuffer pathUrl = _request.getRequestURL();
-    String queryString = _request.getQueryString();
-    String contextPath = _request.getContextPath();
-    
-    System.out.println(pathUri);
-    System.out.println(pathUrl);
-    System.out.println(queryString);
-    System.out.println(contextPath);
-    System.out.println();
-    
-    // String s = ((UriRoutingContext) _uriInfo).requestContext.requestUri.toString();
   }
   
 }
