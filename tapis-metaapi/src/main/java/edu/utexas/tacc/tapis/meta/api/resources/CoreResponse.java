@@ -55,9 +55,15 @@ public class CoreResponse {
     
   }
   
-  /*************************************************
-   *    Capture methods for core server Response
-   *************************************************/
+  /*------------------------------------------------------------------------
+   *                              Private Methods
+   * -----------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------
+   *                Capture methods for core server Response
+   * -----------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------
+   * captureCoreResponseHeaders
+   * -----------------------------------------------------------------------*/
   private void captureCoreResponseHeaders(okhttp3.Response coreResponse) {
     _log.debug("Capture Headers from core response ...");
     headers = coreResponse.headers().toMultimap();
@@ -67,6 +73,9 @@ public class CoreResponse {
     _log.debug(logResponseHeaders());
   }
   
+  /*------------------------------------------------------------------------
+   * captureResponseBody
+   * -----------------------------------------------------------------------*/
   private void captureResponseBody(okhttp3.Response coreResponse) {
     _log.debug("response body output ");
     ResponseBody responseBody = coreResponse.body();
@@ -90,28 +99,14 @@ public class CoreResponse {
     statusCode = coreResponse.code();
   }
   
-  public String getEtagValueFromHeaders(){
-    String etagValue = null;
-    if(headers.containsKey("ETag")){
-      List<String> etagList = headers.get("ETag");
-      etagValue = etagList.get(0);
+  private void logResponseBody() {
+    _log.debug("response body output ");
+    _log.debug("size of response body : " + coreResponsebody);
+    if (coreResponsebody.length() > 0) {
+      _log.debug("response : \n" + coreResponsebody.toString());
     }
-    return etagValue;
   }
   
-  public String getLocationFromHeaders(){
-    String locationValue = null;
-    if(headers.containsKey("Location")){
-      List<String> locationList = headers.get("Location");
-      locationValue = locationList.get(0);
-    }
-    return locationValue;
-  }
-  
-  /*************************************************
-*     Print functions for core server Response
- ************************************************/
- 
   private String logResponseHeaders() {
     StringBuilder sb = new StringBuilder();
     sb.append("Headers from core ...");
@@ -122,22 +117,21 @@ public class CoreResponse {
     }
     return sb.toString();
   }
-  
-  private void logResponseBody() {
-    _log.debug("response body output ");
-    _log.debug("size of response body : " + coreResponsebody);
-    if (coreResponsebody.length() > 0) {
-      _log.debug("response : \n" + coreResponsebody.toString());
-    }
-  }
-  
+
+  // TODO rename this to reflect generic basic response
   protected String getBasicResponse(String location){
+    // Create a basic response to fill in for core server empty response
     RespBasic resp = new RespBasic();
     resp.status = String.valueOf(this.getStatusCode());
     resp.message = this.coreMsg;
     resp.version = TapisUtils.getTapisVersion();
+    
+    //  get the location of the resource
     String oid = getOidFromLocation(location);
     StringBuilder sb = new StringBuilder();
+    
+    // append the _id of the newly created resource, namely document
+    // to the response json
     sb.append("{\"_id\":").append(oid).append("}");
     JsonObject jsonObject = new JsonParser().parse(sb.toString()).getAsJsonObject();
     resp.result = jsonObject;
@@ -145,7 +139,7 @@ public class CoreResponse {
   }
   
   private String getOidFromLocation(String location){
-    // need to parse location which looks like this
+    // need to parse location which looks like this from the core server response.
     // http://c002.rodeo.tacc.utexas.edu:30401/StreamsTACCDB/sltCollectionTst/5ea5bf3ca93eebf39fcc563b
     StringTokenizer st = new StringTokenizer(location,"/");
     
@@ -167,10 +161,27 @@ public class CoreResponse {
     _log.debug("http msg returned : " + coreMsg);
   }
   
-  /*************************************************
-   *   Getters and Setters
-   *************************************************/
-
+  /*------------------------------------------------------------------------
+   *                              Public Methods
+   * -----------------------------------------------------------------------*/
+  public String getEtagValueFromHeaders(){
+    String etagValue = null;
+    if(headers.containsKey("ETag")){
+      List<String> etagList = headers.get("ETag");
+      etagValue = etagList.get(0);
+    }
+    return etagValue;
+  }
+  
+  public String getLocationFromHeaders(){
+    String locationValue = null;
+    if(headers.containsKey("Location")){
+      List<String> locationList = headers.get("Location");
+      locationValue = locationList.get(0);
+    }
+    return locationValue;
+  }
+  
   public Map<String, List<String>> getHeaders() { return headers; }
   
   public String getCoreResponsebody() {

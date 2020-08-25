@@ -31,18 +31,22 @@ public class CoreRequest {
   
   // constructor(s)
   public CoreRequest(String _pathUri){
-    // this gives us the valid Core server path URI by stripping the service
-    // prefix from the beginning of the path
+    // The core server doesn't understand the /v3/meta prefix on the URI path.
+    // it only wants to see /{db/{collection}...
     
     _log.debug("constructed with path Uri : "+_pathUri);
   
+    // This gives us the valid Core server path URI by stripping the service
+    // prefix from the beginning of the path
     pathUri = _pathUri.replace(MetaAppConstants.META_REQUEST_PREFIX,"");
     pathURL = RuntimeParameters.getInstance().getCoreServer()+pathUri;
   
     _log.debug("constructed with path URL : "+pathURL);
   }
   
-  // proxy GET request
+  /*------------------------------------------------------------------------
+   * proxyGetRequest
+   * -----------------------------------------------------------------------*/
   public CoreResponse proxyGetRequest(){
     // path url here has stripped out /v3/meta to make the correct path request
     //  to core server
@@ -98,8 +102,8 @@ public class CoreRequest {
       String sb = coreResponse.getCoreResponsebody();
     
     } catch (IOException e) {
-      // todo log message
-      // todo throw a custom exception about request failure to core
+      // TODO log message
+      // TODO throw a custom exception about request failure to core
       e.printStackTrace();
     }
   
@@ -108,7 +112,9 @@ public class CoreRequest {
     return coreResponse;
   }
   
-  // proxy POST request
+  /*------------------------------------------------------------------------
+   * proxyPostRequest
+   * -----------------------------------------------------------------------*/
   public CoreResponse proxyPostRequest(String json){
     // path url here has stripped out /v3/meta to make the correct path request
     //  to core server
@@ -127,8 +133,8 @@ public class CoreRequest {
       String sb = coreResponse.getCoreResponsebody();
     
     } catch (IOException e) {
-      // todo log message
-      // todo throw a custom exception about request failure to core
+      // TODO log message
+      // TODO throw a custom exception about request failure to core
       e.printStackTrace();
     }
   
@@ -137,7 +143,9 @@ public class CoreRequest {
     return coreResponse;
   }
   
-  // proxy DELETE request
+  /*------------------------------------------------------------------------
+   * proxyDeleteRequest
+   * -----------------------------------------------------------------------*/
   public CoreResponse  proxyDeleteRequest(HttpHeaders _httpHeaders){
     // path url here has stripped out /v3/meta to make the correct path request
     //  to core server
@@ -168,8 +176,8 @@ public class CoreRequest {
       String sb = coreResponse.getCoreResponsebody();
     
     } catch (IOException e) {
-      // todo log message
-      // todo throw a custom exception about request failure to core
+      // TODO log message
+      // TODO throw a custom exception about request failure to core
       e.printStackTrace();
     }
   
@@ -178,7 +186,9 @@ public class CoreRequest {
     return coreResponse;
   }
   
-  // --------------------------------  proxy Patch request  --------------------------------
+  /*------------------------------------------------------------------------
+   * proxyPatchRequest
+   * -----------------------------------------------------------------------*/
   public CoreResponse proxyPatchRequest(String json) {
     // path url here has stripped out /v3/meta to make the correct path request
     //  to core server
@@ -197,8 +207,8 @@ public class CoreRequest {
       String sb = coreResponse.getCoreResponsebody();
     
     } catch (IOException e) {
-      // todo log message
-      // todo throw a custom exception about request failure to core
+      // TODO log message
+      // TODO throw a custom exception about request failure to core
       e.printStackTrace();
     }
   
