@@ -11,10 +11,11 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class V2PermissionsRegistry {
-  // Tracing.
+  
   private static final Logger _log = LoggerFactory.getLogger(V2PermissionsRegistry.class);
   
   private static Map<String, ArrayList<V2PermissionsDefinition>> map = new HashMap<String, ArrayList<V2PermissionsDefinition>>();
@@ -36,7 +37,10 @@ public class V2PermissionsRegistry {
   enum OP {
     GET, PUT, POST, PATCH, DELETE
   }
-
+  
+  /**
+   * This was a temporary method for statically filling the permissions registry
+   */
   private void fillMap() {
     // here comes file reading code with loop
     // ex. permissions spec meta:master:GET:StreamsTACCDB:wq_demo_project:
@@ -118,9 +122,13 @@ public class V2PermissionsRegistry {
    * initPermissions
    * ------------------------------------------------------*/
   private void initPermissions() {
+    // This method setsup the permissions registry by reading in
+    //  a json file with permissions defined.
+
     _log.debug("Initializing permissions ...");
     String permissionsFile = System.getenv("tapis.meta.security.permissions.file");
     
+    // If we can't load the permissions file we need to abort
     if(permissionsFile.isEmpty()){
       String msg = "Permissions definition file environment variable not set "
           + RuntimeParameters.SERVICE_NAME_META +"\n";
@@ -128,15 +136,18 @@ public class V2PermissionsRegistry {
       throw new TapisRuntimeException(msg);
     }
     
-    ArrayList<V2PermissionsDefinition> permsList = null;
-    
+    // If the permissions file does not exist, there is nothing we
+    // we can access and therefore we need to abort
     if(permissionsFile.isEmpty()){
-      String msg = "Permissions definition file is empty. "
+      String msg = "Permissions definition file does not exist. "
           + RuntimeParameters.SERVICE_NAME_META +"\n";
       _log.error(msg);
       throw new TapisRuntimeException(msg);
     }
+  
+    ArrayList<V2PermissionsDefinition> permsList = null;
     
+    // read in our permissions
     File file = new File(permissionsFile);
     FileReader reader = null;
     try {
@@ -157,6 +168,7 @@ public class V2PermissionsRegistry {
     JsonArray jsonArray;
     jsonArray = gson.fromJson(reader, JsonArray.class);
     Iterator<JsonElement> it = jsonArray.iterator();
+    
     while (it.hasNext()) {
       JsonElement element = it.next();
       String result = gson.toJson(element);
@@ -174,17 +186,27 @@ public class V2PermissionsRegistry {
         map.get(tenant).add(permDef);
       }
     }
+  
+    try {
+      reader.close();
+    } catch (IOException e) {
+      // log and swallow this exception
+      String msg = "Permissions file has been read but won't close. "
+          + RuntimeParameters.SERVICE_NAME_META +"\n"
+          + e.getMessage();
+      _log.error(msg);
+
+    }
   }
   
   /*-------------------------------------------------------
    * isPermitted
      // Our permission request has the request path and valid roles for the user
-     //  we compare the permissions request object to our
+     // we compare the permissions request object to our
      // list of permissions by tenant (ex. dev) and iterate over our permissions
-     // by checking the role of each permission definition against the roles in the users rolelist
-     // with role Internal/vdj until
-     // we need to search the users role list for a valid role in this tenant.
-     // the valid role will be found from the list of permission definitions for the tenant.
+     // by checking the role of each permission definition against the roles in the users role list.
+     // We search the users role list for a valid role in this tenant.
+     // The valid role will be found from the list of permission definitions for the tenant.
 
    * ------------------------------------------------------*/
    public static boolean isPermitted(V2PermissionsRequest v2PermissionsRequest){
@@ -195,8 +217,8 @@ public class V2PermissionsRegistry {
      // check the role defined in the permission definition against our user roleList
   
      // An AND list of comparisons that result in a boolean for isPermitted.
-     // 1. get a list of definitions that match the role (may need to iterate)
-     // 2. does the request op match anything in the op list for the definition (only one match)
+     // 1. get a list of definitions that match the role
+     // 2. does the request op match anything in the ops list for the definition (only one match)
      // 3. do the db's match
      
      boolean isPermitted = false;
@@ -204,12 +226,12 @@ public class V2PermissionsRegistry {
        _log.debug("No permissions found for "+v2PermissionsRequest.getTenant()+" tenant.");
        return isPermitted;
      }
-     
+  
+     // we always return with the first permitted action that matches our request.
+     // there may be more but they will never be evaluated.
      for (V2PermissionsDefinition permDefinition : permissionsList) {
        System.out.println(permDefinition.getRole());
        boolean foundPermitted = permDefinition.isPermitted(v2PermissionsRequest);
-       // we always return with the first permitted action that matches our request.
-       // there may be more but they will never be evaluated.
        if (foundPermitted) {
          return foundPermitted;
        }

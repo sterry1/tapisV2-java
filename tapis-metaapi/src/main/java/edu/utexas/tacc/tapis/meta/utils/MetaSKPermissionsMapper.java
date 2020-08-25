@@ -36,7 +36,7 @@ public class MetaSKPermissionsMapper {
       String processed = uriPath.replace(MetaAppConstants.V2_URI_BASEPATH, "");
       
       StringTokenizer st = new StringTokenizer(processed,"/");
-      
+      // TODO comment on how this is supposed to work
       int resources = st.countTokens();
       switch(resources){
         case 0 : {

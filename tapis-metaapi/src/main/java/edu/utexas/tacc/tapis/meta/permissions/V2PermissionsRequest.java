@@ -30,18 +30,6 @@ public class V2PermissionsRequest {
     this.permSpec = mapper.getPermSpec();
   }
   
-/*
-  public boolean isPermitted(String role, String permSpec){
-    
-    return false;
-  }
-  
-  private void unPackPermSpec(String permSpec){
-    StringTokenizer stringTokenizer = new StringTokenizer(permSpec, ":");
-    // while()
-  }
-*/
-  
   public String getTenant() { return tenant; }
   
   public void setTenant(String tenant) { this.tenant = tenant; }

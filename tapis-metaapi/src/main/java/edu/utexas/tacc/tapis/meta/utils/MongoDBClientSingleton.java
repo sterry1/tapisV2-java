@@ -119,29 +119,6 @@ public class MongoDBClientSingleton {
             LOGGER.warn("Cannot get the MongoDb version.");
             serverVersion = "?";
         }
-
-        // check if db is configured as replica set
-/*
-        try {
-            // this throws an exception if not running as replica set
-            mongoClient.getDatabase("admin")
-                    .runCommand(new BsonDocument("replSetGetStatus",
-                            new BsonInt32(1)));
-            replicaSet = true;
-        } catch (MongoCommandException mce) {
-            if (mce.getCode() == 13) { // Unauthorized 
-                LOGGER.warn("Unable to check if MongoDb is configured as replica set. "
-                        + "The MongoDB user cannot execute replSetGetStatus() command. "
-                        + "Tip: add to the MongoDB user the built-in role 'clusterMonitor' that provides this action.");
-            }
-
-
-            replicaSet = false;
-        } catch (Throwable t) {
-            replicaSet = false;
-        }
-        */
-
     }
 
     /**

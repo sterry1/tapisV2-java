@@ -123,7 +123,8 @@ public class RuntimeParameters {
   
   }
   
-  /** Initialize the singleton instance of this class.
+  /**
+   * Initialize the singleton instance of this class.
    *
    * @return the non-null singleton instance of this class
    */
@@ -140,7 +141,8 @@ public class RuntimeParameters {
   /* ---------------------------------------------------------------------- */
   /* getRuntimeInfo:                                                        */
   /* ---------------------------------------------------------------------- */
-  /** Augment the buffer with printable text based mostly on the parameters
+  /**
+   * Augment the buffer with printable text based mostly on the parameters
    * managed by this class but also OS and JVM information.  The intent is
    * that the various job programs and utilities that rely on this class can
    * print their configuration parameters, including those from this class,
@@ -257,9 +259,7 @@ public class RuntimeParameters {
     this.logFile = logFile;
   }
   
-  public String getCoreServer() {
-    return coreServer;
-  }
+  public String getCoreServer() { return coreServer; }
   
   public void setCoreServer(String coreServer) {
     this.coreServer = coreServer;

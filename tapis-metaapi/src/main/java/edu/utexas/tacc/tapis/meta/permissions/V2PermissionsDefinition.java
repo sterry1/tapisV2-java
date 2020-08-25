@@ -1,9 +1,16 @@
 package edu.utexas.tacc.tapis.meta.permissions;
 
+import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class V2PermissionsDefinition {
+  // Tracing.
+  private static final Logger _log = LoggerFactory.getLogger(V2PermissionsDefinition.class);
+  
   private static final String service = "meta";
   private String tenant;
   private String role;

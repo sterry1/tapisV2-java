@@ -1,8 +1,14 @@
 package edu.utexas.tacc.tapis.meta.parameters;
 
+import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 import edu.utexas.tacc.tapis.shared.parameters.TapisEnv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetaEnv {
+  
+  // Tracing.
+  private static final Logger _log = LoggerFactory.getLogger(MetaEnv.class);
   
   private static String getEnvValue(MetaEnv.EnvVar envVar) {
     if (envVar == null) {
