@@ -68,14 +68,18 @@ public class CoreRequest {
     try {
       response = okHttpClient.newCall(coreRequest).execute();
       coreResponse.mapResponse(response);
-      String sb = coreResponse.getCoreResponsebody();
     } catch (SocketTimeoutException e){
       _log.debug("Timeout exception thrown because core server timed out the request.");
       _log.debug("Request that timed out: \n"+coreRequest.toString());
     } catch (IOException e) {
-      // TODO throw a custom exception about request failure to core
-      _log.debug("io exception");
-      e.printStackTrace();
+      StringBuilder msg = new StringBuilder()
+          .append("Connection to core server failed : ")
+          .append(e.getMessage());
+      _log.info(msg.toString());
+      // set a response to indicate server 500 error
+      coreResponse.setStatusCode(500);
+      coreResponse.setCoreMsg("Connection to core server failed");
+      coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
     _log.debug("call to host : GET "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
@@ -99,12 +103,16 @@ public class CoreRequest {
     try {
       response = okHttpClient.newCall(coreRequest).execute();
       coreResponse.mapResponse(response);
-      String sb = coreResponse.getCoreResponsebody();
-    
+      response.close();
     } catch (IOException e) {
-      // TODO log message
-      // TODO throw a custom exception about request failure to core
-      e.printStackTrace();
+      StringBuilder msg = new StringBuilder()
+          .append("Connection to core server failed : ")
+          .append(e.getMessage());
+      _log.info(msg.toString());
+      // set a response to indicate server 500 error
+      coreResponse.setStatusCode(500);
+      coreResponse.setCoreMsg("Connection to core server failed");
+      coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
     _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
@@ -130,12 +138,16 @@ public class CoreRequest {
     try {
       response = okHttpClient.newCall(coreRequest).execute();
       coreResponse.mapResponse(response);
-      String sb = coreResponse.getCoreResponsebody();
-    
+      response.close();
     } catch (IOException e) {
-      // TODO log message
-      // TODO throw a custom exception about request failure to core
-      e.printStackTrace();
+      StringBuilder msg = new StringBuilder()
+          .append("Connection to core server failed : ")
+          .append(e.getMessage());
+      _log.info(msg.toString());
+      // set a response to indicate server 500 error
+      coreResponse.setStatusCode(500);
+      coreResponse.setCoreMsg("Connection to core server failed");
+      coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
     _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
@@ -173,12 +185,16 @@ public class CoreRequest {
     try {
       response = okHttpClient.newCall(coreRequest).execute();
       coreResponse.mapResponse(response);
-      String sb = coreResponse.getCoreResponsebody();
-    
+      response.close();
     } catch (IOException e) {
-      // TODO log message
-      // TODO throw a custom exception about request failure to core
-      e.printStackTrace();
+      StringBuilder msg = new StringBuilder()
+          .append("Connection to core server failed : ")
+          .append(e.getMessage());
+      _log.info(msg.toString());
+      // set a response to indicate server 500 error
+      coreResponse.setStatusCode(500);
+      coreResponse.setCoreMsg("Connection to core server failed");
+      coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
     _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
@@ -204,12 +220,16 @@ public class CoreRequest {
     try {
       response = okHttpClient.newCall(coreRequest).execute();
       coreResponse.mapResponse(response);
-      String sb = coreResponse.getCoreResponsebody();
-    
+      response.close();
     } catch (IOException e) {
-      // TODO log message
-      // TODO throw a custom exception about request failure to core
-      e.printStackTrace();
+      StringBuilder msg = new StringBuilder()
+          .append("Connection to core server failed : ")
+          .append(e.getMessage());
+      _log.info(msg.toString());
+      // set a response to indicate server 500 error
+      coreResponse.setStatusCode(500);
+      coreResponse.setCoreMsg("Connection to core server failed");
+      coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
     _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
@@ -233,12 +253,16 @@ public class CoreRequest {
     try {
       response = okHttpClient.newCall(coreRequest).execute();
       coreResponse.mapResponse(response);
-      String sb = coreResponse.getCoreResponsebody();
-      
+      response.close();
     } catch (IOException e) {
-      // todo log message
-      // todo throw a custom exception about request failure to core
-      e.printStackTrace();
+      StringBuilder msg = new StringBuilder()
+          .append("Connection to core server failed : ")
+          .append(e.getMessage());
+      _log.info(msg.toString());
+      // set a response to indicate server 500 error
+      coreResponse.setStatusCode(500);
+      coreResponse.setCoreMsg("Connection to core server failed");
+      coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
     
     _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());

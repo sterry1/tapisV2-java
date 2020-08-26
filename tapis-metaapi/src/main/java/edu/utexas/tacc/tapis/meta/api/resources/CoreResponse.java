@@ -117,7 +117,18 @@ public class CoreResponse {
     }
     return sb.toString();
   }
-
+  
+  // the results from this call become the response body CoreResponse
+  // which in turn is sent back to user
+  protected String getBasicResponse(){
+    RespBasic resp = new RespBasic();
+    resp.status = String.valueOf(this.getStatusCode());
+    resp.message = this.coreMsg;
+    resp.version = TapisUtils.getTapisVersion();
+    resp.result = "";
+    return TapisGsonUtils.getGson().toJson(resp);
+  }
+  
   // TODO rename this to reflect generic basic response
   protected String getBasicResponse(String location){
     // Create a basic response to fill in for core server empty response
@@ -220,4 +231,7 @@ public class CoreResponse {
   
   public void setLocation(String location) { this.location = location; }
   
+  public String getCoreMsg() { return coreMsg; }
+  
+  public void setCoreMsg(String coreMsg) { this.coreMsg = coreMsg; }
 }
