@@ -87,7 +87,9 @@ public class CoreRequest {
     return coreResponse;
   }
   
-  // proxy PUT request
+  /*------------------------------------------------------------------------
+   * proxyPutRequest
+   * -----------------------------------------------------------------------*/
   public CoreResponse  proxyPutRequest(String json){
     // path url here has stripped out /v3/meta to make the correct path request
     //  to core server

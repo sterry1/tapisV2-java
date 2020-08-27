@@ -107,6 +107,9 @@ public class CoreResponse {
     }
   }
   
+  /*------------------------------------------------------------------------
+   * logResponseHeaders
+   * -----------------------------------------------------------------------*/
   private String logResponseHeaders() {
     StringBuilder sb = new StringBuilder();
     sb.append("Headers from core ...");
@@ -118,6 +121,9 @@ public class CoreResponse {
     return sb.toString();
   }
   
+  /*------------------------------------------------------------------------
+   * getBasicResponse
+   * -----------------------------------------------------------------------*/
   // the results from this call become the response body CoreResponse
   // which in turn is sent back to user
   protected String getBasicResponse(){
@@ -129,7 +135,9 @@ public class CoreResponse {
     return TapisGsonUtils.getGson().toJson(resp);
   }
   
-  // TODO rename this to reflect generic basic response
+  /*------------------------------------------------------------------------
+   * getBasicResponse(String location)
+   * -----------------------------------------------------------------------*/
   protected String getBasicResponse(String location){
     // Create a basic response to fill in for core server empty response
     RespBasic resp = new RespBasic();
@@ -149,8 +157,11 @@ public class CoreResponse {
     return TapisGsonUtils.getGson().toJson(resp);
   }
   
+  /*------------------------------------------------------------------------
+   * getOidFromLocation
+   * -----------------------------------------------------------------------*/
   private String getOidFromLocation(String location){
-    // need to parse location which looks like this from the core server response.
+    // need to parse location which looks something like this from the core server response.
     // http://c002.rodeo.tacc.utexas.edu:30401/StreamsTACCDB/sltCollectionTst/5ea5bf3ca93eebf39fcc563b
     StringTokenizer st = new StringTokenizer(location,"/");
     
@@ -184,6 +195,9 @@ public class CoreResponse {
     return etagValue;
   }
   
+  /*------------------------------------------------------------------------
+   * getLocationFromHeaders
+   * -----------------------------------------------------------------------*/
   public String getLocationFromHeaders(){
     String locationValue = null;
     if(headers.containsKey("Location")){
