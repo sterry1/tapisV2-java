@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Make sure the agave and aloe versions are set.
+if [[ -z "${AGAVE_VERSION}" ]]; then
+    echo 'ERROR: The AGAVE_VERSION environment must be set.'
+    exit 1
+fi
+if [[ -z "${ALOE_VERSION}" ]]; then
+    echo 'ERROR: The ALOE_VERSION environment must be set.'
+    exit 1
+fi
+
+# Start all containers.
+docker-compose -p aloe -f aloe.yml up -d
+docker-compose -p a -f a.yml up -d
+docker-compose -f RH4-prod-compose.yml up -d
+# docker-compose -f meta-security-core.yml up -d
+docker-compose -p proxy -f proxy.yml up -d
+

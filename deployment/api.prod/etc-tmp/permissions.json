@@ -1,0 +1,38 @@
+[
+  {
+    "tenant": "vdjserver.org",
+    "role": "Internal/vdjserver-org-services-admin",
+    "ops": ["GET","PUT","PATCH","POST","DELETE"],
+    "db": "v1airr"
+    },
+  {
+    "tenant": "vdjserver.org",
+    "role": "Internal/vdj-metav3",
+    "ops": ["GET"],
+    "db": "v1airr"
+  },
+  {
+    "tenant": "dev",
+    "role": "Internal/dev-services-admin",
+    "ops": ["GET","PUT","PATCH","POST","DELETE"],
+    "db": "v1airr"
+  },
+  {
+    "tenant": "dev",
+    "role": "Internal/everyone",
+    "ops": ["GET"],
+    "db": "v1airr"
+  },
+  {
+    "tenant": "designsafe",
+    "role": "Internal/designsafe-services-admin",
+    "ops": ["GET","PUT","PATCH","POST","DELETE"],
+    "db": "v1airr"
+  },
+  {
+    "tenant": "designsafe",
+    "role": "Internal/designsafe",
+    "ops": ["GET"],
+    "db": "v1airr"
+  }
+]

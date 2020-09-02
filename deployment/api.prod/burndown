@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Shutdown all containers.
+docker-compose -p proxy -f proxy.yml down
+docker-compose -p aloe -f aloe.yml down
+docker-compose -p a -f a.yml down
+docker-compose -f RH4-prod-compose.yml down
+# docker-compose -f meta-security-core.yml down
+
+

@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+  restheart:
+    # image: softinstigate/restheart:4.1.5
+    image: tapis/tapis-meta-rh-server:dev
+    container_name: restheart-aloe-prod
+    command: "java  -Dfile.encoding=UTF-8 -server -jar restheart.jar etc/restheart.yml --envFile etc/standalone.properties"
+    ports:
+      - "8199:8080"
+    # environment:
+    #   MONGO_URI: mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin
+    # networks:
+    #   - backend
+    # uncomment to overwrite the configuration files
+    volumes:
+      - ./etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro
+      - ./etc/standalone.properties:/opt/restheart/etc/standalone.properties:ro
+
