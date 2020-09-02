@@ -5,10 +5,25 @@
 ##############################################################
 
 ###   will list collections under v1airr
-GET http://api-prod-agave.tacc.utexas.edu:32770/v1airr
+GET http://api-prod-agave.tacc.utexas.edu:32777/v1airr
 Content-Type: application/json
 
 ###
+
+###   will list collections under designsafedb
+GET http://api-prod-agave.tacc.utexas.edu:32777/designsafedb
+Content-Type: application/json
+
+###
+
+###   will create designsafedb
+PUT http://api-prod-agave.tacc.utexas.edu:32777/designsafedb
+Content-Type: application/json
+
+###
+
+
+
 
 ##############################################################
 #
