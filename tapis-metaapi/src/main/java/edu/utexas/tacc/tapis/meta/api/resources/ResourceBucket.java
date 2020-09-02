@@ -810,5 +810,47 @@ public class ResourceBucket {
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
   }
   
+  /*-------------------------------------------------------
+   * Long Running Queries
+   * ------------------------------------------------------*/
+  
+  //  TODO ----------------   Post long running queries ----------------
+  @POST
+  @Path("/{db}/{collection}/_lrq")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public javax.ws.rs.core.Response submitLongRunningQuery(@PathParam("db") String db,
+                                                          @PathParam("collection") String collection,
+                                                          InputStream payload) {
+    // Trace this request.
+    if (_log.isTraceEnabled()) {
+      String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
+          "submitLongRunningQuery", _request.getRequestURL());
+      _log.trace(msg);
+      _log.trace("Submit a long running query to the queue " + db + "/" + collection);
+    }
+  
+    //  TODO ----------------   validate the json payload ----------------
+    // schema validation
+    // ? query or aggregation validation
+  
+    //  TODO ----------------   submit to book keeping ----------------
+    // create populate the DAO for entity
+    // give it a unique id
+  
+    //  TODO ----------------   package for message queue submission ----------------
+    // create a message and submit to msg client
+    // should I consider beanstalk for work queue?
+  
+    //  TODO ----------------   respond to user ----------------
+    // a LRQ was submitted
+    // if success
+    //   response will include link to status record
+    // else
+    //   response will indicate the error that occurred.
+    
+    return javax.ws.rs.core.Response.status(200).entity("{ TODO }").build();
+  }
+  
 }
 
