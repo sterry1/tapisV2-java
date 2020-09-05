@@ -1,4 +1,0 @@
-GET http://httpstat.us/200?sleep=320000
-Accept: application/json
-
-###

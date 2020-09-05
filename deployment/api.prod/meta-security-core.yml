@@ -21,7 +21,7 @@ meta-security:
    volumes:
       - '/var/log/splunk/meta-security:/opt/tomcat/logs'
       - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
-      - './etc-tmp/permissions.json:/opt/tomcat/etc/permissions.json'
+      - './etc/permissions.json:/opt/tomcat/etc/permissions.json'
 
 restheart:
    image: jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-rh-core:4.1.6

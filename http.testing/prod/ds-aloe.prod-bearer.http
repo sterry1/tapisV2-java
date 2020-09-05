@@ -1,0 +1,11 @@
+rsthrtapp
+Consumer Key : kavgw650DH0ZLzsXh4jdnDDvNlsa
+Consumer Secret : xruTbje8emH5taFEU_z9GgZWLVUa
+Access Token: b095a4a46242465097271fe551a414c7
+
+###
+GET https://agave.designsafe-ci.org/meta/v3/designsafedb
+Authorization: Bearer {{token}}
+Content-Type: application/json
+###
+

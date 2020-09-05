@@ -17,3 +17,4 @@ docker-compose -f RH4-prod-compose.yml up -d
 # docker-compose -f meta-security-core.yml up -d
 docker-compose -p proxy -f proxy.yml up -d
 
+# docker-compose -f meta-security-core.yml down; sleep 10; docker-compose -f meta-security-core.yml up -d; sleep 10; docker-compose -f meta-security-core.yml  logs --tail 100 -f
