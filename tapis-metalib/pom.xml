@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>edu.utexas.tacc.tapis</groupId>
-  <artifactId>LRQ-executor</artifactId>
-  <version>0.0.1</version>
-
   <parent>
     <groupId>edu.utexas.tacc.tapis</groupId>
-    <artifactId>tapis</artifactId>
-    <version>0.0.1</version>
+    <artifactId>tapisV2</artifactId>
+    <version>0.0.2</version>
   </parent>
 
-  <name>LRQ-executor</name>
+  <groupId>edu.utexas.tacc.tapis</groupId>
+  <artifactId>tapis-metalib</artifactId>
+  <version>0.0.2</version>
+  <packaging>jar</packaging>
+
+  <name>TapisV2 MetaV3 Lib</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -30,11 +31,6 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver</artifactId>
-      <version>3.11.2</version>
     </dependency>
     <dependency>
     <groupId>org.slf4j</groupId>
@@ -78,5 +74,10 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
+    <finalName>metalib</finalName>
+
   </build>
+
+
 </project>
