@@ -8,6 +8,11 @@ meta-security:
       - restheart
    ports:
       - "8199:8080"
+   log_driver: json-file
+   log_opt:
+      max-size: 100m
+      max-file: "5"
+
    environment:
       - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
       - 'aloe.envonly.skip.jwt.verify=true'

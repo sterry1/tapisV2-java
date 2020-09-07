@@ -4,27 +4,37 @@
 #
 meta-security:
    image: jenkins2.tacc.utexas.edu:5000/tapis/metaapi:0.0.2-T2dev
+   restart: "always"
+   log_driver: json-file
+   log_opt:
+      max-size: 100m
+      max-file: "5"
    container_name: metav3-tapisv2-security
    links:
       - restheart
    ports:
-      - "8198:8080"
+      - "8199:8080"
    environment:
       - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
       - 'aloe.envonly.skip.jwt.verify=true'
       - 'aloe_envonly_jwt_optional=false'
       - 'tapis.meta.core.server=http://restheart:8080/'
       - 'tapis.meta.coreserver.connection.timeout=5'
-      - 'tapis.meta.log.directory=/tmp/meta'
+      - 'tapis.meta.log.directory=/usr/local/tomcat/logs'
       - 'tapis.meta.log.file=meta-service.log'
       - 'tapis.meta.security.permissions.file=/opt/tomcat/etc/permissions.json'
+      - 'tapis.log.directory=/usr/local/tomcat/logs'
    volumes:
-      - '/var/log/splunk/meta-security:/opt/tomcat/logs'
+      - '/var/log/splunk/meta-security:/usr/local/tomcat/logs'
       - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
       - './etc/permissions.json:/opt/tomcat/etc/permissions.json'
 
 restheart:
    image: jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-rh-core:4.1.6
+   log_driver: json-file
+   log_opt:
+      max-size: 100m
+      max-file: "5"
    container_name: metav3-tapisv2-core
    command: 'java -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
    ports:
@@ -32,6 +42,6 @@ restheart:
    environment:
       - 'MONGO_URI=mongodb://129.114.58.190:27017'
    volumes:
-      - './etc-tmp/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
-      - './etc-tmp/config.properties:/opt/restheart/etc/config.properties:ro'
+      - './etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
+      - './etc/config.properties:/opt/restheart/etc/config.properties:ro'
       - '/var/log/splunk/meta-security:/var/log'

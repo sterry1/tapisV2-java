@@ -26,6 +26,13 @@
   </properties>
 
   <dependencies>
+    <!-- make mongodb parent dependency -->
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+      <version>3.12.2</version>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

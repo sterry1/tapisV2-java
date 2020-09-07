@@ -17,7 +17,7 @@
 #
 ###########################################################
 VER=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
-# VER=$VER
+
 TAPIS_ENV=$TAPIS_ENV
 export SRVC=meta
 export SRVC_API=${SRVC}api
@@ -40,7 +40,7 @@ echo "IMAGE_BUILD_DIR: $IMAGE_BUILD_DIR"
 echo "BUILD_FILE: $BUILD_FILE"
 echo "GIT_COMMIT: $GIT_COMMIT"
 echo "WAR_NAME: $WAR_NAME"
-echo ""
+echo "JAVA VERSION : $(java -version)"
 
 cd tapis-metaapi
 # echo " ***   do a build on metaapi  "
@@ -60,31 +60,33 @@ fi
 
 echo "";echo ""
 
-echo "***          copy the new service package directory to our docker build directory "
+echo "***   copy the new service package directory to our docker build directory "
 echo "***   cp -r $SRVC_DIR/$WAR_NAME ${IMAGE_BUILD_DIR}/ "
-           cp -r $SRVC_DIR/$WAR_NAME ${IMAGE_BUILD_DIR}/
+            cp -r $SRVC_DIR/$WAR_NAME ${IMAGE_BUILD_DIR}/
 
 echo "";echo ""
 
 echo " ***   jump to the deployment build directory "
 echo " ***   cd ${IMAGE_BUILD_DIR}"
              cd ${IMAGE_BUILD_DIR}
+
 echo "";echo ""
 
 echo "***      building the docker image from deployment directory docker build tapis-${SRVC_API}/Dockerfile"
 echo "***      docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV . "
                docker image build --build-arg VER=$VER --build-arg GIT_COMMIT=$GIT_COMMIT  -t $TAG-$TAPIS_ENV .
+               
 echo "";echo ""
 
-echo "***    push the image to docker hub "
-echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
-               export META_IMAGE=$TAG-$TAPIS_ENV
-echo "         push docker hub  -  $META_IMAGE   currently NA "
-               # docker push "$META_IMAGE"
-echo "         tag image for our private repository  -  jenkins2.tacc.utexas.edu:5000/$META_IMAGE"
-               docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
-               docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
+# echo "***    push the image to docker hub "
+ echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
+                export META_IMAGE=$TAG-$TAPIS_ENV
+# echo "         push docker hub  -  $META_IMAGE   currently NA "
+                # docker push "$META_IMAGE"
+ echo "***      tag image for our private repository  -  jenkins2.tacc.utexas.edu:5000/$META_IMAGE"
+                docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
+                # docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
 
 echo "***      "
 echo "***      rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}"
-             #  rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}
+               # rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}
