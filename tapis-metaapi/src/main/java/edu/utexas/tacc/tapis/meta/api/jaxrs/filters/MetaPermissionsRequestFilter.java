@@ -45,7 +45,7 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     
     // let's turn off permissions cd for testing without SK client calls
     if(!MetaAppConstants.TAPIS_ENVONLY_META_PERMISSIONS_CHECK){
-      _log.trace("Permissions Check is turned OFF!!! " + this.getClass().getSimpleName() + ".");
+      _log.debug("Permissions Check is turned OFF!!! " + this.getClass().getSimpleName() + ".");
       return;
     }
     

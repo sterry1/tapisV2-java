@@ -28,8 +28,8 @@
             <!-- Each file should be at most 500MB, keep 6 months worth of history, 
                  but at most a total of 10GB across all log files. -->
             <maxFileSize>500MB</maxFileSize>
-            <maxHistory>6</maxHistory>
-            <totalSizeCap>5GB</totalSizeCap>
+            <maxHistory>2</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
         	<!-- See console pattern for description. -->
@@ -38,7 +38,7 @@
     </appender>
   
     <!-- Root logger's appenders are inherited by other loggers by default -->
-    <root level="DEBUG">
+    <root level="ERROR">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>

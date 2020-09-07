@@ -69,8 +69,10 @@ public class CoreResponse {
     headers = coreResponse.headers().toMultimap();
     this.etag = coreResponse.header("ETag");
     this.location = coreResponse.header("Location");
-    
-    _log.debug(logResponseHeaders());
+  
+    if (_log.isDebugEnabled()) {
+      _log.debug(logResponseHeaders());
+    }
   }
   
   /*------------------------------------------------------------------------
@@ -82,7 +84,7 @@ public class CoreResponse {
     try {
       coreResponsebody = responseBody.string();
     } catch (IOException e) {
-      _log.debug("response body exception thrown");
+      _log.warn("response body exception thrown");
       e.printStackTrace();
     }
   }
@@ -103,7 +105,9 @@ public class CoreResponse {
     _log.debug("response body output ");
     _log.debug("size of response body : " + coreResponsebody);
     if (coreResponsebody.length() > 0) {
-      _log.debug("response : \n" + coreResponsebody.toString());
+      if (_log.isDebugEnabled()) {
+        _log.debug("response : \n" + coreResponsebody.toString());
+      }
     }
   }
   

@@ -33,15 +33,19 @@ public class CoreRequest {
   public CoreRequest(String _pathUri){
     // The core server doesn't understand the /v3/meta prefix on the URI path.
     // it only wants to see /{db/{collection}...
-    
-    _log.debug("constructed with path Uri : "+_pathUri);
+  
+    if (_log.isDebugEnabled()) {
+      _log.debug("constructed with path Uri : " + _pathUri);
+    }
   
     // This gives us the valid Core server path URI by stripping the service
     // prefix from the beginning of the path
     pathUri = _pathUri.replace(MetaAppConstants.META_REQUEST_PREFIX,"");
     pathURL = RuntimeParameters.getInstance().getCoreServer()+pathUri;
   
-    _log.debug("constructed with path URL : "+pathURL);
+    if (_log.isDebugEnabled()) {
+      _log.debug("constructed with path URL : " + pathURL);
+    }
   }
   
   /*------------------------------------------------------------------------
@@ -75,14 +79,16 @@ public class CoreRequest {
       StringBuilder msg = new StringBuilder()
           .append("Connection to core server failed : ")
           .append(e.getMessage());
-      _log.info(msg.toString());
+      _log.error(msg.toString());
       // set a response to indicate server 500 error
       coreResponse.setStatusCode(500);
       coreResponse.setCoreMsg("Connection to core server failed");
       coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
-    _log.debug("call to host : GET "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
+    if (_log.isDebugEnabled()) {
+      _log.debug("call to host : GET " + pathURL + "\n" + "response : \n" + coreResponse.getCoreResponsebody());
+    }
     
     return coreResponse;
   }
@@ -110,14 +116,16 @@ public class CoreRequest {
       StringBuilder msg = new StringBuilder()
           .append("Connection to core server failed : ")
           .append(e.getMessage());
-      _log.info(msg.toString());
+      _log.error(msg.toString());
       // set a response to indicate server 500 error
       coreResponse.setStatusCode(500);
       coreResponse.setCoreMsg("Connection to core server failed");
       coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
-    _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
+    if (_log.isDebugEnabled()) {
+      _log.debug("call to host : " + pathURL + "\n" + "response : \n" + coreResponse.getCoreResponsebody());
+    }
   
     return coreResponse;
   }
@@ -145,14 +153,16 @@ public class CoreRequest {
       StringBuilder msg = new StringBuilder()
           .append("Connection to core server failed : ")
           .append(e.getMessage());
-      _log.info(msg.toString());
+      _log.error(msg.toString());
       // set a response to indicate server 500 error
       coreResponse.setStatusCode(500);
       coreResponse.setCoreMsg("Connection to core server failed");
       coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
-    _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
+    if(_log.isDebugEnabled()){
+      _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
+    }
   
     return coreResponse;
   }
@@ -199,7 +209,9 @@ public class CoreRequest {
       coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
-    _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
+    if (_log.isDebugEnabled()) {
+      _log.debug("call to host : " + pathURL + "\n" + "response : \n" + coreResponse.getCoreResponsebody());
+    }
   
     return coreResponse;
   }
@@ -234,7 +246,9 @@ public class CoreRequest {
       coreResponse.setCoreResponsebody(coreResponse.getBasicResponse());
     }
   
-    _log.debug("call to host : "+pathURL+"\n"+"response : \n"+coreResponse.getCoreResponsebody());
+    if (_log.isDebugEnabled()) {
+      _log.debug("call to host : " + pathURL + "\n" + "response : \n" + coreResponse.getCoreResponsebody());
+    }
   
     return coreResponse;
   }

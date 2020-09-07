@@ -10,15 +10,20 @@
         <version>0.0.2</version>
     </parent>
 
-
-    <artifactId>metaV3</artifactId>
+    <groupId>edu.utexas.tacc.tapis</groupId>
+    <artifactId>tapis-metaapi</artifactId>
+    <version>0.0.2</version>
     <packaging>war</packaging>
 
     <name>TapisV2 MetaV3 API</name>
     <description>Tapis Meta V3 web application</description>
+    <!-- FIXME change it to the project's website -->
+    <url>http://www.example.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.13</maven.compiler.source>
+        <maven.compiler.target>1.13</maven.compiler.target>
         <!-- works with v4.3 and forward; see .travis.yml -->
         <httpclient.version>4.5.6</httpclient.version>
         <!-- the last version to provide LocalTestServer.java -->
@@ -26,11 +31,17 @@
     </properties>
 
     <dependencies>
-        <!-- MongoDB -->
+        <dependency>
+            <groupId>edu.utexas.tacc.tapis</groupId>
+            <artifactId>tapis-metalib</artifactId>
+            <version>0.0.2</version>
+            <scope>compile</scope>
+        </dependency>    <!-- make mongodb parent dependency -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.11.2</version>
+            <version>3.12.2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>edu.utexas.tacc.aloe</groupId>

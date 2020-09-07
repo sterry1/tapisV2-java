@@ -239,7 +239,8 @@ public class ResourceBucket {
         jsonPayloadToProxy.append(line);
       }
     } catch (Exception e) {
-      _log.debug("Error Parsing: - ");
+      // TODO finish out
+      _log.error("Error Parsing: - ");
     }
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
@@ -349,7 +350,8 @@ public class ResourceBucket {
         jsonPayloadToProxy.append(line);
       }
     } catch (Exception e) {
-      _log.debug("Error Parsing: - ");
+      // TODO finish out
+      _log.error("Error Parsing: - ");
     }
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
@@ -470,7 +472,8 @@ public class ResourceBucket {
         jsonPayloadToProxy.append(line);
       }
     } catch (Exception e) {
-      _log.debug("Error Parsing: - ");
+      // TODO finish out
+      _log.error("Error Parsing: - ");
     }
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
@@ -556,7 +559,8 @@ public class ResourceBucket {
         jsonPayloadToProxy.append(line);
       }
     } catch (Exception e) {
-      _log.debug("Error Parsing: - ");
+      // TODO finish out
+      _log.error("Error Parsing: - ");
     }
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
@@ -608,7 +612,8 @@ public class ResourceBucket {
         jsonPayloadToProxy.append(line);
       }
     } catch (Exception e) {
-      _log.debug("Error Parsing: - ");
+      // TODO finish out
+      _log.error("Error Parsing: - ");
     }
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
