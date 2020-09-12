@@ -17,11 +17,18 @@ Content-Type: application/json
     });
 %}
 
-###
+###  default doc list
 GET https://dev.tenants.aloedev.tacc.cloud/meta/v3/v1airr/rearrangement
 Authorization: Bearer {{token}}
 Content-Type: application/json
 ###
+
+###  meta data for rearrangement
+GET https://dev.tenants.aloedev.tacc.cloud/meta/v3/v1airr/rearrangement/_meta
+Authorization: Bearer {{token}}
+Content-Type: application/json
+###
+
 
 ##############################################################
 #

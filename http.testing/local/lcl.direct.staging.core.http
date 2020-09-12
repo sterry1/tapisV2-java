@@ -1,0 +1,49 @@
+###  we want to check that PUT new name collection w/o document creates new collection
+#
+PUT http://aloe-dev06.tacc.utexas.edu:8080/v1airr/tstmecollection
+Content-Type: application/json
+###  201
+# running the above a second time removes the aggrs value from properties
+
+
+###  we want to check that PUT new name collection with document creates new document in collection?
+#
+PUT http://aloe-dev06.tacc.utexas.edu:8080/v1airr/tstmecollection
+Content-Type: application/json
+
+{ "aggrs" : [
+  {
+    "stages": [
+      { "$match": { "$var":"match" } },
+      { "$group": { "_id": { "$var":"field" }, "count": { "$sum": 1}}}
+    ],
+    "type":"pipeline",
+    "uri":"tst3facets"
+  }
+]
+}
+
+###   creates aggrs property returns a 200
+
+###  we want to check that PATCH existing collection with property aggrs creates modifies aggrs
+#
+PATCH http://aloe-dev06.tacc.utexas.edu:8080/v1airr/tstmecollection
+Content-Type: application/json
+
+{ "aggrs" : [
+  {
+    "stages": [
+      { "$match": { "$var":"match" } },
+      { "$group": { "_id": { "$var":"field" }, "count": { "$sum": 1}}}
+    ],
+    "type":"pipeline",
+    "uri":"tst4facets"
+  }
+]
+}
+
+###   creates aggrs property returns a 200
+
+
+
+
