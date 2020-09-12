@@ -4,11 +4,6 @@
 #
 meta-security:
    image: jenkins2.tacc.utexas.edu:5000/tapis/metaapi:0.0.2-T2dev
-   restart: "always"
-   log_driver: json-file
-   log_opt:
-      max-size: 100m
-      max-file: "5"
    container_name: metav3-tapisv2-security
    links:
       - restheart
@@ -31,10 +26,6 @@ meta-security:
 
 restheart:
    image: jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-rh-core:4.1.6
-   log_driver: json-file
-   log_opt:
-      max-size: 100m
-      max-file: "5"
    container_name: metav3-tapisv2-core
    command: 'java -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
    ports:

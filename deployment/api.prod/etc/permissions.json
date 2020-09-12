@@ -12,27 +12,15 @@
     "db": "v1airr"
   },
   {
-    "tenant": "dev",
-    "role": "Internal/dev-services-admin",
-    "ops": ["GET","PUT","PATCH","POST","DELETE"],
-    "db": "v1airr"
-  },
-  {
-    "tenant": "dev",
-    "role": "Internal/everyone",
-    "ops": ["GET"],
-    "db": "v1airr"
-  },
-  {
     "tenant": "designsafe",
     "role": "Internal/designsafe-services-admin",
     "ops": ["GET","PUT","PATCH","POST","DELETE"],
-    "db": "v1airr"
+    "db": "designsafedb"
   },
   {
     "tenant": "designsafe",
     "role": "Internal/designsafe",
     "ops": ["GET"],
-    "db": "v1airr"
+    "db": "designsafedb"
   }
 ]
