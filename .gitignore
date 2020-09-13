@@ -78,3 +78,4 @@ Icon
 /proxy/
 /http.testing/tmp.json
 /http.testing/tmpresult.json
+/deployment/mongodb/dbdata/
