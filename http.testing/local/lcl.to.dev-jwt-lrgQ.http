@@ -4,8 +4,28 @@ X-JWT-Assertion-dev: {{jwt}}
 Content-Type: application/json
 ###
 
+###   add the rearrangement_0 collection
+PUT http://localhost:8199/meta/v3/v1airr/rearrangement/_aggrs
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+{
+  "aggrs": [
+    {
+      "stages": [
+        {"$match": {"$var": "match"}},
+        {"$group": {"_id": {"$var": "field"}, "count": {"$sum": 1}}}
+      ],
+      "type": "pipeline",
+      "uri": "tst5facets"
+    }
+  ]
+}
+
+###
+
 ###  short version of GET for aggregation
-GET http://localhost:8199/meta/v3/v1airr/rearrangement/_aggrs/facets?avars={"match":{"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}},"field":"$repertoire_id"}
+GET http://localhost:8199/meta/v3/v1airr/rearrangement/_aggrs/tst5facets?avars={"match":{"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}},"field":"$repertoire_id"}
 X-JWT-Assertion-dev: {{jwt}}
 Content-Type: application/json
 
