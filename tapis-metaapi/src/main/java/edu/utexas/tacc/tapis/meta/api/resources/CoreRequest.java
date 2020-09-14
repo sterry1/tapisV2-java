@@ -101,6 +101,9 @@ public class CoreRequest {
     //  to core server
     MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     RequestBody body = RequestBody.create(json, JSON);
+    // PUT may be used for creating a Collection or DB without any json body
+    // but may also be used for inserting a document into a collection !!!
+    // we need to distinguish by whether json parameter is null or not.
     okhttp3.Request coreRequest = new Request.Builder()
         .url(pathURL)
         .put(body)

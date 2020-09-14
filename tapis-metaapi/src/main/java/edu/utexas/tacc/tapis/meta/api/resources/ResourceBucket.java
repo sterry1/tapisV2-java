@@ -160,7 +160,8 @@ public class ResourceBucket {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response createCollection(@PathParam("db") String db,
-                                                    @PathParam("collection") String collection) {
+                                                    @PathParam("collection") String collection,
+                                                    InputStream payload) {
     
     // Trace this request.
     if (_log.isTraceEnabled()) {
@@ -170,9 +171,33 @@ public class ResourceBucket {
       _log.trace("create collection " + collection + " in " + db);
     }
     
-    // Proxy the PUTT request and handle any exceptions
+    // TODO
+    // Get the json payload to proxy to back end;
+    StringBuilder jsonPayloadToProxy = new StringBuilder();
+  
+    try {
+      BufferedReader in = new BufferedReader(new InputStreamReader(payload));
+      String line = null;
+      while ((line = in.readLine()) != null) {
+        jsonPayloadToProxy.append(line);
+      }
+    } catch (Exception e) {
+      // if payload is null we could end up here
+      _log.debug("Error Parsing: - ");
+    }
+    String jsonPayload = jsonPayloadToProxy.toString();
+    _log.debug("Data Received: " + jsonPayload);
+    
+    if (StringUtils.isEmpty(jsonPayload)){
+      jsonPayload = "{}";
+    }
+  
+    // Proxy the PUT request and handle any exceptions
+    // this request assumes a new collection. running this request on an existing collection
+    //  will remove any RH properties for the collection including any aggregations.
+    // Essentially signaling you intend to start over.
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
-    CoreResponse coreResponse = coreRequest.proxyPutRequest("{}");
+    CoreResponse coreResponse = coreRequest.proxyPutRequest(jsonPayload);
     
     // ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
@@ -669,12 +694,11 @@ public class ResourceBucket {
    * addAggregation
    * -----------------------------------------------------------------------*/
   @PUT
-  @Path("/{db}/{collection}/_aggr/{aggregation}")
+  @Path("/{db}/{collection}/_aggrs")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response addAggregation(@PathParam("db") String db,
                                                   @PathParam("collection") String collection,
-                                                  @PathParam("aggregation") String aggregation,
                                                   InputStream payload) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
@@ -699,8 +723,18 @@ public class ResourceBucket {
     
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
     
+    // uri /meta/v3/v1airr/rearrangement/_aggrs
+    // this endpoint takes the _aggrs designation. we do this because we don't
+    //  want to overload the PUT /db/collection endpoint between properties added to metadata in a collection
+    //  and adding an aggregation.
+    // this is cleaner but requires us to strip away the _aggrs designation in order to forward the request
+    // to the core server.
+  
+    String _pathUri = _request.getRequestURI();
+    String pathUri = _pathUri.replace("/_aggrs", "");
+    
     // Proxy the PUT request and handle any exceptions
-    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
+    CoreRequest coreRequest = new CoreRequest(pathUri);
     CoreResponse coreResponse = coreRequest.proxyPutRequest(jsonPayloadToProxy.toString());
     
     //---------------------------- Response -------------------------------
@@ -758,6 +792,8 @@ public class ResourceBucket {
     }
     // we want to capture the oversize avars parameter in a request body
     // to use as a submission to RH core server in a GET.
+    // This does not submit a new aggregation pipeline only the avars parameters
+    // for an existing aggregation
     
     // Get the json payload to proxy to back end
     StringBuilder jsonPayloadToProxy = new StringBuilder();
@@ -777,7 +813,7 @@ public class ResourceBucket {
     _log.debug("Data Received: " + jsonPayloadToProxy.toString());
     
     String inComingRequest = _request.getRequestURI();
-    StringBuilder newUriPath = new StringBuilder(); ///meta/v3/v1airr/rearrangement/_aggrs/facets
+    StringBuilder newUriPath = new StringBuilder(); //  /meta/v3/v1airr/rearrangement/_aggrs/facets
     newUriPath.append(inComingRequest)
               .append(jsonPayloadToProxy.toString()).append("&" + _request.getQueryString());
 

@@ -60,6 +60,7 @@ public class RuntimeParameters {
   // default core server setup
   private String  coreServer = "http://restheart:8080/";
   private String coreserver_connection_timeout="3";   // default 2 minutes
+  private boolean permissionsCheck=true;
   
   // these need to move to shared library
   public static final String SERVICE_NAME_META  = "meta";
@@ -84,6 +85,9 @@ public class RuntimeParameters {
 
     String parm = System.getenv("tapis.meta.core.server");
     if (!StringUtils.isBlank(parm)) setCoreServer(parm);
+  
+    parm = System.getenv("tapis.meta.permissions.check");
+    if (!StringUtils.isBlank(parm)) setPermissionsCheck(Boolean.valueOf(parm));
   
     // String parm = inputProperties.getProperty(TapisEnv.EnvVar.TAPIS_LOG_DIRECTORY.getEnvName());
     parm = inputProperties.getProperty("tapis.meta.log.directory");
@@ -261,13 +265,15 @@ public class RuntimeParameters {
   
   public String getCoreServer() { return coreServer; }
   
-  public void setCoreServer(String coreServer) {
-    this.coreServer = coreServer;
-  }
+  public void setCoreServer(String coreServer) { this.coreServer = coreServer; }
   
   public String getCoreserver_connection_timeout() { return coreserver_connection_timeout; }
   
   public void setCoreserver_connection_timeout(String coreserver_connection_timeout) { this.coreserver_connection_timeout = coreserver_connection_timeout; }
+  
+  public boolean isPermissionsCheck() { return permissionsCheck; }
+  
+  public void setPermissionsCheck(boolean permissionsCheck) { this.permissionsCheck = permissionsCheck; }
   
   public void setServiceJWT(){
     _log.debug("calling setServiceJWT ...");

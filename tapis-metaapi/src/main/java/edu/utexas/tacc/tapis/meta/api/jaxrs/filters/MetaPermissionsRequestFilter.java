@@ -43,15 +43,15 @@ public class MetaPermissionsRequestFilter implements ContainerRequestFilter {
     if (_log.isTraceEnabled())
       _log.trace("Executing Permissions request filter: " + this.getClass().getSimpleName() + ".");
     
-    // let's turn off permissions cd for testing without SK client calls
-    if(!MetaAppConstants.TAPIS_ENVONLY_META_PERMISSIONS_CHECK){
+    //   get the path and jwt from runtime parameters
+    RuntimeParameters runTime = RuntimeParameters.getInstance();
+  
+    // let's turn off permissions check for testing
+    if(!runTime.isPermissionsCheck()){
       _log.debug("Permissions Check is turned OFF!!! " + this.getClass().getSimpleName() + ".");
       return;
     }
-    
-    //   get the path and jwt from runtime parameters
-    RuntimeParameters runTime = RuntimeParameters.getInstance();
-    
+  
     //   map the request to permissions need the user roles, tenant and request information
     V2PermissionsRequest
         permissionsRequest = mapRequestToPermissions(requestContext,threadContext.getTenantId(),threadContext.getRoleList());
