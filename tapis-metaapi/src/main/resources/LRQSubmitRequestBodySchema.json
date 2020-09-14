@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "query_type": {
+        "type": "string"
+    },
+    "query": {
+      "type": "object"
+    },
+    "aggregation": {
+      "type": "array"
+    },
+    "notification": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "query",
+    "aggregation"
+  ]
+}
