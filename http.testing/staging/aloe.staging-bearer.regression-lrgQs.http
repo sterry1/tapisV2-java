@@ -55,7 +55,7 @@ Content-Type: application/json
 #  create a document in /meta/v3/{{db}}/{{collection}}
 # adding a name on the end of a PUT will create a document by that name and basic response  !!! PUT doesn't return basic response
 ###
-PUT https://dev.tenants.aloestaging.tacc.cloud/meta/v3/{{db}}/{{collection}}/tstDoc1?basic=true
+PUT https://dev.tenants.aloestaging.tacc.cloud/meta/v3/TestMetaDB/tstTmp/tstDoc1?basic=true
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -101,7 +101,7 @@ Content-Type: application/json
 ##############################################################
 
 ###   db list collections
-GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/{{db}}
+GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/TestMetaDB
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

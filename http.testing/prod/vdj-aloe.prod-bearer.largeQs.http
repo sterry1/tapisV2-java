@@ -1,3 +1,44 @@
+##############################################################
+#  Scott - 9.16 evening
+#  reproduce problem with paging and pagesize pass thru for
+#   security container to core
+#  /meta/v3/v1airr/rearrangement_small/_aggrs/facets?avars={"match":{"v_gene":"TRBV20-1"},"field":"$repertoire_id"}
+#############################################################
+# curl  -H 'Authorization: Bearer b8f4aaf7aa1e975f4157397d8c9a14' -H 'Content-Type: application/json' 'https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_small/_aggrs/facets?avars=%7B%22match%22%3A%7B%22v_gene%22%3A%22TRBV20-1%22%7D%2C%22field%22%3A%22%24repertoire_id%22%7D&page=1&pagesize=1000'
+###  1. small aggregation pagesize. appears to using default pagesize of 100
+#    this is going thru the frontdoor and security. need to test going thru the backdooor
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_small/_aggrs/facets?avars=%7B%22match%22%3A%7B%22v_gene%22%3A%22TRBV20-1%22%7D%2C%22field%22%3A%22%24repertoire_id%22%7D&page=5
+Authorization: Bearer e29050e698c6ba99da3ca1a21dc34f
+Content-Type: application/json
+
+
+###  1009988081734184470-242ac113-0001-012
+
+###  1.1 backdoor test of small aggregation pagesize doesn't influence but page does. appears to using default pagesize of 100
+GET http://api-prod-agave.tacc.utexas.edu:8080/v1airr/rearrangement_small/_aggrs/facets?avars=%7B%22match%22%3A%7B%22v_gene%22%3A%22TRBV20-1%22%7D%2C%22field%22%3A%22%24repertoire_id%22%7D&page=1&pagesize=1000
+# Authorization: Bearer e29050e698c6ba99da3ca1a21dc34f
+Content-Type: application/json
+
+
+###  1009988081734184470-242ac113-0001-012
+
+###  1.2 local debug test of small aggregation pagesize doesn't influence but page does. appears to using default pagesize of 100
+# check permissions false, jwt optional true, jwt skip validate true
+# use vdj admin jwt
+# no page or pagesize query parameters
+GET http://localhost:8199/meta/v3/v1airr/rearrangement_small/_aggrs/facets?avars=%7B%22match%22%3A%7B%22v_gene%22%3A%22TRBV20-1%22%7D%2C%22field%22%3A%22%24repertoire_id%22%7D&pagesize=1000
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+###  1009988081734184470-242ac113-0001-012
+
+##############################################################
+#  end Scott - 9.16 evening
+#
+#############################################################
+
+
+
 # curl -X PUT --data aggregations.json -H 'Content-Type: application/json' -H 'Authorization: Bearer 885435b6e634f1e51fdfdde15b78aa21' https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0
 PUT https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0
 Authorization: Bearer 885435b6e634f1e51fdfdde15b78aa21

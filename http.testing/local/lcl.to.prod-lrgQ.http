@@ -5,7 +5,7 @@
 ##############################################################
 
 ###   will list aggrs and other properties for this collection
-GET http://localhost:8199/meta/v3/v1airr/rearrangement/_meta
+GET http://localhost:8199/meta/v3/v1airr/rearrangement_0/_meta
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 ###
