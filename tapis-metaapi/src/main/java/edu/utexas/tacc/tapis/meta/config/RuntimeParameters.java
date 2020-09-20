@@ -1,5 +1,6 @@
 package edu.utexas.tacc.tapis.meta.config;
 
+import edu.utexas.tacc.aloe.shared.parameters.AloeEnv;
 import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisException;
 import edu.utexas.tacc.tapis.shared.exceptions.runtime.TapisRuntimeException;
@@ -55,7 +56,7 @@ public class RuntimeParameters {
   private ServiceJWT serviceJWT;
   
   // The slf4j/logback target directory and file.
-  private String  logDirectory ="/tmp/meta";
+  private String  logDirectory ="/usr/local/tomcat/logs";
   private String  logFile ="meta-service.log";
   // default core server setup
   private String  coreServer = "http://restheart:8080/";
@@ -89,12 +90,13 @@ public class RuntimeParameters {
     parm = System.getenv("tapis.meta.permissions.check");
     if (!StringUtils.isBlank(parm)) setPermissionsCheck(Boolean.valueOf(parm));
   
-    // String parm = inputProperties.getProperty(TapisEnv.EnvVar.TAPIS_LOG_DIRECTORY.getEnvName());
-    parm = inputProperties.getProperty("tapis.meta.log.directory");
+    parm = inputProperties.getProperty("tapis.log.directory");
     if (!StringUtils.isBlank(parm)) setLogDirectory(parm);
   
-    parm = inputProperties.getProperty("tapis.meta.log.file");
+    parm = inputProperties.getProperty("tapis.log.file");
     if (!StringUtils.isBlank(parm)) setLogFile(parm);
+  
+
   
     parm = System.getenv("tapis.meta.coreserver.connection.timeout");
     if (!StringUtils.isBlank(parm)){
@@ -118,13 +120,6 @@ public class RuntimeParameters {
       throw new TapisRuntimeException(msg, e);
     }
     
-/*
-    parm = inputProperties.getProperty("tapis.meta.service.token");
-    if (!StringUtils.isBlank(parm)) setMetaToken(parm);
-*/
-  
-  
-  
   }
   
   /**
@@ -157,9 +152,9 @@ public class RuntimeParameters {
   public void getRuntimeInfo(StringBuilder buf)
   {
     buf.append("\n------- Logging -----------------------------------");
-    buf.append("\ntapis.meta.log.directory: ");
+    buf.append("\ntapis.log.directory: ");
     buf.append(this.getLogDirectory());
-    buf.append("\ntapis.meta.log.file: ");
+    buf.append("\ntapis.log.file: ");
     buf.append(this.getLogFile());
     
     buf.append("\n\n------- Network -----------------------------------");
@@ -175,6 +170,8 @@ public class RuntimeParameters {
     buf.append(this.getCoreServer());
     buf.append("\ntapis.meta.coreserver.connection.timeout: ");
     buf.append(this.getCoreserver_connection_timeout());
+    buf.append("\ntapis.meta.permissions.check: ");
+    buf.append(this.isPermissionsCheck());
   
     
     buf.append("\n\n------- EnvOnly Configuration ---------------------");
@@ -186,7 +183,12 @@ public class RuntimeParameters {
     buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_JWT_OPTIONAL));
     buf.append("\ntapis.envonly.skip.jwt.verify: ");
     buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_SKIP_JWT_VERIFY));
-    
+  
+    buf.append("\naloe.envonly.jwt.optional: ");
+    buf.append(AloeEnv.getBoolean(AloeEnv.EnvVar.ALOE_ENVONLY_JWT_OPTIONAL));
+    buf.append("\naloe.envonly.skip.jwt.verify: ");
+    buf.append(AloeEnv.getBoolean(AloeEnv.EnvVar.ALOE_ENVONLY_SKIP_JWT_VERIFY));
+
     buf.append("\n\n------- Java Configuration ------------------------");
     buf.append("\njava.version: ");
     buf.append(System.getProperty("java.version"));
@@ -247,9 +249,7 @@ public class RuntimeParameters {
     this.metaToken = metaToken;
   }
   
-  public String getLogDirectory() {
-    return logDirectory;
-  }
+  public String getLogDirectory() { return logDirectory; }
   
   public void setLogDirectory(String logDirectory) {
     this.logDirectory = logDirectory;

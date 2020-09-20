@@ -751,6 +751,8 @@ public class ResourceBucket {
   public javax.ws.rs.core.Response useAggregation(@PathParam("db") String db,
                                                   @PathParam("collection") String collection,
                                                   @PathParam("aggregation") String aggregation,
+                                                  @QueryParam("page") String page,
+                                                  @QueryParam("pagesize") String pagesize,
                                                   @QueryParam("avars") String avars) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
@@ -758,11 +760,11 @@ public class ResourceBucket {
           "getAggregation", _request.getRequestURL());
       _log.trace(msg);
       _log.trace("Get aggregation " + aggregation + " in " + db + "/" + collection);
-      _log.trace("avars: " + avars);
+      _log.trace("avars: " + avars + "page: "+ page +"pagesize: "+pagesize);
     }
     
     // Proxy the GET request and handle any exceptions
-    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?avars=" + avars);
+    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" +_request.getQueryString());
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
     
     // ---------------------------- Response -------------------------------
