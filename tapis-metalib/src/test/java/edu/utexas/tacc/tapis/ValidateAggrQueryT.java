@@ -4,8 +4,8 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
-import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
-import edu.utexas.tacc.tapis.mongo.ValidateAggrQuery;
+import edu.utexas.tacc.tapis.meta.mongo.MongoDBClientSingleton;
+import edu.utexas.tacc.tapis.meta.mongo.ValidateAggrQuery;
 import org.bson.Document;
 
 public class ValidateAggrQueryT {

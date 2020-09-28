@@ -3,7 +3,7 @@ package edu.utexas.tacc.tapis;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
+import edu.utexas.tacc.tapis.meta.mongo.MongoDBClientSingleton;
 
 public class MongoClientT {
   

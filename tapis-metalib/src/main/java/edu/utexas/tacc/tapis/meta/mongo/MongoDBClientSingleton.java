@@ -1,4 +1,4 @@
-package edu.utexas.tacc.tapis.mongo;
+package edu.utexas.tacc.tapis.meta.mongo;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
