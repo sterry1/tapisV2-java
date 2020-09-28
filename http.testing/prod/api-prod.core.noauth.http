@@ -96,4 +96,11 @@ Content-Type: application/json
 
 ###
 
+###  check the aggrs endpoint in prod core with no auth
+GET http://api-prod-agave.tacc.utexas.edu:32768/v1airr/rearrangement_0/_aggrs/facets?avars={"match":{"v_gene":"TRBV20-1"},"field":"$repertoire_id"}&page=1&pagesize=1000
+Content-Type: application/json
+
+###
+
+
 

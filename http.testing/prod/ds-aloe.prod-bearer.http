@@ -3,9 +3,24 @@ Consumer Key : kavgw650DH0ZLzsXh4jdnDDvNlsa
 Consumer Secret : xruTbje8emH5taFEU_z9GgZWLVUa
 Access Token: b095a4a46242465097271fe551a414c7
 
-###
+### using sterry1 token
 GET https://agave.designsafe-ci.org/meta/v3/designsafedb
-Authorization: Bearer {{token}}
+Authorization: Bearer b095a4a46242465097271fe551a414c7
 Content-Type: application/json
 ###
 
+### using sterry1 token
+PUT https://agave.designsafe-ci.org/meta/v3/designsafedb/testcollection
+Authorization: Bearer  c6a03ae97c931d0421b42df677cf
+Content-Type: application/json
+###
+
+###
+POST https://agave.designsafe-ci.org/meta/v3/designsafedb/testcollection
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "test document slt 4.28.2020-15:43", "jimmyList":["1","3"],"description": "POST a new document with basic response"}
+
+
+###

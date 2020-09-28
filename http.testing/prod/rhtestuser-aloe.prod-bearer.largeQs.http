@@ -152,7 +152,7 @@ Content-Type: application/json
 ###   02.07.2020 Response code: 200; Time: 1133ms; Content length: 241996 bytes
 
 ###  short version of GET for aggregation
-GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_aggrs/facets?avars={"match":{"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}},"field":"$repertoire_id"}
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_aggrs/facets?avars={"match":{"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012","921831510758911510-242ac11a-0001-012","910621646116351510-242ac11a-0001-012","899239982781951510-242ac11a-0001-012","888803212252671510-242ac11a-0001-012"]}},"field":"$repertoire_id"}&page=1&pagesize=1000
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -188,4 +188,17 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 ###
 
+###  check the useAggregation endpoint in prod
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_aggrs/facets?avars={"match":{"v_gene":"TRBV20-1"},"field":"$repertoire_id"}&page=1&pagesize=1000
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+
+###  check the useAggregation endpoint in prod
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
 

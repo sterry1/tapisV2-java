@@ -884,16 +884,27 @@ public class ResourceBucket {
     //  TODO ----------------   package for message queue submission ----------------
     // create a message and submit to msg client
     // should I consider beanstalk for work queue?
+    result = sendSubmissionToQueue(submission.getDTO());
+
+    if(!result){
+      // Return an Error Response
+      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+    }
   
     //  TODO ----------------   respond to user ----------------
-    // a LRQ was submitted
+    // an LRQ was submitted
     // if success
     //   response will include link to status record
     // else
     //   response will indicate the error that occurred.
     
-    return javax.ws.rs.core.Response.status(200).entity("{ TODO }").build();
+    return javax.ws.rs.core.Response.status(201).entity("{ SUCCESS }").build();
   }
   
+  private void submissionLRQ(ValidateSubmissionJson submission){ }
+  
+  private boolean createLRQSubmission(SubmissionDTO dto){ return false; }
+  
+  private boolean sendSubmissionToQueue(SubmissionDTO dto){ return false; }
 }
 
