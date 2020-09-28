@@ -1,5 +1,7 @@
 package edu.utexas.tacc.tapis.meta.api.resources;
 
+import edu.utexas.tacc.tapis.meta.api.SubmissionDTO;
+import edu.utexas.tacc.tapis.meta.api.ValidateSubmissionJson;
 import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -873,14 +875,29 @@ public class ResourceBucket {
       _log.trace("Submit a long running query to the queue " + db + "/" + collection);
     }
   
-    //  TODO ----------------   validate the json payload ----------------
-    // schema validation
-    // ? query or aggregation validation
+    //  TODO ----------------   process the json payload ----------------
+    // submission validation
+    ValidateSubmissionJson submission = new ValidateSubmissionJson(payload);
+    submissionLRQ(submission);
+    // do we have a vaild submission json
+    //      then continue
+    //      else return error message response
+    
+    if(submission.hasError()){
+      // Return an Error Response
+      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+    }
   
     //  TODO ----------------   submit to book keeping ----------------
-    // create populate the DAO for entity
+    // Use the DTO from submission validation to
+    // create and populate the DAO to create a persistent record of submission
     // give it a unique id
+    boolean result = createLRQSubmission(submission.getDTO());
   
+    if(!result){
+      // Return an Error Response
+      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+    }
     //  TODO ----------------   package for message queue submission ----------------
     // create a message and submit to msg client
     // should I consider beanstalk for work queue?
