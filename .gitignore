@@ -76,6 +76,11 @@ Icon
 /mongodb/dbdata/
 /tapis-metaapi/src/main/java/edu/utexas/tacc/tapis/meta/api/resources/tmp.txt
 /proxy/
-/http.testing/tmp.json
-/http.testing/tmpresult.json
+/tools/http.testing/tmp.json
+/tools/http.testing/tmpresult.json
 /deployment/mongodb/dbdata/
+/tools/mongodb/dbdata/
+/tools/proxy/
+/tools/http.testing/rest-client.private.env.json
+/tools/http.testing/tmp.json
+/tools/http.testing/tmpresult.json
