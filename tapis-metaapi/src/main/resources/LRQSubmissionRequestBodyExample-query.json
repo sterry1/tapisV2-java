@@ -1,0 +1,14 @@
+{
+  "name": "myQuery",
+  "queryType": "simple",
+  "query": [
+    {
+      "repertoire_id": "1841923116114776551-242ac11c-0001-012"
+    },
+    {
+      "cdr1": 1
+    }
+  ],
+  "notification": ""
+}
+

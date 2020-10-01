@@ -1,0 +1,26 @@
+{
+  "name": "myQuery",
+  "queryType": "aggregation",
+  "query": [
+    {
+      "$match": {
+        "repertoire_id": {
+          "$in": [
+            "978739827430911510-242ac11a-0001-012",
+            "967272264750591510-242ac11a-0001-012"
+          ]
+        }
+      }
+    },
+    {
+      "$group": {
+        "_id": "$repertoire_id",
+        "count": {
+          "$sum": "1"
+        }
+      }
+    }
+  ],
+  "notification": ""
+}
+

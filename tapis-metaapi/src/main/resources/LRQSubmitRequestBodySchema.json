@@ -2,16 +2,16 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
+    "_id": {
+      "type": 
+    },
     "name": {
       "type": "string"
     },
-    "query_type": {
+    "type": {
         "type": "string"
     },
     "query": {
-      "type": "object"
-    },
-    "aggregation": {
       "type": "array"
     },
     "notification": {

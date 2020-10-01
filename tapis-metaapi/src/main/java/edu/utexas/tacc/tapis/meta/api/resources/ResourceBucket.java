@@ -1,5 +1,9 @@
 package edu.utexas.tacc.tapis.meta.api.resources;
 
+import com.google.gson.JsonObject;
+import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
+import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
+import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +28,7 @@ import java.io.InputStreamReader;
 
 
 @Path("/")
-public class ResourceBucket {
+public class ResourceBucket extends AbstractResource {
   // Local logger.
   private static final Logger _log = LoggerFactory.getLogger(ResourceBucket.class);
   
@@ -854,6 +858,24 @@ public class ResourceBucket {
   }
   
   /*-------------------------------------------------------
+   * Long Running Query status check
+   * ------------------------------------------------------*/
+  
+  //TODO -----------  GET long running query status -----------
+  
+  @GET
+  @Path("/{db}/{collection}/_lrq/{lrqId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public javax.ws.rs.core.Response checkLRQstatus(@PathParam("db") String db,
+                                                          @PathParam("collection") String collection,
+                                                          @PathParam("lrqId") String lrqId) {
+    
+    String status = "NEXT";
+    return javax.ws.rs.core.Response.status(200).entity("{ \"status\": \""+status+"\" }").build();
+  }
+  
+  
+  /*-------------------------------------------------------
    * Long Running Queries
    * ------------------------------------------------------*/
   
@@ -872,28 +894,74 @@ public class ResourceBucket {
       _log.trace(msg);
       _log.trace("Submit a long running query to the queue " + db + "/" + collection);
     }
+    
+    //  TODO ----------------   process the json payload ----------------
+    // *****   submission validation    *****
+    // check the payload for empty
+    if(!checkPayload(payload)){
+      return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'empty payload' }").build();
+    }
   
-    //  TODO ----------------   validate the json payload ----------------
-    // schema validation
-    // ? query or aggregation validation
-  
+    JsonObject jsonObject = getValidJson(payload);
+    if(jsonObject == null){
+      return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'payload is not syntactic JSON' }").build();
+    }
+    
+    // payload not empty let' assume schema adherence.
+    ValidateSubmissionJson submission = new ValidateSubmissionJson(jsonObject);
+    submissionLRQ(submission);
+
+    // do we have a vaild submission json
+    if(submission.hasError()){
+      // Return an Error Response
+      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+    }
+    
     //  TODO ----------------   submit to book keeping ----------------
-    // create populate the DAO for entity
+    // Use the DTO from submission validation to
+    // create and populate the DAO to create a persistent record of submission
     // give it a unique id
-  
+    boolean result = createLRQSubmission(submission.getLRQ());
+    
+    if(!result){
+      // Return an Error Response
+      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+    }
     //  TODO ----------------   package for message queue submission ----------------
     // create a message and submit to msg client
     // should I consider beanstalk for work queue?
-  
+    result = sendSubmissionToQueue(submission.getLRQ());
+    
+    if(!result){
+      // Return an Error Response
+      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+    }
+    
     //  TODO ----------------   respond to user ----------------
-    // a LRQ was submitted
+    // an LRQ was submitted
     // if success
     //   response will include link to status record
     // else
     //   response will indicate the error that occurred.
     
-    return javax.ws.rs.core.Response.status(200).entity("{ TODO }").build();
+    return javax.ws.rs.core.Response.status(201).entity("{ SUCCESS }").build();
   }
+  
+  private void submissionLRQ(ValidateSubmissionJson submission){ }
+  
+  private boolean createLRQSubmission(LRQSubmission dto){
+    // we take a dto and create a dao for storage in DB
+    _log.debug("create a dao for storage");
+    LRQSubmissionDAO lrqDao = new LRQSubmissionDAOImpl();
+    lrqDao.createSubmission(dto);
+    return true;
+  }
+  
+  private boolean sendSubmissionToQueue(LRQSubmission dto){
+    
+    return true;
+  }
+  
   
 }
 

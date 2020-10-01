@@ -1,0 +1,6 @@
+POST http://localhost:8199/meta/v3/TestMetaDB/tstTmp/_lrq
+Content-Type: application/json
+
+{"name": "one post"}
+
+###
