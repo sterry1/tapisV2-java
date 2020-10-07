@@ -1,6 +1,55 @@
-POST http://localhost:8199/meta/v3/TestMetaDB/tstTmp/_lrq
+###  send nothing
+POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
-{"name": "one post"}
+###
+# {'msg': 'empty payload'}
+
+###  send not json or bad json
+POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+This is just a string
+
+###
+# {'msg': 'payload is not syntactic JSON'}
+
+###
+POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myQuery",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}, {"cdr1": 1}],
+  "notification": "mailto:sterry1@tacc.utexas.edu"
+}
+
+###
+
+###
+GET http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq/5f7b4366b90afb4b6bb0455a
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+###
+
+###
+POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myAggrQuery",
+  "queryType": "AGGREGATION",
+  "query": [
+    {"$match": {"repertoire_id": {"$in": ["978739827430911510-242ac11a-0001-012", "967272264750591510-242ac11a-0001-012"]}}},
+    {"$group": {"_id": "$repertoire_id", "count": {"$sum": "1"}}}
+  ],
+  "notification": "mailto:sterry1@tacc.utexas.edu"
+}
 
 ###
