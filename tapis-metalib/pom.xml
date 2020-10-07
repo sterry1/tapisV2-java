@@ -26,11 +26,48 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.5.4</version>
+    </dependency>
     <!-- make mongodb parent dependency -->
+    <dependency>
+      <groupId>com.dinstone</groupId>
+      <artifactId>beanstalkc</artifactId>
+      <version>2.3.0</version>
+    </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
       <version>3.12.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>edu.utexas.tacc.aloe</groupId>
+      <artifactId>aloe-sharedapi</artifactId>
+      <version>2.4.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>tapis-shared-lib</artifactId>
+      <version>${tapis-shared-java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>tapis-shared-api</artifactId>
+      <version>${tapis-shared-java.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>edu.utexas.tacc.aloe</groupId>
+      <artifactId>aloe-shared</artifactId>
+      <version>2.4.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

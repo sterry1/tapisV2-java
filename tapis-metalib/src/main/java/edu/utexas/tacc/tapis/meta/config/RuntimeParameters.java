@@ -1,7 +1,9 @@
 package edu.utexas.tacc.tapis.meta.config;
 
+import com.mongodb.MongoClientURI;
 import edu.utexas.tacc.aloe.shared.parameters.AloeEnv;
-import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;
+// import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;
+import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisException;
 import edu.utexas.tacc.tapis.shared.exceptions.runtime.TapisRuntimeException;
 import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
@@ -15,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.text.NumberFormat;
 import java.util.Properties;
 
@@ -63,6 +64,15 @@ public class RuntimeParameters {
   private String coreserver_connection_timeout="3";   // default 2 minutes
   private boolean permissionsCheck=true;
   
+  // TODO pull in from environment
+  // default
+  private String mongoDbUriLRQ ="mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1";
+  private String lrqDB = "LRQ";
+  private String taskQueueHost = "";
+  private String taskQueuePort = "";
+  private String getTaskQueueConnectTimeout = "";
+  private String getTaskQueueReadTimeout = "";
+  
   // these need to move to shared library
   public static final String SERVICE_NAME_META  = "meta";
   public static final String SERVICE_USER_NAME  = "meta";
@@ -96,8 +106,6 @@ public class RuntimeParameters {
     parm = inputProperties.getProperty("tapis.log.file");
     if (!StringUtils.isBlank(parm)) setLogFile(parm);
   
-
-  
     parm = System.getenv("tapis.meta.coreserver.connection.timeout");
     if (!StringUtils.isBlank(parm)){
       setCoreserver_connection_timeout(parm);
@@ -105,10 +113,26 @@ public class RuntimeParameters {
       parm = inputProperties.getProperty("tapis.meta.coreserver.connection.timeout");
       if (!StringUtils.isBlank(parm)) setCoreserver_connection_timeout(parm);
     }
+  
+    parm = System.getenv("tapis.meta.mongo.lrq.uri");
+    if (!StringUtils.isBlank(parm)) setMongoDbUriLRQ(parm);
+  
+    parm = System.getenv("tapis.meta.mongo.lrq.db");
+    if (!StringUtils.isBlank(parm)) setLrqDB(parm);
+  
+    //----------------------   Initialize MongoDB client connection pool    ----------------------
+    // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
+    MongoClientURI uri = new MongoClientURI(mongoDbUriLRQ);
+    MongoDBClientSingleton.init(uri);
+    if(!MongoDBClientSingleton.isInitialized()){
+      String msg ="TAPIS_MONGODB_INITIALIZATION_FAILED";
+      _log.error(msg);
+    }
     
   
     //----------------------   Initialize Permissions Registry   ----------------------
     // 1. initialize Registry
+/*
     V2PermissionsRegistry registry = null;
     try {
       registry = V2PermissionsRegistry.getInstance();
@@ -119,7 +143,8 @@ public class RuntimeParameters {
       _log.error(msg, e);
       throw new TapisRuntimeException(msg, e);
     }
-    
+*/
+  
   }
   
   /**
@@ -165,13 +190,18 @@ public class RuntimeParameters {
     buf.append("\ntapis.tenant.svc.baseurl: ");
     buf.append(this.getTenantBaseUrl());
     
-    buf.append("\n\n------- Core Server Configuration --------------------------");
+    buf.append("\n\n------- Service Configuration --------------------------");
     buf.append("\ntapis.meta.core.server: ");
     buf.append(this.getCoreServer());
     buf.append("\ntapis.meta.coreserver.connection.timeout: ");
     buf.append(this.getCoreserver_connection_timeout());
     buf.append("\ntapis.meta.permissions.check: ");
     buf.append(this.isPermissionsCheck());
+    buf.append("\ntapis.meta.mongo.lrq.db: ");
+    buf.append(this.getLrqDB());
+    buf.append("\ntapis.meta.mongo.lrq.uri: ");
+    buf.append(this.getMongoDbUriLRQ());
+
   
     
     buf.append("\n\n------- EnvOnly Configuration ---------------------");
@@ -274,6 +304,14 @@ public class RuntimeParameters {
   public boolean isPermissionsCheck() { return permissionsCheck; }
   
   public void setPermissionsCheck(boolean permissionsCheck) { this.permissionsCheck = permissionsCheck; }
+  
+  public String getMongoDbUriLRQ() { return mongoDbUriLRQ; }
+  
+  public void setMongoDbUriLRQ(String mongoDbUriLRQ) { this.mongoDbUriLRQ = mongoDbUriLRQ; }
+  
+  public String getLrqDB() { return lrqDB; }
+  
+  public void setLrqDB(String lrqDB) { this.lrqDB = lrqDB; }
   
   public void setServiceJWT(){
     _log.debug("calling setServiceJWT ...");

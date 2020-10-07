@@ -3,12 +3,12 @@
   "type": "object",
   "properties": {
     "_id": {
-      "type": 
+      "type": "string"
     },
     "name": {
       "type": "string"
     },
-    "type": {
+    "queryType": {
         "type": "string"
     },
     "query": {
@@ -20,7 +20,8 @@
   },
   "required": [
     "name",
+    "queryType",
     "query",
-    "aggregation"
+    "notification"
   ]
 }

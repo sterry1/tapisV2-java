@@ -230,7 +230,7 @@ public class V2PermissionsRegistry {
      // we always return with the first permitted action that matches our request.
      // there may be more but they will never be evaluated.
      for (V2PermissionsDefinition permDefinition : permissionsList) {
-       System.out.println(permDefinition.getRole());
+       _log.debug("Role : "+permDefinition.getRole());
        boolean foundPermitted = permDefinition.isPermitted(v2PermissionsRequest);
        if (foundPermitted) {
          return foundPermitted;

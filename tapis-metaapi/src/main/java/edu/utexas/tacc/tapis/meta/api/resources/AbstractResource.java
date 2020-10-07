@@ -1,26 +1,18 @@
 package edu.utexas.tacc.tapis.meta.api.resources;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
-import edu.utexas.tacc.tapis.shared.exceptions.TapisImplException;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisNotFoundException;
 import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
-import edu.utexas.tacc.tapis.shared.threadlocal.TapisThreadContext;
-import edu.utexas.tacc.tapis.shared.threadlocal.TapisThreadLocal;
 import edu.utexas.tacc.tapis.sharedapi.responses.RespName;
 import edu.utexas.tacc.tapis.sharedapi.responses.results.ResultName;
 import edu.utexas.tacc.tapis.sharedapi.utils.TapisRestUtils;
-import org.apache.commons.lang3.StringUtils;
+import edu.utexas.tacc.tapis.utils.ConversionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class AbstractResource {
   // Local logger.
@@ -39,33 +31,9 @@ public class AbstractResource {
   }
   
   protected JsonObject getValidJson(InputStream payload){
-    StringBuilder stringPayload = new StringBuilder();
-
-    try {
-      BufferedReader in = new BufferedReader(new InputStreamReader(payload));
-      String line;
-      while ((line = in.readLine()) != null) {
-        stringPayload.append(line);
-      }
-    }catch (IOException e) {
-      String msg = "getValidJson Error Reading the payload from request";
-      _log.debug(msg);
-    }
-    
-    JsonObject jsonObject;
-    String string = stringPayload.toString();
-    if (!StringUtils.isEmpty(string)){
-      try {
-        jsonObject = new Gson().fromJson(string,JsonObject.class);
-      } catch (JsonSyntaxException e ) {
-        _log.error("Not valid Json, "+e.getMessage());
-        return null;
-      }
-      // must be good json so send it back
-      return jsonObject;
-    }else {
-      return null;
-    }
+    ConversionUtils conversionUtils = new ConversionUtils();
+    JsonObject jsonObject = conversionUtils.inputStreamToJsonObject(payload);
+    return jsonObject;
   }
   
   protected Response getExceptionResponse(Exception e, String message,

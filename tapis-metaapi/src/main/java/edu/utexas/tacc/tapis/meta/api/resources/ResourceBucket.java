@@ -1,11 +1,14 @@
 package edu.utexas.tacc.tapis.meta.api.resources;
 
 import com.google.gson.JsonObject;
+import edu.utexas.tacc.aloe.shared.threadlocal.AloeThreadContext;
+import edu.utexas.tacc.aloe.shared.threadlocal.AloeThreadLocal;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.shared.i18n.MsgUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,18 +61,18 @@ public class ResourceBucket extends AbstractResource {
   @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response listDBNames() {
-
+    
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "listDBs", _request.getRequestURL());
       _log.trace(msg);
     }
-  
+    
     // Proxy the GET request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
-  
+    
     // ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -96,7 +99,7 @@ public class ResourceBucket extends AbstractResource {
     // Proxy the GET request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
-  
+    
     // ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -128,19 +131,19 @@ public class ResourceBucket extends AbstractResource {
   @PUT
   @Path("/{db}")
   @Produces(MediaType.APPLICATION_JSON)
-  public javax.ws.rs.core.Response createDB(@PathParam("db") String db){
+  public javax.ws.rs.core.Response createDB(@PathParam("db") String db) {
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
           "createDB", _request.getRequestURL());
       _log.trace(msg);
-      _log.trace("create database "+ db);
+      _log.trace("create database " + db);
     }
-  
+    
     // Proxy the PUT request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyPutRequest("{}");
-  
+    
     //---------------------------- Response -------------------------------
     // return core server response
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
@@ -150,10 +153,10 @@ public class ResourceBucket extends AbstractResource {
   @DELETE
   @Path("/{db}")
   @Produces(MediaType.APPLICATION_JSON)
-  public javax.ws.rs.core.Response deleteDB(){
+  public javax.ws.rs.core.Response deleteDB() {
     return javax.ws.rs.core.Response.status(200).entity("{ TODO }").build();
   }
-
+  
   /*------------------------------------------------------------------------
    *                              Collection endpoints
    * -----------------------------------------------------------------------*/
@@ -178,7 +181,7 @@ public class ResourceBucket extends AbstractResource {
     // TODO
     // Get the json payload to proxy to back end;
     StringBuilder jsonPayloadToProxy = new StringBuilder();
-  
+    
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(payload));
       String line = null;
@@ -192,10 +195,10 @@ public class ResourceBucket extends AbstractResource {
     String jsonPayload = jsonPayloadToProxy.toString();
     _log.debug("Data Received: " + jsonPayload);
     
-    if (StringUtils.isEmpty(jsonPayload)){
+    if (StringUtils.isEmpty(jsonPayload)) {
       jsonPayload = "{}";
     }
-  
+    
     // Proxy the PUT request and handle any exceptions
     // this request assumes a new collection. running this request on an existing collection
     //  will remove any RH properties for the collection including any aggregations.
@@ -405,7 +408,8 @@ public class ResourceBucket extends AbstractResource {
     
     // ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
-    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(result);
+    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(
+        result);
     // add the Etag to response headers
     if (!StringUtils.isBlank(etag)) {
       responseBuilder.tag(etag);
@@ -606,9 +610,11 @@ public class ResourceBucket extends AbstractResource {
   /*------------------------------------------------------------------------
    * Modify a document
    * -----------------------------------------------------------------------*/
+  
   /**
    * Takes a partial document and modifies the fields of the target document
    * with new values
+   *
    * @param db
    * @param collection
    * @param documentId
@@ -659,8 +665,10 @@ public class ResourceBucket extends AbstractResource {
   /*------------------------------------------------------------------------
    * Delete a specific Document
    * -----------------------------------------------------------------------*/
+  
   /**
    * Deletes a specified document from the collection
+   *
    * @param db
    * @param collection
    * @param documentId
@@ -686,7 +694,8 @@ public class ResourceBucket extends AbstractResource {
     
     //---------------------------- Response -------------------------------
     // just return whatever core server sends to us
-    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody());
+    Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(
+        coreResponse.getCoreResponsebody());
     Response response = responseBuilder.build();
     return response;
   }
@@ -733,7 +742,7 @@ public class ResourceBucket extends AbstractResource {
     //  and adding an aggregation.
     // this is cleaner but requires us to strip away the _aggrs designation in order to forward the request
     // to the core server.
-  
+    
     String _pathUri = _request.getRequestURI();
     String pathUri = _pathUri.replace("/_aggrs", "");
     
@@ -764,11 +773,11 @@ public class ResourceBucket extends AbstractResource {
           "getAggregation", _request.getRequestURL());
       _log.trace(msg);
       _log.trace("Get aggregation " + aggregation + " in " + db + "/" + collection);
-      _log.trace("avars: " + avars + "page: "+ page +"pagesize: "+pagesize);
+      _log.trace("avars: " + avars + "page: " + page + "pagesize: " + pagesize);
     }
     
     // Proxy the GET request and handle any exceptions
-    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" +_request.getQueryString());
+    CoreRequest coreRequest = new CoreRequest(_request.getRequestURI() + "?" + _request.getQueryString());
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
     
     // ---------------------------- Response -------------------------------
@@ -822,7 +831,7 @@ public class ResourceBucket extends AbstractResource {
     StringBuilder newUriPath = new StringBuilder(); //  /meta/v3/v1airr/rearrangement/_aggrs/facets
     newUriPath.append(inComingRequest)
               .append(jsonPayloadToProxy.toString()).append("&" + _request.getQueryString());
-
+    
     // Proxy the POST request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(newUriPath.toString());
     CoreResponse coreResponse = coreRequest.proxyGetRequest();
@@ -847,39 +856,40 @@ public class ResourceBucket extends AbstractResource {
       _log.trace(msg);
       _log.trace("Delete aggregation in " + db + "/" + collection);
     }
-  
+    
     // Proxy the POST request and handle any exceptions
     CoreRequest coreRequest = new CoreRequest(_request.getRequestURI());
     CoreResponse coreResponse = coreRequest.proxyDeleteRequest(_httpHeaders);
-  
+    
     // ---------------------------- Response -------------------------------
     // just return whatever core server sends to us
     return javax.ws.rs.core.Response.status(coreResponse.getStatusCode()).entity(coreResponse.getCoreResponsebody()).build();
   }
   
   /*-------------------------------------------------------
+   * Long Running Queries
+   * ------------------------------------------------------*/
+  
+  /*-------------------------------------------------------
    * Long Running Query status check
    * ------------------------------------------------------*/
   
-  //TODO -----------  GET long running query status -----------
   
+  //  TODO ----------------   Get an lrq submission status ----------------
   @GET
   @Path("/{db}/{collection}/_lrq/{lrqId}")
   @Produces(MediaType.APPLICATION_JSON)
   public javax.ws.rs.core.Response checkLRQstatus(@PathParam("db") String db,
-                                                          @PathParam("collection") String collection,
-                                                          @PathParam("lrqId") String lrqId) {
+                                                  @PathParam("collection") String collection,
+                                                  @PathParam("lrqId") String lrqId) {
+  
+    LRQSubmissionDAO dao = new LRQSubmissionDAOImpl(collection);
+    String status = dao.getSubmissionStatus(lrqId);
     
-    String status = "NEXT";
-    return javax.ws.rs.core.Response.status(200).entity("{ \"status\": \""+status+"\" }").build();
+    return javax.ws.rs.core.Response.status(200).entity(status).build();
   }
   
-  
-  /*-------------------------------------------------------
-   * Long Running Queries
-   * ------------------------------------------------------*/
-  
-  //  TODO ----------------   Post long running queries ----------------
+  //  TODO ----------------   Post long running queries submission ----------------
   @POST
   @Path("/{db}/{collection}/_lrq")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -887,6 +897,9 @@ public class ResourceBucket extends AbstractResource {
   public javax.ws.rs.core.Response submitLongRunningQuery(@PathParam("db") String db,
                                                           @PathParam("collection") String collection,
                                                           InputStream payload) {
+    
+    AloeThreadContext threadContext = AloeThreadLocal.aloeThreadContext.get();
+    
     // Trace this request.
     if (_log.isTraceEnabled()) {
       String msg = MsgUtils.getMsg("TAPIS_TRACE_REQUEST", getClass().getSimpleName(),
@@ -896,45 +909,57 @@ public class ResourceBucket extends AbstractResource {
     }
     
     //  TODO ----------------   process the json payload ----------------
-    // *****   submission validation    *****
+    // *****   validSubmission validation    *****
     // check the payload for empty
-    if(!checkPayload(payload)){
+    _log.debug("checking the validSubmission payload ...");
+    if (!checkPayload(payload)) {
       return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'empty payload' }").build();
     }
-  
+    
     JsonObject jsonObject = getValidJson(payload);
-    if(jsonObject == null){
+    
+    if (jsonObject == null) {
       return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'payload is not syntactic JSON' }").build();
     }
     
-    // payload not empty let' assume schema adherence.
-    ValidateSubmissionJson submission = new ValidateSubmissionJson(jsonObject);
-    submissionLRQ(submission);
-
-    // do we have a vaild submission json
-    if(submission.hasError()){
+    // payload not empty let's assume schema adherence.
+    ValidateSubmissionJson validSubmission = new ValidateSubmissionJson(jsonObject);
+    // method to check validity of validSubmission for db persistenance
+    submissionLRQ(validSubmission);
+    
+    // do we have a vaild validSubmission json
+    if (!validSubmission.isValid()) {
       // Return an Error Response
-      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+      return javax.ws.rs.core.Response.status(500).entity("{ ERROR validSubmission not valid }").build();
     }
     
     //  TODO ----------------   submit to book keeping ----------------
-    // Use the DTO from submission validation to
-    // create and populate the DAO to create a persistent record of submission
+    // Use the DTO from validSubmission validation to
+    // create and populate the DAO to create a persistent record of validSubmission
     // give it a unique id
-    boolean result = createLRQSubmission(submission.getLRQ());
+    _log.debug("write the validSubmission to the database ...");
+    // we take a dto and create a dao for storage in DB
+    _log.debug("create a dao for storage");
+    // need the collection that will store the validSubmission
+    // pull the tenant id from context that will map to the collection to use.
     
-    if(!result){
+    LRQSubmission lrqSubmission = validSubmission.getLRQSubmission();
+    LRQSubmissionDAO lrqDao = new LRQSubmissionDAOImpl(threadContext.getTenantId());
+    ObjectId objectId = lrqDao.createSubmission(lrqSubmission);
+    
+    // result will be null if creation of document in the collection was unsuccessful
+    if (objectId == null) {
       // Return an Error Response
-      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+      return javax.ws.rs.core.Response.status(500).entity("{ \"msg\": \"ERROR unable to persist validSubmission to data store\" }").build();
     }
-    //  TODO ----------------   package for message queue submission ----------------
+    //  TODO ----------------   package for message queue validSubmission ----------------
     // create a message and submit to msg client
     // should I consider beanstalk for work queue?
-    result = sendSubmissionToQueue(submission.getLRQ());
+    boolean result = sendSubmissionToQueue(validSubmission.getLRQSubmission());
     
-    if(!result){
+    if (!result) {
       // Return an Error Response
-      return javax.ws.rs.core.Response.status(500).entity("{ ERROR }").build();
+      return javax.ws.rs.core.Response.status(500).entity("{  \"msg\": \"ERROR sending the validSubmission to task queue\"  }").build();
     }
     
     //  TODO ----------------   respond to user ----------------
@@ -944,20 +969,21 @@ public class ResourceBucket extends AbstractResource {
     // else
     //   response will indicate the error that occurred.
     
-    return javax.ws.rs.core.Response.status(201).entity("{ SUCCESS }").build();
+    return javax.ws.rs.core.Response.status(201).entity("{  \"msg\": \"SUCCESS created document\",  \"_id\": \""+objectId.toString()+"\" }").build();
   }
   
-  private void submissionLRQ(ValidateSubmissionJson submission){ }
-  
-  private boolean createLRQSubmission(LRQSubmission dto){
-    // we take a dto and create a dao for storage in DB
-    _log.debug("create a dao for storage");
-    LRQSubmissionDAO lrqDao = new LRQSubmissionDAOImpl();
-    lrqDao.createSubmission(dto);
-    return true;
+  private void submissionLRQ(ValidateSubmissionJson submission) {
+    // validate the submission by schema
+    _log.debug("validating the submission json by schema");
   }
   
-  private boolean sendSubmissionToQueue(LRQSubmission dto){
+  // private boolean createLRQSubmission(LRQSubmission dto, String tenant){
+  // LRQSubmissionDAO lrqDao = new LRQSubmissionDAOImpl(tenant);
+  // lrqDao.createSubmission(dto);
+  // return true;
+  //}
+  
+  private boolean sendSubmissionToQueue(LRQSubmission dto) {
     
     return true;
   }

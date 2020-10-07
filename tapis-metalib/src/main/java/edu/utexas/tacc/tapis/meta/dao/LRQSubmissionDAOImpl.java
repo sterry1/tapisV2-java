@@ -1,22 +1,78 @@
 package edu.utexas.tacc.tapis.meta.dao;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoTimeoutException;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Date;
 
-public class LRQSubmissionDAOImpl implements LRQSubmissionDAO{
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Projections.fields;
+import static com.mongodb.client.model.Projections.include;
+
+public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissionDAO {
   // TODO log marker
+  private static final Logger _log = LoggerFactory.getLogger(LRQSubmissionDAOImpl.class);
   
-  MongoDBClientSingleton client;
+  private MongoClient client;
+  private boolean isClientReady = false;
+  private String LRQdb;
+  private String LRQcollection;
   
-  public LRQSubmissionDAOImpl(){
-    // check if client is inited
+  public LRQSubmissionDAOImpl(String collection) {
+    if (MongoDBClientSingleton.isInitialized()) {
+      client = MongoDBClientSingleton.getInstance().getClient();
+      if (client != null) isClientReady = true;
+    }
+    // these documents will go into the LRQ database under a tenant collection
+    this.LRQdb = RuntimeParameters.getInstance().getLrqDB();
+    this.LRQcollection = collection;
+    _log.debug("Mongodb client setup for DB: " + LRQdb + ", collection: " + LRQcollection);
   }
-
+  
+  /**
+   * Create a new submission document in the DB / Collection
+   * @param dto
+   * @return new ObjectId of the persisted document or null if creation unsuccessful
+   */
   @Override
-  public boolean createSubmission(LRQSubmission lrqSubmission) {
-    return false;
+  public ObjectId createSubmission(LRQSubmission dto) {
+    _log.debug("Create a valid submission for DB: " + LRQdb + ", collection: " + LRQcollection);
+  
+    try {
+      // this check is meaningless because there is always a client created and ready even if it can't connect
+      if (isClientReady) {
+        MongoDatabase db = client.getDatabase(LRQdb);
+        MongoCollection<Document> collection = db.getCollection(LRQcollection);
+
+        // create the bson document for insertion into DB, we predefine the id for insertion
+        Document submissionDocument = Document.parse(dto.toJson());
+        ObjectId newId = new ObjectId();
+        submissionDocument.append("_id", newId );
+        submissionDocument.append("status","SUBMITTED");
+        submissionDocument.append("createdDate", new Date());
+        
+        // insert into db/collection
+        collection.insertOne(submissionDocument);
+
+        return newId;
+      }
+    } catch (MongoTimeoutException e) {
+      _log.error("Submission failed for DB: " + LRQdb + ", collection: " + LRQcollection + ". Due to Connection timeout to DB host. ");
+      _log.error(e.getMessage());
+      return null;
+    }
+    return null;
   }
   
   @Override
@@ -31,6 +87,29 @@ public class LRQSubmissionDAOImpl implements LRQSubmissionDAO{
   
   @Override
   public String getSubmission(String id) {
+    
+    return null;
+  }
+  
+  @Override
+  public String getSubmissionStatus(String id) {
+    try {
+      // TODO this check is meaningless because there is always a client created and ready even if it can't connect
+      if (isClientReady) {
+        MongoDatabase db = client.getDatabase(LRQdb);
+        MongoCollection<Document> collection = db.getCollection(LRQcollection);
+        
+        FindIterable<Document> documents = collection.find(eq("_id", new ObjectId(id)))
+            .projection(fields(include("_id", "status")));
+        Document document = documents.first();
+        String status = document.toJson();
+        return status;
+      }
+    } catch (MongoTimeoutException e) {
+      _log.error("Submission failed for DB: " + LRQdb + ", collection: " + LRQcollection + ". Due to Connection timeout to DB host. ");
+      _log.error(e.getMessage());
+      return null;
+    }
     return null;
   }
   

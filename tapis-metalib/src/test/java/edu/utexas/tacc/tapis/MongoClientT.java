@@ -11,10 +11,16 @@ public class MongoClientT {
   // mongo-uri = mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin
     MongoClientURI uri = new MongoClientURI("mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin");
     MongoDBClientSingleton.init(uri);
+    MongoClient client = null;
     if(MongoDBClientSingleton.isInitialized()){
-      MongoClient client = MongoDBClientSingleton.getInstance().getClient();
+      client = MongoDBClientSingleton.getInstance().getClient();
       System.out.println(MongoDBClientSingleton.getServerVersion());
     }
+    if(client != null){
+      client.getDatabase("LRQ");
+      
+    }
+    
   
   }
 }
