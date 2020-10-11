@@ -5,6 +5,7 @@ import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.InsertOneOptions;
 import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
@@ -47,7 +48,7 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
    */
   @Override
   public ObjectId createSubmission(LRQSubmission dto) {
-    _log.debug("Create a valid submission for DB: " + LRQdb + ", collection: " + LRQcollection);
+    _log.trace("Create a valid submission for DB: " + LRQdb + ", collection: " + LRQcollection);
   
     try {
       // this check is meaningless because there is always a client created and ready even if it can't connect
@@ -56,15 +57,28 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
         MongoCollection<Document> collection = db.getCollection(LRQcollection);
 
         // create the bson document for insertion into DB, we predefine the id for insertion
-        Document submissionDocument = Document.parse(dto.toJson());
+        // Document submissionDocument = Document.parse(dto.toJson());
+
+        Document submissionDocument = new Document();//Document.parse(dto.toJson());
+        submissionDocument.append("name",dto.getName());
+        submissionDocument.append("queryType",dto.getQueryType());
+        submissionDocument.append("query",dto.getQuery().toString());
+        submissionDocument.append("notification",dto.getNotification());
+
         ObjectId newId = new ObjectId();
         submissionDocument.append("_id", newId );
         submissionDocument.append("status","SUBMITTED");
         submissionDocument.append("createdDate", new Date());
-        
-        // insert into db/collection
-        collection.insertOne(submissionDocument);
 
+        // insert into db/collection
+        try {
+          collection.insertOne(submissionDocument);
+        } catch (IllegalArgumentException e) {
+          _log.error("Failed to insert document in DB: " + LRQdb + ", collection: " + LRQcollection + " " + e.getMessage());
+          _log.error("FAILED: document \n"+dto.toJson());
+          return null;
+        }
+  
         return newId;
       }
     } catch (MongoTimeoutException e) {

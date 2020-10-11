@@ -913,13 +913,13 @@ public class ResourceBucket extends AbstractResource {
     // check the payload for empty
     _log.debug("checking the validSubmission payload ...");
     if (!checkPayload(payload)) {
-      return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'empty payload' }").build();
+      return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'ERROR empty request payload' }").build();
     }
     
     JsonObject jsonObject = getValidJson(payload);
     
     if (jsonObject == null) {
-      return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'payload is not syntactic JSON' }").build();
+      return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'ERROR payload is not syntactic JSON' }").build();
     }
     
     // payload not empty let's assume schema adherence.
@@ -930,7 +930,7 @@ public class ResourceBucket extends AbstractResource {
     // do we have a vaild validSubmission json
     if (!validSubmission.isValid()) {
       // Return an Error Response
-      return javax.ws.rs.core.Response.status(500).entity("{ ERROR validSubmission not valid }").build();
+      return javax.ws.rs.core.Response.status(500).entity("{  'msg' : 'ERROR validSubmission not valid' }").build();
     }
     
     //  TODO ----------------   submit to book keeping ----------------
@@ -939,7 +939,7 @@ public class ResourceBucket extends AbstractResource {
     // give it a unique id
     _log.debug("write the validSubmission to the database ...");
     // we take a dto and create a dao for storage in DB
-    _log.debug("create a dao for storage");
+    _log.debug("create a dao for storage ... ");
     // need the collection that will store the validSubmission
     // pull the tenant id from context that will map to the collection to use.
     
@@ -950,7 +950,7 @@ public class ResourceBucket extends AbstractResource {
     // result will be null if creation of document in the collection was unsuccessful
     if (objectId == null) {
       // Return an Error Response
-      return javax.ws.rs.core.Response.status(500).entity("{ \"msg\": \"ERROR unable to persist validSubmission to data store\" }").build();
+      return javax.ws.rs.core.Response.status(500).entity("{ 'msg': 'ERROR unable to persist validSubmission to data store' }").build();
     }
     //  TODO ----------------   package for message queue validSubmission ----------------
     // create a message and submit to msg client
@@ -959,7 +959,7 @@ public class ResourceBucket extends AbstractResource {
     
     if (!result) {
       // Return an Error Response
-      return javax.ws.rs.core.Response.status(500).entity("{  \"msg\": \"ERROR sending the validSubmission to task queue\"  }").build();
+      return javax.ws.rs.core.Response.status(500).entity("{ 'msg': 'ERROR sending the validSubmission to task queue'  }").build();
     }
     
     //  TODO ----------------   respond to user ----------------
@@ -969,12 +969,12 @@ public class ResourceBucket extends AbstractResource {
     // else
     //   response will indicate the error that occurred.
     
-    return javax.ws.rs.core.Response.status(201).entity("{  \"msg\": \"SUCCESS created document\",  \"_id\": \""+objectId.toString()+"\" }").build();
+    return javax.ws.rs.core.Response.status(201).entity("{ 'msg': 'SUCCESS created document',  '_id': '"+objectId.toString()+"' }").build();
   }
   
   private void submissionLRQ(ValidateSubmissionJson submission) {
     // validate the submission by schema
-    _log.debug("validating the submission json by schema");
+    _log.trace("validating the submission json by schema");
   }
   
   // private boolean createLRQSubmission(LRQSubmission dto, String tenant){

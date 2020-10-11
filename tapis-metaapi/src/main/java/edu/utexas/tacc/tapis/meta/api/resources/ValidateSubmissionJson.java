@@ -3,6 +3,7 @@ package edu.utexas.tacc.tapis.meta.api.resources;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
+import edu.utexas.tacc.tapis.utils.ConversionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,14 +43,17 @@ public class ValidateSubmissionJson {
     this.isValid = true;
   }
   
+  /**
+   *
+   * @return LRQSubmission unless there is an error then return null.
+   */
   public LRQSubmission getLRQSubmission() {
-    // TODO bullet proof this transform
-    String name = jsonSubmission.get("name").getAsString();
-    String queryType = jsonSubmission.get("queryType").getAsString();
-    String query = jsonSubmission.get("query").toString(); 
-    String notification = jsonSubmission.get("notification").getAsString();
-    LRQSubmission lrqSubmission = new LRQSubmission(name, queryType, query, notification);
-    return  lrqSubmission;
+    // assumes valid non null JsonObject is already set in jsonSubmission member.
+    LRQSubmission lrqSubmission = ConversionUtils.jsonObjectToLRQSubmission(jsonSubmission);
+    if(lrqSubmission != null){
+      return  lrqSubmission;
+    }
+    return null;
   }
   
   public String getLRQasString(){

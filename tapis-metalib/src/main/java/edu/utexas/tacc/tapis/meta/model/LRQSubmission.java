@@ -2,6 +2,8 @@ package edu.utexas.tacc.tapis.meta.model;
 
 import java.io.Serializable;
 import java.util.List;
+
+import com.google.gson.JsonArray;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -10,6 +12,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import edu.utexas.tacc.tapis.utils.ConversionUtils;
+import org.checkerframework.checker.units.qual.C;
 
 
 // TODO swap out for generated version
@@ -55,7 +58,7 @@ public class LRQSubmission implements Serializable {
   
   /**
    * Convenience method constructor for persisted LRQSubmission
-   * @param _id
+   * @param id
    * @param name
    * @param queryType
    * @param query
@@ -68,19 +71,6 @@ public class LRQSubmission implements Serializable {
     this.queryType = queryType;
     this.query = query;
     this.notification = notification;
-  }
-  
-  public String toJson() {
-    Gson gson = new Gson();
-    String json = gson.toJson(this);
-    return json;
-  }
-  
-  public LRQSubmission fromByteArray(byte[] msg){
-    String msgString = new String(msg);
-    JsonObject jsonObject = ConversionUtils.stringToJsonObject(msgString);
-    ConversionUtils.jsonObjectToLRQSubmission(jsonObject);
-    return this;
   }
   
 /*------------------------------------------------------------------------
@@ -103,18 +93,27 @@ public class LRQSubmission implements Serializable {
   public void setName(String name) {
     this.name = name;
   }
-  
 
-  public String getQueryType() {
-    return queryType;
-  }
-  public void setQueryType(String queryType) {
-    this.queryType = queryType;
+  public String getQueryType() { return queryType; }
+  public void setQueryType(String _queryType) {
+    this.queryType = _queryType;
   }
   
-  public List<Object> getQuery() {
-    return query;
+  // this is a list of JsonObjects [{},{},...]
+  // For a SIMPLE query there may be one to two JsonObjects the
+  // the first should be a matching query and the second should be a projection.
+  // TODO? specify match and projection for simple query.
+  public List<Object> getQuery() { return query; }
+  public JsonArray getJsonQueryArray(){
+    Gson gson = new Gson();
+    
+    return null;
   }
+  public String getQueryAsString() {
+    Gson gson = new Gson();
+    return gson.toJson(this.getQuery());
+  }
+  
   public void setQuery(List<Object> query) {
     this.query = query;
   }
@@ -126,9 +125,23 @@ public class LRQSubmission implements Serializable {
     this.notification = notification;
   }
   
+  
+  public String toJson() {
+    Gson gson = new Gson();
+    String json = gson.toJson(this);
+    return json;
+  }
+  
+  public LRQSubmission fromByteArray(byte[] msg){
+    String msgString = new String(msg);
+    JsonObject jsonObject = ConversionUtils.stringToJsonObject(msgString);
+    ConversionUtils.jsonObjectToLRQSubmission(jsonObject);
+    return this;
+  }
+  
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append("id", id)
+    return new ToStringBuilder(this).append("_id", id)
                                     .append("name", name)
                                     .append("queryType", queryType)
                                     .append("query", query)
@@ -158,5 +171,5 @@ public class LRQSubmission implements Serializable {
                               .append(id, rhs.id).append(queryType, rhs.queryType)
                               .append(query, rhs.query).isEquals();
   }
-
+  
 }

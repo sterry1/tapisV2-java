@@ -1,9 +1,6 @@
 package edu.utexas.tacc.tapis.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,7 +24,7 @@ import java.io.InputStreamReader;
 public class ConversionUtils {
   // Local logger.
   private static final Logger _log = LoggerFactory.getLogger(ConversionUtils.class);
-  
+  private static final Gson gson = new Gson();
   /**
    * We need to convert InputStream to a String
    * @param payload
@@ -111,9 +108,13 @@ public class ConversionUtils {
     return jsonObject;
   }
   
+  public static String jsonArrayToString(JsonArray jsonArray){
+    String queryArray = gson.toJson(jsonArray);
+    return queryArray;
+  }
+  
   public static LRQSubmission jsonObjectToLRQSubmission(JsonObject jsonObject){
     // what if we get a null or empty object
-    Gson gson = new Gson();
     LRQSubmission lrqSubmission = null;
     if(jsonObject != null){
       try {

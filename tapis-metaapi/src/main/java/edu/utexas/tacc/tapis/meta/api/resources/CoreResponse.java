@@ -156,7 +156,7 @@ public class CoreResponse {
     // append the _id of the newly created resource, namely document
     // to the response json
     sb.append("{\"_id\":").append(oid).append("}");
-    JsonObject jsonObject = new JsonParser().parse(sb.toString()).getAsJsonObject();
+    JsonObject jsonObject = JsonParser.parseString(sb.toString()).getAsJsonObject();
     resp.result = jsonObject;
     return TapisGsonUtils.getGson().toJson(resp);
   }
