@@ -2,9 +2,14 @@ package edu.utexas.tacc.tapis;
 
 import com.google.gson.Gson;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
-import edu.utexas.tacc.tapis.meta.model.LRQSubmissionGen;
+
+import java.util.List;
+
 
 public class GeneratedSubmissionT {
+
+
+
   public static void main(String[] args) {
     String jobJsonSimple = "{\n" +
         "  \"name\": \"myQuery\",\n" +
@@ -17,7 +22,7 @@ public class GeneratedSubmissionT {
 
     String jobJsonAggr = "{\n" +
         "  \"name\": \"myQuery\",\n" +
-        "  \"queryType\": \"aggregation\",\n" +
+        "  \"queryType\": \"AGGREGATION\",\n" +
         "  \"query\": [\n" +
         "    {\n" +
         "      \"$match\": {\n" +
@@ -44,6 +49,15 @@ public class GeneratedSubmissionT {
     Gson gson = new Gson();
     //LRQSubmissionGen gen = new LRQSubmissionGen();
     LRQSubmission gen = gson.fromJson(jobJsonAggr, LRQSubmission.class );
+    List queryArray = gen.getQuery();
+    String query = gson.toJson(queryArray);
+    for (int i = 0; i < queryArray.size(); i++) {
+      String ele = gson.toJson(queryArray.get(i));
+      System.out.println(ele);
+    }
+    // System.out.println(query);
+    
+    
     
     System.out.println();
   }
