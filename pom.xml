@@ -105,6 +105,7 @@
   <modules>
     <module>tapis-metaapi</module>
     <module>tapis-metalib</module>
+    <module>tapis-metawrkr</module>
   </modules>
 
 </project>

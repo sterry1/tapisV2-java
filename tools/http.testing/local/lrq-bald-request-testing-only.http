@@ -1,3 +1,20 @@
+###
+POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myAggrQuery",
+  "queryType": "AGGREGATION",
+  "query": [
+    {"$match": {"repertoire_id": {"$in": ["978739827430911510-242ac11a-0001-012", "967272264750591510-242ac11a-0001-012"]}}},
+    {"$group": {"_id": "$repertoire_id", "count": {"$sum": "1"}}}
+  ],
+  "notification": "mailto:sterry1@tacc.utexas.edu"
+}
+
+###
+
 ###  send nothing
 POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
 X-JWT-Assertion-vdjserver.org: {{jwt}}
@@ -37,19 +54,3 @@ Content-Type: application/json
 
 ###
 
-###
-POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
-X-JWT-Assertion-vdjserver.org: {{jwt}}
-Content-Type: application/json
-
-{
-  "name": "myAggrQuery",
-  "queryType": "AGGREGATION",
-  "query": [
-    {"$match": {"repertoire_id": {"$in": ["978739827430911510-242ac11a-0001-012", "967272264750591510-242ac11a-0001-012"]}}},
-    {"$group": {"_id": "$repertoire_id", "count": {"$sum": "1"}}}
-  ],
-  "notification": "mailto:sterry1@tacc.utexas.edu"
-}
-
-###
