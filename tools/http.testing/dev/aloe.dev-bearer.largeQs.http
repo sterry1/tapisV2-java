@@ -49,7 +49,7 @@ GET https://dev.tenants.aloedev.tacc.cloud/meta/v3/v1airr/rearrangement?filter={
 Authorization: Bearer {{token}}
 Content-Type: application/json
 ###
-#  Response code: 400; Time: 52ms; Content length: 1904 bytes   ERROR  Request header is too large
+#  Response code: 414 (Request-URI Too Long); Time: 347ms; Content length: 345 bytes  ERROR  Request header is too large
 
 ###  3. POST of oversize simple find query
 POST https://dev.tenants.aloedev.tacc.cloud/meta/v3/v1airr/rearrangement/_filter?page=4&pagesize=1

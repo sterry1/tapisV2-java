@@ -21,10 +21,10 @@ Content-Type: application/json
 #  Assumes collection and other resouces do not exist
 ##############################################################
 
-#  create a test db TestMetaDB
+#  !!! DONOT DO THIS it deletes all the aggrs in properties. create a test db TestMetaDB
 ###
-PUT http://aloe-dev06.tacc.utexas.edu:8080/TestMetaDB
-Content-Type: application/json
+#PUT http://aloe-dev06.tacc.utexas.edu:8080/TestMetaDB
+# Content-Type: application/json
 
 ###
 
@@ -133,7 +133,7 @@ Content-Type: application/json
 #  get a document list under {{db}}/{{collection}} /meta/v3/{{db}}/{{collection}}
 #
 ###
-GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/{{db}}/{{collection}}
+GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/{{db}}/{{collection}}/_meta
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

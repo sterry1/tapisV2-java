@@ -1,0 +1,101 @@
+###
+PUT http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement/_aggrs
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "aggrs": [
+    {
+      "type": "pipeline",
+      "uri": "facets",
+      "stages": [
+        {"_$match": {"_$var": "match"}},
+        {"_$group": {
+          "_id": {"_$var": "field"},
+          "count": {"_$sum": 1}
+        }
+        }
+      ]
+    }
+  ]
+}
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+###
+GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/{{db}}/{{collection}}/_meta
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+###
+PUT https://dev.tenants.aloestaging.tacc.cloud/meta/v3/{{db}}/{{collection}}/_aggrs
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "aggrs": [
+    {
+      "type": "pipeline",
+      "uri": "facets",
+      "stages": [
+        {"_$match": {"_$var": "match"}},
+        {"_$group": {
+          "_id": {"_$var": "field"},
+          "count": {"_$sum": 1}
+        }
+        }
+      ]
+    }
+  ]
+}
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+###
+PUT http://aloe-dev06.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement/_aggrs
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "aggrs": [
+    {
+      "type": "pipeline",
+      "uri": "facets",
+      "stages": [
+        {"_$match": {"_$var": "match"}},
+        {"_$group": {
+          "_id": {"_$var": "field"},
+          "count": {"_$sum": 1}
+        }
+        }
+      ]
+    }
+  ]
+}
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###

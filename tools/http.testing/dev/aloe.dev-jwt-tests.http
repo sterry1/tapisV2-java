@@ -28,7 +28,7 @@ Content-Type: application/json
 ###
 
 ### use vdjadmin.jwt.mod
-GET http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr
+GET http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/_meta
 X-JWT-Assertion-dev: {{jwt}}
 Content-Type: application/json
 
