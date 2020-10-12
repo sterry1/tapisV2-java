@@ -8,7 +8,8 @@
 #   Find or filter Simple Queries ( not Aggregations )
 #
 ##############################################################
-# Normal filter use with size
+
+# Return count from normal filter use with _size
 ###   check for size of query
 # 1. short version  simple find/filter query using vdjadmin doesn't break the URL size limit
 GET http://aloe-dev06.tacc.utexas.edu/meta/v3/v1airr/rearrangement/_size?filter={"repertoire_id": { "$in":["978739827430911510-242ac11a-0001-012","967272264750591510-242ac11a-0001-012","954859809265151510-242ac11a-0001-012","943435196257791510-242ac11a-0001-012","932611878671871510-242ac11a-0001-012"]}}&sort={}&page=4&pagesize=1&sort={}
