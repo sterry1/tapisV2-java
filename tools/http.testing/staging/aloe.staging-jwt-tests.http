@@ -1,7 +1,14 @@
 ############   modified jwts the jwt verify flag must be set to false on the app for these jwts to work
+### Sanity check
+GET  http://aloe-dev06.tacc.utexas.edu/meta/v3/v1airr
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+###
 
 # for staging environment I'm using the vdjadmin user and jwt token going directly to http port 80 on the
 # API staging host aloe.dev.6
+
 
 ##############################################################
 #
