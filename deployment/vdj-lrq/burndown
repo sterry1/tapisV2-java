@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Shutdown all containers.
+docker-compose -f meta-security-core.yml down
+
+

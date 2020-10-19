@@ -1,0 +1,30 @@
+###############################################################
+# Core Science APIs - Proxy
+# proxy.yml
+#
+# The APIs are accessible behind a proxy container which
+# shields them from the outside world. Containers are assigned
+# static ports to enable rolling updates of each API as needed.
+#
+# Make sure to start your containers
+# with $AGAVE_VERSION defined in your environment. You should
+# also have the following /etc/hosts entries defined for your
+# hosting environment. (These are appropriate for docker-machine
+# on OSX.) In a production environment, these should resolve
+# to the appropriate hosts and/or dns entries.
+#
+#
+###############################################################
+
+proxy:
+  image: httpd:2.4.29
+  hostname: api.prod.tacc.cloud
+  ports:
+    - '80:80'
+  extra_hosts:
+    - "proxy.host:129.114.97.130"
+    - "a.proxy.host:129.114.97.130"
+    - "b.proxy.host:129.114.97.134"
+  volumes:
+    - '/var/log/splunk/proxy:/var/log/apache2'
+    - './conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro'

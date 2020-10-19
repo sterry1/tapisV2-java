@@ -1,0 +1,42 @@
+1. bring down RH container
+
+2. bring down meta-security tmp
+docker-compose -f meta-security-core.yml -p tmp-metav3 down
+
+3. bring down proxy
+  docker-compose -p proxy -f proxy.yml down
+
+
+4. bring down proxy tmp
+docker-compose -f tmp-proxy.yml -p tmp-proxy down
+
+
+5. Make the change to conf/httpd.conf
+      RewriteCond %{REQUEST_URI} ^/meta/v3
+      RewriteRule ^/meta/v3(.*)$ http://proxy.host:8199/meta/v3$1 [P]
+
+6. make the change to meta-security-core.yml
+meta-security
+   environment:
+      - 'tapis.meta.log.directory=/tmp/meta'
+      #
+   volumes:
+      - './etc-tmp/permissions.json:/opt/tomcat/etc/permissions.json'
+
+restheart
+   volumes:
+      - './etc-tmp/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
+      - './etc-tmp/config.properties:/opt/restheart/etc/config.properties:ro'
+
+
+7. bring up proxy
+  docker-compose -p proxy -f proxy.yml up -d
+
+8. bring up meta-security-core.yml
+
+9. test ---
+
+10. remove tmp files and old RH core compose
+
+11. make sure the burnup and burndown scripts are set for meta-security
+
