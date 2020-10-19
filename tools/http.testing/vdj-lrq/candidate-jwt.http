@@ -1,0 +1,12 @@
+##############################################################
+#
+#   Sanity check after startup
+#   jwt validation turned off for testing
+##############################################################
+
+###   will list collections under v1airr
+GET http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+###
+
