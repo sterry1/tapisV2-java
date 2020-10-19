@@ -32,6 +32,7 @@ public class ValidateAggrQueryT {
     // 1. string is a valid json document
     // 2. string is a valid query
     if(client != null){
+      // client.getDatabase("api").getCollection("metadata").find();
       FindIterable<Document> rslts = client.getDatabase("api").getCollection("metadata").find(document);
       rslts.forEach(printBlock);
       System.out.println(rslts.toString());

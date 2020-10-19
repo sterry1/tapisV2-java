@@ -88,6 +88,14 @@ public class MongoDBClientSingleton {
 
         return this.mongoClient;
     }
+    
+    public MongoClientURI getMongoUri(){
+        if (MongoDBClientSingleton.mongoUri == null) {
+            throw new IllegalStateException("mongo client uri not initialized");
+        }
+    
+        return MongoDBClientSingleton.mongoUri;
+    }
 
     private static class MongoDBClientSingletonHolder {
 

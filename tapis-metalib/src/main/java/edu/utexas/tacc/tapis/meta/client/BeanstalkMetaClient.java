@@ -6,6 +6,7 @@ import com.dinstone.beanstalkc.JobConsumer;
 import com.dinstone.beanstalkc.JobProducer;
 import com.google.gson.JsonObject;
 import edu.utexas.tacc.tapis.meta.config.BeanstalkConfig;
+import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
 import edu.utexas.tacc.tapis.utils.ConversionUtils;
 import org.slf4j.Logger;
@@ -79,9 +80,10 @@ public class BeanstalkMetaClient implements TaskQueueClient {
   }
   
   private LRQTask jobToTask(Job job){
+    LRQTask task = null;
     ConversionUtils conversionUtils = new ConversionUtils();
     JsonObject jsonObject = conversionUtils.byteArrayToJsonObject(job.getData());
-    LRQTask task = (LRQTask) conversionUtils.jsonObjectToLRQSubmission(jsonObject);
+    LRQSubmission submission = conversionUtils.jsonObjectToLRQSubmission(jsonObject);
     return task;
   }
   

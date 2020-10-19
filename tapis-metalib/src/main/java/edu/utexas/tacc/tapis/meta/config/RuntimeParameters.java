@@ -1,5 +1,6 @@
 package edu.utexas.tacc.tapis.meta.config;
 
+import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import edu.utexas.tacc.aloe.shared.parameters.AloeEnv;
 // import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;

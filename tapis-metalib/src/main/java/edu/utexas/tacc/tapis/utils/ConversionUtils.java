@@ -2,6 +2,7 @@ package edu.utexas.tacc.tapis.utils;
 
 import com.google.gson.*;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
+import edu.utexas.tacc.tapis.meta.model.LRQTask;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,9 +125,23 @@ public class ConversionUtils {
         _log.error("Not valid Json, "+e.getMessage());
       }
     }
-    
     return  lrqSubmission;
   }
+  
+  public static LRQTask jsonObjectToLRQTask(JsonObject jsonObject){
+    // what if we get a null or empty object
+    LRQTask lrqTask = null;
+    if(jsonObject != null){
+      try {
+        lrqTask = gson.fromJson(jsonObject, LRQTask.class );
+      } catch (JsonSyntaxException e ) {
+        // TODO throw new Tapis Exception?
+        _log.error("Not valid Json, "+e.getMessage());
+      }
+    }
+    return  lrqTask;
+  }
+  
   
   
   
