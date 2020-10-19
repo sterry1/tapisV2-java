@@ -1,6 +1,6 @@
 package edu.utexas.tacc.tapis.meta;
 
-public class LRQWorker {
+public class LRQWorker  {
   public static void main(String[] args) {
     /*------------------------------------------------------------------------
      * The responsibilities of LRQWrkr
@@ -12,5 +12,6 @@ public class LRQWorker {
      * 6. send the notification of completion or failure
      *
      * -----------------------------------------------------------------------*/
+    
   }
 }

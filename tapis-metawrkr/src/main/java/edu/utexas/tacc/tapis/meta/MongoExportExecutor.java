@@ -28,13 +28,15 @@ public class MongoExportExecutor {
    * 3. Export of a named collection with a SIMPLE query and projection of fields to return immediately
    *    written to file in the default storage location.
    *
-   * @param exportCommand
+   * @param exportCommand   Initialized and valid MongoExportCommand that can return the command String
+   *                        used by Process runner.
    */
   public MongoExportExecutor (MongoExportCommand exportCommand){
     command = exportCommand;
   }
   
-  public void runExportCommand(String mongoexportCmd){
+  public void runExportCommand(){
+    String mongoexportCmd = command.exportCommandAsString();
     ProcessBuilder processBuilder = new ProcessBuilder();
     processBuilder.command("bash", "-c", mongoexportCmd);
   

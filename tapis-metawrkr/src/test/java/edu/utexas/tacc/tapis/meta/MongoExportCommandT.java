@@ -14,16 +14,18 @@ public class MongoExportCommandT {
     params.put("password","d3f@ult");
     params.put("db","v1airr");
     params.put("collection","rearrangement");
-    params.put("fileOutput","onejson.json");
+    params.put("fileOutput","onejson.json.gz");
     // params.put("fields","repertoire_id,locus");
-    params.put("query","{\"repertoire_id\":\"1993707260355416551-242ac11c-0001-012\"}");
+    // params.put("query","{\"repertoire_id\":\"1993707260355416551-242ac11c-0001-012\"}");
+    params.put("query","{\"repertoire_id\":\"1841923116114776551-242ac11c-0001-012\"}");
+    
     params.put("fields","");
     // params.put("query","");
     
     MongoExportCommand mec = new MongoExportCommand(params);
     assert (mec.isReady);
     
-    System.out.println(mec.exportCommand());
+    System.out.println(mec.exportCommandAsString());
   }
   
 }

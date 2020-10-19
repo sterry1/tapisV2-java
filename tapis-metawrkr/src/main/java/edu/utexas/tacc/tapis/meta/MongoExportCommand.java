@@ -11,7 +11,7 @@ import java.util.Map;
 public class MongoExportCommand {
   // there is a --sort flag as well
   // "mongoexport -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement -o=onejson.json -f=\"repertoire_id,locus\" -q='{\"repertoire_id\":\"1993707260355416551-242ac11c-0001-012\"}'";
-  private final static String template = "mongoexport -h={{hostPort}} -u={{user}} -p={{password}} --authenticationDatabase=admin -d={{db}} -c={{collection}} -o={{fileOutput}} {{fields}} {{query}}";
+  private final static String template = "mongoexport --quiet -h={{hostPort}} -u={{user}} -p={{password}} --authenticationDatabase=admin -d={{db}} -c={{collection}}  {{fields}} {{query}}  | gzip > {{fileOutput}}";
   private String hostPortFlag = "-h=";
   private String userFlag = "-u=";
   private String passwordFlag = "-p=";
@@ -65,7 +65,7 @@ public class MongoExportCommand {
     isReady = true;
   }
   
-  public String exportCommand() {
+  public String exportCommandAsString() {
     String result="";
     if (isReady){
       String cmd = MongoExportCommand.getTemplate();
@@ -163,6 +163,6 @@ public class MongoExportCommand {
     MongoExportCommand mec = new MongoExportCommand(params);
     assert (mec.isReady);
     
-    System.out.println(mec.exportCommand());
+    System.out.println(mec.exportCommandAsString());
   }
 }
