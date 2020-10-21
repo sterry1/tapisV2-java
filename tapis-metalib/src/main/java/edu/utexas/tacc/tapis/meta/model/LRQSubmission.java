@@ -12,16 +12,14 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import edu.utexas.tacc.tapis.utils.ConversionUtils;
-import org.checkerframework.checker.units.qual.C;
 
 
 // TODO swap out for generated version
 public class LRQSubmission implements Serializable {
   private static final long serialVersionUID = 2852014510831095945L;
-  
   @SerializedName("_id")
   @Expose
-  private String id;
+  private String _id;
   @SerializedName("name")
   @Expose
   private String name;
@@ -35,7 +33,16 @@ public class LRQSubmission implements Serializable {
   @Expose
   private String notification;
   
-  public enum qType { SIMPLE, AGGREGATION }
+  public enum qType {
+    SIMPLE("SIMPLE"),
+    AGGREGATION("AGGREGATION");
+    
+    public final String type;
+    
+    private qType(String type) {
+      this.type = type;
+    }
+  }
   
   public LRQSubmission(){ }
   
@@ -66,7 +73,7 @@ public class LRQSubmission implements Serializable {
    */
   public LRQSubmission(String id, String name, String queryType, List<Object> query, String notification) {
     super();
-    this.id = id;
+    this._id = id;
     this.name = name;
     this.queryType = queryType;
     this.query = query;
@@ -80,11 +87,11 @@ public class LRQSubmission implements Serializable {
     return serialVersionUID;
   }
   
-  public String getId() {
-    return id;
+  public String get_id() {
+    return _id;
   }
-  public void setId(String id) {
-    this.id = id;
+  public void set_id(String _id) {
+    this._id = _id;
   }
   
   public String getName() {
@@ -141,7 +148,7 @@ public class LRQSubmission implements Serializable {
   
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append("_id", id)
+    return new ToStringBuilder(this).append("_id", _id)
                                     .append("name", name)
                                     .append("queryType", queryType)
                                     .append("query", query)
@@ -152,7 +159,7 @@ public class LRQSubmission implements Serializable {
   public int hashCode() {
     return new HashCodeBuilder().append(name)
                                 .append(notification)
-                                .append(id)
+                                .append(_id)
                                 .append(queryType)
                                 .append(query).toHashCode();
   }
@@ -168,7 +175,7 @@ public class LRQSubmission implements Serializable {
     LRQSubmission rhs = ((LRQSubmission) other);
     return new EqualsBuilder().append(name, rhs.name)
                               .append(notification, rhs.notification)
-                              .append(id, rhs.id).append(queryType, rhs.queryType)
+                              .append(_id, rhs._id).append(queryType, rhs.queryType)
                               .append(query, rhs.query).isEquals();
   }
   

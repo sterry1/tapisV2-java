@@ -57,15 +57,36 @@ public class QueryExecutor {
   public boolean startQueryExecution(){
     // we have a lrq task
     MongoQuery mongoQuery = null;
+    
+/*
+    switch(lrqTask.getQueryType()) {
+      case qType.SIMPLE.type.equals("SIMPLE") :
+        // Statements
+        break; // optional
+    
+      case qType.SIMPLE.type.equals("AGGREGATION") :
+        // Statements
+        break; // optional
+    
+      // You can have any number of case statements.
+      default : // Optional
+        // Statements
+    }
+*/
     if(lrqTask.getQueryType().equals(qType.SIMPLE.toString())){
       mongoQuery = new MongoQuery(qType.SIMPLE,lrqTask.getJsonQueryArray());
       // It is a simple query so we can query and export at the same time.
-      //  MongoExportCommand mongoExportCommand = new MongoExportCommand(Map params);
+      // MongoExportCommand mongoExportCommand = new MongoExportCommand(Map params);
       // but we need a Map of query commands
       // create a new QueryHostContext ie. the mongodb host context info host:port user password security info ect.
+      // for production we only need host:port but no security info.
+      
     }else{
       if(lrqTask.getQueryType().equals(qType.AGGREGATION.toString())) {
         mongoQuery = new MongoQuery(qType.AGGREGATION, lrqTask.getJsonQueryArray());
+        // prep the aggregation
+        
+        
       }
     }
     // major ERROR condition
@@ -78,7 +99,12 @@ public class QueryExecutor {
   
   // create a cmd map to drive the export command.
   private void simpleQueryExecution(){
-  
+    // create a map to drive the ExportCommand
+    // this will create the commandline call to the Executor
+    // Simple queries are a one step export and write to zip file to the
+    // designated storage location. These are usually the largest result sets
+    // generated.
+    
   }
   
   private void aggregationExecution(){

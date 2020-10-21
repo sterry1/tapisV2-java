@@ -53,7 +53,7 @@ public class RuntimeParameters {
   // service locations.
   private String tenantBaseUrl = "https://dev.develop.tapis.io/";
   private String skSvcURL      = "https://dev.develop.tapis.io/v3";
-  private String tokenBaseUrl  =  "https://dev.develop.tapis.io/";
+  private String tokenBaseUrl  = "https://dev.develop.tapis.io/";
   private String metaToken;
   private ServiceJWT serviceJWT;
   
@@ -66,8 +66,8 @@ public class RuntimeParameters {
   private boolean permissionsCheck=true;
   
   // TODO pull in from environment
-  // default
-  private String mongoDbUriLRQ ="mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1";
+  // defaults
+  private String mongoDbUriLRQ ="mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1";
   private String lrqDB = "LRQ";
   private String taskQueueHost = "";
   private String taskQueuePort = "";

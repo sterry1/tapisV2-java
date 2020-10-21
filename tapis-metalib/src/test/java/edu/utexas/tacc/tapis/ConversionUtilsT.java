@@ -1,11 +1,14 @@
 package edu.utexas.tacc.tapis;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
+import edu.utexas.tacc.tapis.utils.ConversionUtils;
 
 public class ConversionUtilsT {
   public static void main(String[] args) {
+    
     String jobJsonSimpleWithId = "{\n" +
         "  \"_id\": \"57485869987\",\n" +
         "  \"name\": \"myQuery\",\n" +
@@ -43,7 +46,9 @@ public class ConversionUtilsT {
         "}\n";
   
     Gson gson = new Gson();
-    LRQTask gen = gson.fromJson(jobJsonSimpleWithId, LRQTask.class );
+    // LRQTask gen = gson.fromJson(jobJsonSimpleWithId, LRQTask.class );
+    JsonObject jsonObject = gson.fromJson(jobJsonSimpleWithId, JsonObject.class);
+    LRQTask gen = ConversionUtils.jsonObjectToLRQTask(jsonObject);
     System.out.println(gen.toJson());
   }
 }

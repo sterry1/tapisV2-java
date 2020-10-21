@@ -3,6 +3,8 @@ package edu.utexas.tacc.tapis.meta.api.resources;
 import com.google.gson.JsonObject;
 import edu.utexas.tacc.aloe.shared.threadlocal.AloeThreadContext;
 import edu.utexas.tacc.aloe.shared.threadlocal.AloeThreadLocal;
+import edu.utexas.tacc.tapis.meta.client.BeanstalkMetaClient;
+import edu.utexas.tacc.tapis.meta.config.BeanstalkConfig;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
@@ -984,6 +986,11 @@ public class ResourceBucket extends AbstractResource {
   //}
   
   private boolean sendSubmissionToQueue(LRQSubmission dto) {
+    BeanstalkConfig beanstalkConfig = new BeanstalkConfig();
+    BeanstalkMetaClient client = new BeanstalkMetaClient(beanstalkConfig,"vdjserver.org");  // Todo pull from context
+  
+    client.putTask(dto.toJson());
+    client.close();
     
     return true;
   }

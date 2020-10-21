@@ -21,7 +21,7 @@ public class BeanstalkMetaClient implements TaskQueueClient {
   private JobConsumer consumer;
   private int priority = 1;
   private int delay = 0;
-  private int ttr = 5000;
+  private int ttr = 50000;
   
   /**
    * Constructor that sets up the Beanstalk client
@@ -46,9 +46,12 @@ public class BeanstalkMetaClient implements TaskQueueClient {
       _log.error("We failed to put the task on the queue for some reason.");
       e.printStackTrace();
     }
-  
   }
   
+  
+  /**
+   *
+   */
   @Override
   public LRQTask getTask() {
   // TODO when we pull this task off the queue to work it
@@ -56,7 +59,13 @@ public class BeanstalkMetaClient implements TaskQueueClient {
     LRQTask task = null;
     try {
       job = consumer.reserveJob(1);
-      task = jobToTask(job);
+      if(job != null){
+        task = jobToTask(job);
+      }
+      // if we have our task delete the job from the task queue
+      if(task != null){
+        consumer.deleteJob(job.getId());
+      }
     } catch (Exception e) {
       // TODO there are a number of exceptions and errors that can occur here
       _log.error("We failed to get a task from the queue for some reason.");
@@ -83,7 +92,7 @@ public class BeanstalkMetaClient implements TaskQueueClient {
     LRQTask task = null;
     ConversionUtils conversionUtils = new ConversionUtils();
     JsonObject jsonObject = conversionUtils.byteArrayToJsonObject(job.getData());
-    LRQSubmission submission = conversionUtils.jsonObjectToLRQSubmission(jsonObject);
+    task = conversionUtils.jsonObjectToLRQTask(jsonObject);
     return task;
   }
   

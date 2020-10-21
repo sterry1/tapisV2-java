@@ -6,6 +6,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.InsertOneOptions;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
@@ -31,13 +33,14 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
   private String LRQcollection;
   
   public LRQSubmissionDAOImpl(String collection) {
+    // these documents will go into the LRQ database under a tenant collection
+    this.LRQdb = RuntimeParameters.getInstance().getLrqDB();
+    this.LRQcollection = collection;
+
     if (MongoDBClientSingleton.isInitialized()) {
       client = MongoDBClientSingleton.getInstance().getClient();
       if (client != null) isClientReady = true;
     }
-    // these documents will go into the LRQ database under a tenant collection
-    this.LRQdb = RuntimeParameters.getInstance().getLrqDB();
-    this.LRQcollection = collection;
     _log.debug("Mongodb client setup for DB: " + LRQdb + ", collection: " + LRQcollection);
   }
   
@@ -95,7 +98,22 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
   }
   
   @Override
-  public boolean updateSubmissionStatus(String id, String status) {
+  public boolean updateSubmissionStatus(String id, String _status) {
+    try {
+      // TODO this check is meaningless because there is always a client created and ready even if it can't connect
+      if (isClientReady) {
+        MongoDatabase db = client.getDatabase(LRQdb);
+        MongoCollection<Document> collection = db.getCollection(LRQcollection);
+
+       UpdateResult result = collection.updateOne(eq("_id", new ObjectId(id)), Updates.set("status","RUNNING"));
+       System.out.println();
+      }
+    } catch (Exception e) {
+      
+      _log.error("Update failed for DB: " + LRQdb + ", collection: " + LRQcollection + ", document: "+id);
+      _log.error(e.getMessage());
+      return false;
+    }
     return false;
   }
   

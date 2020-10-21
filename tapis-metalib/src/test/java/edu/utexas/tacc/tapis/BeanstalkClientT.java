@@ -13,6 +13,7 @@ public class BeanstalkClientT {
     BeanstalkMetaClient client = new BeanstalkMetaClient(beanstalkConfig,"vdjserver.org");
 // do something
     String jobJson = "{\n" +
+        "  \"_id\": \"372653\",\n"   +
         "  \"name\": \"myQuery\",\n" +
         "  \"queryType\": \"SIMPLE\",\n" +
         "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1}],\n" +
@@ -26,7 +27,7 @@ public class BeanstalkClientT {
     // Job job = consumer.reserveJob(1);
     String result = new String();
     System.out.println(result);
-// close client and release resources
+    // close client and release resources
     client.close();
     // producer.close();
     // consumer.close();
