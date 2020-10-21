@@ -28,7 +28,7 @@ POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
-This is just a string
+{"something":"This is just a string"
 
 ###
 # {'msg': 'payload is not syntactic JSON'}
@@ -47,10 +47,15 @@ Content-Type: application/json
 
 ###
 
-###
-GET http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq/5f7b4366b90afb4b6bb0455a
+###  check status
+GET http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq/5f8f520b5307065fe8040528
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
 ###
-
+#  {
+#    "_id": {
+#      "$oid": "5f8f520b5307065fe8040528"
+#    },
+#    "status": "SUBMITTED"
+#  }
