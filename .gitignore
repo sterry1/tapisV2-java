@@ -88,3 +88,5 @@ Icon
 /tapis-metaapi/src/test/resources/facets.json
 /tools/http.testing/json.json
 /onejson.json.gz
+/deployment/environment_files/aloe-dev-tc-lcl.env
+/deployment/etc-tst/
