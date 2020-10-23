@@ -6,6 +6,7 @@ import edu.utexas.tacc.tapis.meta.config.BeanstalkConfig;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
+import edu.utexas.tacc.tapis.meta.model.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +31,14 @@ public class LRQWorker {
     return task;
   }
   
-  protected void updateTaskStatus(String _tenant, String _id) {
+  protected void updateTaskStatus(String _tenant, String _id, Status status) {
     _log.trace("... update the db with status info. ");
     LRQSubmissionDAO dao = new LRQSubmissionDAOImpl(_tenant);
     
   }
   
   protected void spawnQueryExecutor(LRQTask lrqTask) {
+    _log.trace("TODO ... ");
     _log.trace("... spawn a query executor with the task. ");
     
     
@@ -46,11 +48,13 @@ public class LRQWorker {
     _log.trace("... monitor task execution. ");
   }
   
-  protected void sendNotification() {
+  protected void sendNotification(String tenant, LRQTask task) {
     _log.trace("... send notification of done or failure. ");
   }
   
   public static void main(String[] args) {
+    String tenant = "vdjserver.org";
+    LRQWorker lrqWorker = new LRQWorker(tenant);
     /*------------------------------------------------------------------------
      * The responsibilities of LRQWrkr
      *
@@ -62,6 +66,29 @@ public class LRQWorker {
      * 6. send the notification of completion or failure
      *
      * -----------------------------------------------------------------------*/
-  
+    
+    // 1. get a task from the queue
+    LRQTask lrqTask = lrqWorker.getTaskFromQueue();
+    
+    // 2. update the lrq submission document in the database
+    lrqWorker.updateTaskStatus(tenant,lrqTask.get_id(), Status.STARTED);
+    
+    // 3. spawn a Query executor with the lrqtask.
+    lrqWorker.spawnQueryExecutor(lrqTask);
+    
+    // 4. monitor the executor for completion or failure.
+    // this is where the long running things happen.
+    // 4.1 we want to monitor errors and exceptions
+    // 4.2 we may want to stop the executor ( some queries and result storage may take hours ).
+    // 4.3 how do we cleanup in case of failure?
+    lrqWorker.monitorTaskExecution();
+    
+    // 5. We are finished or failed
+    lrqWorker.updateTaskStatus(tenant,lrqTask.get_id(), Status.FINISHED);
+    
+    // 6. Send out notification on status of lrqtask.
+    lrqWorker.sendNotification(tenant,lrqTask);
   }
+  
+
 }

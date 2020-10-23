@@ -784,9 +784,25 @@
       </dependency>
       <dependency>
         <groupId>edu.utexas.tacc.tapis</groupId>
+        <artifactId>tapis-shared-lib</artifactId>
+        <version>1.1-SNAPSHOT</version>
+        <scope>system</scope>
+        <systemPath>${project.basedir}/lib/tapis-shared-lib-1.1-SNAPSHOT.jar</systemPath>
+      </dependency>
+      <dependency>
+        <groupId>edu.utexas.tacc.tapis</groupId>
+        <artifactId>tapis-shared-api-lib</artifactId>
+        <version>1.1-SNAPSHOT</version>
+        <scope>system</scope>
+        <systemPath>${project.basedir}/lib/tapis-shared-api-1.1-SNAPSHOT.jar</systemPath>
+      </dependency>
+<!--
+      <dependency>
+        <groupId>edu.utexas.tacc.tapis</groupId>
         <artifactId>tapis-vault-java-driver</artifactId>
         <version>5.1.0-SNAPSHOT</version>
       </dependency>
+-->
       <dependency>
         <groupId>io.kubernetes</groupId>
         <artifactId>client-java</artifactId>

@@ -1,0 +1,29 @@
+
+
+################################################################
+
+
+MongoClientT 10.22.2020
+    String url = "mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin";
+    setup(url);
+
+    MongoClient client = serverVersion();
+
+    aggr(client,"rearrangement", TestData.aggregationShort);
+beginning time: 14:42:48.771632
+total document count: 121
+ms : 221673 secs : 221   mins : 3 : 41 secs
+
+################################################################
+
+MongoClientT 10.22.2020
+    String url = "mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin";
+    setup(url);
+
+    MongoClient client = serverVersion();
+
+    aggr(client,"rearrangement", TestData.aggregationLong);
+beginning time: 14:35:38.721905
+total document count: 127
+ms : 214310 secs : 214   mins : 3 : 34 secs
+

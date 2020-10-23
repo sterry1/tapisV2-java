@@ -51,9 +51,14 @@ public class MongoClientT {
     
     int document_count = 0;
     AggregateIterable<Document> output = collection.aggregate(jstages);
+    // you have to iterate the collection before the $out collection is created fully. why??
+    // using runcommand or shell in robo3t always takes about the same time to create the
+    // temp collection and rename.
+    // not sure if there is a paging penalty for aggregations just like there is for queries.
+    
     for (Document doc : output) {
       document_count++;
-      System.out.println(document_count);
+      // System.out.println(document_count);
     }
     // 2020-06-12 16:23:35.268   final 2020-06-12 16:35:53.954 ~ 12 mins
     System.out.println("beginning time: "+ begin);
@@ -79,7 +84,7 @@ public class MongoClientT {
     
     MongoClient client = serverVersion();
     
-    aggr(client,"rearrangement", TestData.aggregationLongCount);
+    aggr(client,"rearrangement", TestData.aggregationShortWithOut);
     
     
   }

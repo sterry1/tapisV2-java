@@ -1,6 +1,7 @@
 package edu.utexas.tacc.tapis.meta;
 
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
+import edu.utexas.tacc.tapis.meta.model.Status;
 
 public class LRQWorkerT {
   public static void main(String[] args) {
@@ -20,7 +21,7 @@ public class LRQWorkerT {
     LRQTask task = lrqWorker.getTaskFromQueue();
     
     // update db status
-    lrqWorker.updateTaskStatus(task.get_id(), "RUNNING");
+    lrqWorker.updateTaskStatus(_tenant, task.get_id(), Status.STARTED);
   
     try {
       lrqWorker.spawnQueryExecutor(task);
@@ -29,9 +30,9 @@ public class LRQWorkerT {
     }
   
     // update db status
-    lrqWorker.updateTaskStatus(task.get_id(), "FAILED");
+    lrqWorker.updateTaskStatus(_tenant, task.get_id(), Status.FINISHED);
   
-    lrqWorker.sendNotification();
+    lrqWorker.sendNotification(_tenant,task);
   
   }
 }
