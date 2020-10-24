@@ -65,7 +65,7 @@
       <version>2.4.2</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
+<!--    <dependency>
       <groupId>edu.utexas.tacc.tapis</groupId>
       <artifactId>tapis-shared-lib</artifactId>
       <version>1.1-SNAPSHOT</version>
@@ -78,8 +78,8 @@
       <version>1.1-SNAPSHOT</version>
       <scope>system</scope>
       <systemPath>/Users/sterry1/development/projects/1Tapis-RH-projects/tapis-dev-projects/tapis_projects/tapisv2-metav3/tapisv2-metav3-security/lib/tapis-shared-api-1.1-SNAPSHOT.jar</systemPath>
-    </dependency>
-    <!--    <dependency>
+    </dependency>-->
+        <dependency>
           <groupId>${project.groupId}</groupId>
           <artifactId>tapis-shared-lib</artifactId>
           <version>${tapis-shared-java.version}</version>
@@ -88,7 +88,7 @@
           <groupId>${project.groupId}</groupId>
           <artifactId>tapis-shared-api</artifactId>
           <version>${tapis-shared-java.version}</version>
-        </dependency>-->
+        </dependency>
     <dependency>
       <groupId>edu.utexas.tacc.aloe</groupId>
       <artifactId>aloe-shared</artifactId>

@@ -96,6 +96,7 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-moxy</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>edu.utexas.tacc.tapis</groupId>
             <artifactId>tapis-shared-lib</artifactId>
@@ -110,8 +111,7 @@
             <scope>system</scope>
             <systemPath>/Users/sterry1/development/projects/1Tapis-RH-projects/tapis-dev-projects/tapis_projects/tapisv2-metav3/tapisv2-metav3-security/lib/tapis-shared-api-1.1-SNAPSHOT.jar</systemPath>
         </dependency>
-
-        <!--
+-->
          <dependency>
             <groupId>edu.utexas.tacc.tapis</groupId>
             <artifactId>tapis-shared-lib</artifactId>
@@ -124,7 +124,7 @@
             <version>1.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-
+        <!--
                 <dependency>
                     <groupId>edu.utexas.tacc.tapis</groupId>
                     <artifactId>security-client</artifactId>
@@ -150,6 +150,21 @@
             <artifactId>tapis-metalib</artifactId>
             <version>0.0.4</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dinstone</groupId>
+            <artifactId>beanstalkc</artifactId>
+            <version>2.3.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

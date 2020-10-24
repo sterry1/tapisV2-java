@@ -7,12 +7,10 @@ import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;
 import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRequest;
 
 import edu.utexas.tacc.tapis.meta.utils.MetaSKPermissionsMapper;
-/*
 import edu.utexas.tacc.tapis.meta.utils.MetaAppConstants;
-import edu.utexas.tacc.tapis.security.client.SKClient;
+// import edu.utexas.tacc.tapis.security.client.SKClient;
 import edu.utexas.tacc.tapis.shared.exceptions.TapisClientException;
 import edu.utexas.tacc.tapis.shared.threadlocal.TapisThreadContext;
-*/
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
