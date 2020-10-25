@@ -90,3 +90,7 @@ Icon
 /onejson.json.gz
 /deployment/environment_files/aloe-dev-tc-lcl.env
 /deployment/etc-tst/
+/tapis-metawrkr/src/main/java/edu/utexas/tacc/aloe/jobs/exceptions/JobQueueException.java
+/tapis-metawrkr/src/main/java/edu/utexas/tacc/tapis/meta/JobWorker.java
+/tapis-metawrkr/src/main/java/edu/utexas/tacc/tapis/meta/JobWorkerParameters.java
+/tapis-metawrkr/src/test/java/edu/utexas/tacc/tapis/meta/
