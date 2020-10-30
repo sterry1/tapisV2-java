@@ -1,0 +1,221 @@
+###  sanity test to see if service is alive  token is from testuser7
+# useing vdjadmin jwt modified with jwt validation turned off.
+GET http://localhost:8199/meta/v3/v1airr
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request root executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###  sanity check returned collections for v1airr. now the real testing begins.
+
+##################################### streamsTACCAdmin user #################################################
+# streams  these tests are hitting the dev deployment of RH-core
+
+
+##############################################################
+#      setup for tests using creates for needed resources
+#       run with env  streams.master
+#       streams master token
+#  Assumes collection and other resouces do not exist
+##############################################################
+
+#  create a test collection tstTmp in db /meta/v3/db/collection
+###
+PUT http://localhost:8199/meta/v3/v1airr/tstTmp
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request v1airr create collection executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 200");
+    });
+%}
+
+###
+
+#  create a document in /meta/v3/v1airr/rearrangement
+# adding a name on the end of a PUT will create a document by that name
+###
+PUT http://localhost:8199/meta/v3/v1airr/rearrangement/tstDoc
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+{ "name": "test document slt 4.28.2020-15:23", "jimmyList":["1","3"],"description": "PUT tstDoc for testing"}
+
+> {%
+    client.test("Create document in collection executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+
+    client.test("Response content-type is json", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+    });
+%}
+
+###
+
+#  create a document in /meta/v3/v1airr/rearrangement
+# adding a name on the end of a PUT will create a document by that name and basic response  !!! PUT doesn't return basic response
+###
+PUT http://localhost:8199/meta/v3/v1airr/rearrangement/tstDoc1?basic=true
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+{ "name": "test document slt 4.28.2020-15:23", "jimmyList":["1","3"],"description": "PUT tstDoc1 for testing"}
+
+> {%
+    client.test("Create document in collection executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+
+    client.test("Response content-type is json", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+    });
+%}
+
+###
+
+#  create a document in /meta/v3/v1airr/rearrangement
+# adding a name on the end of a PUT will create a document by that name and basic response  !!! PUT doesn't return basic response
+###
+POST http://localhost:8199/meta/v3/v1airr/rearrangement?basic=true
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+{ "name": "test document slt 4.28.2020-15:43", "jimmyList":["1","3"],"description": "POST a new document with basic response"}
+
+> {%
+    client.test("Create document in collection executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+
+    client.test("Response content-type is json", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+    });
+%}
+
+###  id 5ea9e6fea93eebf39fcd2601
+
+##############################################################
+#      DB endpoints
+##############################################################
+
+###   db list collections
+GET http://localhost:8199/meta/v3/v1airr
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request v1airr list collections executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+###   db metadata
+GET http://localhost:8199/meta/v3/v1airr/_meta
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get db metadata executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+##############################################################
+#     Collection endpoints
+##############################################################
+#
+#  get a document list under v1airr/rearrangement /meta/v3/v1airr/rearrangement
+#
+###
+GET http://localhost:8199/meta/v3/v1airr/rearrangement
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+#
+#  get metadata for v1airr/rearrangement /meta/v3/v1airr/rearrangement
+#
+###
+GET http://localhost:8199/meta/v3/v1airr/rearrangement/_meta
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+#  query for list under v1airr/rearrangement /meta/v3/v1airr/rearrangement
+###
+GET http://localhost:8199/meta/v3/v1airr/rearrangement?filter={"_id": "tstDoc"}
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+##############################################################
+#     Document endpoints
+##############################################################
+###
+GET http://localhost:8199/meta/v3/v1airr/rearrangement/tstDoc
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Get a single document from collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+###
+GET http://localhost:8199/meta/v3/v1airr/rearrangement?filter={"_id": "tstDoc"}
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+###
+DELETE http://localhost:8199/meta/v3/v1airr/rearrangement/tstDoc
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Remove a single document from collection executed successfully", function() {
+        client.assert(response.status === 204, "Response status is not 204");
+    });
+%}
+###
+

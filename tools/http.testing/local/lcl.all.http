@@ -4,18 +4,18 @@
 #
 ##############################################################
 ###   add the db
-PUT http://localhost:8080/v1airr
+PUT http://localhost:8199/v1airr
 
 ###
 
 ###   add the rearrangement_0 collection
-PUT http://localhost:8080/v1airr/rearrangement_0
+PUT http://localhost:8199/v1airr/rearrangement_0
 
 ###
 
 ###  we want to check that PUT new name collection w/o document creates new collection
 #
-PUT http://localhost:8080/v1airr/rearrangement_0
+PUT http://localhost:8199/v1airr/rearrangement_0
 Content-Type: application/json
 ###  201
 # running the above a second time removes the aggrs value from properties
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 ###  we want to check that PUT new name collection with document creates new document in collection?
 #
-PUT http://localhost:8080/v1airr/rearrangement_0
+PUT http://localhost:8199/v1airr/rearrangement_0
 Content-Type: application/json
 
 { "aggrs" : [
@@ -42,7 +42,7 @@ Content-Type: application/json
 
 ###  we want to check that PATCH existing collection with property aggrs creates modifies aggrs
 #
-PATCH http://localhost:8080/v1airr/rearrangement_0
+PATCH http://localhost:8199/v1airr/rearrangement_0
 Content-Type: application/json
 
 { "aggrs" : [
