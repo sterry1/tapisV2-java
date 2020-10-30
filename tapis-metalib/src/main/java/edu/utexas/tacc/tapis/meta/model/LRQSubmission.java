@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -111,10 +112,10 @@ public class LRQSubmission implements Serializable {
   // the first should be a matching query and the second should be a projection.
   // TODO? specify match and projection for simple query.
   public List<Object> getQuery() { return query; }
+  
   public JsonArray getJsonQueryArray(){
-    Gson gson = new Gson();
-    
-    return null;
+    JsonArray jsonArray = ConversionUtils.arrayListOfStringToJsonArray(query);
+    return jsonArray;
   }
   public String getQueryAsString() {
     Gson gson = new Gson();

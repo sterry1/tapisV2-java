@@ -10,9 +10,11 @@ public interface LRQSubmissionDAO {
   /**
    * Create a new submission document in the DB / Collection
    * @param dto
+   * @param queryDb
+   * @param queryCollection
    * @return new ObjectId of the persisted document or null if creation unsuccessful
    */
-  public ObjectId createSubmission(LRQSubmission dto);
+  public ObjectId createSubmission(LRQSubmission dto, String queryDb, String queryCollection);
   public boolean deleteSubmission(String id);
   public boolean updateSubmissionStatus(String id, String status);
   public String getSubmission(String id);

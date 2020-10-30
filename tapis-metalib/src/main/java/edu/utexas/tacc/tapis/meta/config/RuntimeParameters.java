@@ -1,6 +1,5 @@
 package edu.utexas.tacc.tapis.meta.config;
 
-import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import edu.utexas.tacc.aloe.shared.parameters.AloeEnv;
 // import edu.utexas.tacc.tapis.meta.permissions.V2PermissionsRegistry;
@@ -25,6 +24,11 @@ public class RuntimeParameters {
   
   // Tracing.
   private static final Logger _log = LoggerFactory.getLogger(RuntimeParameters.class);
+  private  String queryHost;
+  private  String queryPort;
+  private  String queryUser;
+  private  String queryPwd;
+  private  String queryAuthDB;
   
   // Distinguished user-chosen name of this runtime instance.
   private String  instanceName;
@@ -51,9 +55,9 @@ public class RuntimeParameters {
   }
   
   // service locations.
-  private String tenantBaseUrl = "https://dev.develop.tapis.io/";
-  private String skSvcURL      = "https://dev.develop.tapis.io/v3";
-  private String tokenBaseUrl  = "https://dev.develop.tapis.io/";
+  private String tenantBaseUrl = "";       // "https://dev.develop.tapis.io/";
+  private String skSvcURL      = "";       // "https://dev.develop.tapis.io/v3";
+  private String tokenBaseUrl  = "";       // "https://dev.develop.tapis.io/";
   private String metaToken;
   private ServiceJWT serviceJWT;
   
@@ -65,6 +69,7 @@ public class RuntimeParameters {
   private String coreserver_connection_timeout="3";   // default 2 minutes
   private boolean permissionsCheck=true;
   
+  //
   // TODO pull in from environment
   // defaults
   private String mongoDbUriLRQ ="mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1";
@@ -121,6 +126,21 @@ public class RuntimeParameters {
     parm = System.getenv("tapis.meta.mongo.lrq.db");
     if (!StringUtils.isBlank(parm)) setLrqDB(parm);
   
+    parm = System.getenv("tapis.meta.query.host");
+    if (!StringUtils.isBlank(parm)) setQueryHost(parm);
+  
+    parm = System.getenv("tapis.meta.query.port");
+    if (!StringUtils.isBlank(parm)) setQueryPort(parm);
+  
+    parm = System.getenv("tapis.meta.query.user");
+    if (!StringUtils.isBlank(parm)) setQueryUser(parm);
+  
+    parm = System.getenv("tapis.meta.query.password");
+    if (!StringUtils.isBlank(parm)) setQueryPwd(parm);
+  
+    parm = System.getenv("tapis.meta.query.authDB");
+    if (!StringUtils.isBlank(parm)) setQueryAuthDB(parm);
+  
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
     MongoClientURI uri = new MongoClientURI(mongoDbUriLRQ);
@@ -162,6 +182,48 @@ public class RuntimeParameters {
   public static RuntimeParameters getInstance() {
     return _instance;
   }
+  
+  public String getQueryHost() {
+    return queryHost;
+  }
+  
+  public void setQueryHost(String queryHost) {
+    this.queryHost = queryHost;
+  }
+  
+  public String getQueryPort() {
+    return queryPort;
+  }
+  
+  public void setQueryPort(String queryPort) {
+    this.queryPort = queryPort;
+  }
+  
+  public String getQueryUser() {
+    return queryUser;
+  }
+  
+  public void setQueryUser(String queryUser) {
+    this.queryUser = queryUser;
+  }
+  
+  public String getQueryPwd() {
+    return queryPwd;
+  }
+  
+  public void setQueryPwd(String queryPwd) {
+   this.queryPwd = queryPwd;
+  }
+  
+  public String getQueryAuthDB() {
+    return queryAuthDB;
+  }
+  
+  public void setQueryAuthDB(String queryAuthDB) {
+    this.queryAuthDB = queryAuthDB;
+  }
+  
+  
   
   /* ---------------------------------------------------------------------- */
   /* getRuntimeInfo:                                                        */

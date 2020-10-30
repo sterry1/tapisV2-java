@@ -21,7 +21,7 @@ public class BeanstalkMetaClient implements TaskQueueClient {
   private JobConsumer consumer;
   private int priority = 1;
   private int delay = 0;
-  private int ttr = 50000;
+  private int ttr = 5000;
   
   /**
    * Constructor that sets up the Beanstalk client
@@ -32,8 +32,8 @@ public class BeanstalkMetaClient implements TaskQueueClient {
     beanstalkConfig = _beanstalkConfig;
     
     BeanstalkClientFactory factory = new BeanstalkClientFactory(beanstalkConfig.getConfig());
-    producer = factory.createJobProducer(_tenant);
-    consumer = factory.createJobConsumer(_tenant);
+    // producer = factory.createJobProducer(_tenant);
+    // consumer = factory.createJobConsumer(_tenant);
   }
   
   @Override
@@ -58,18 +58,21 @@ public class BeanstalkMetaClient implements TaskQueueClient {
     Job job;
     LRQTask task = null;
     try {
-      job = consumer.reserveJob(1);
+      job = consumer.reserveJob(0);
       if(job != null){
         task = jobToTask(job);
       }
       // if we have our task delete the job from the task queue
       if(task != null){
         consumer.deleteJob(job.getId());
+        consumer.close();
       }
     } catch (Exception e) {
       // TODO there are a number of exceptions and errors that can occur here
       _log.error("We failed to get a task from the queue for some reason.");
       e.printStackTrace();
+    }finally {
+      consumer.close();
     }
     return task;
   }

@@ -12,7 +12,7 @@ public class LRQSubmissionDAOImplT {
     LRQSubmissionDAO dao = new LRQSubmissionDAOImpl("vdjserver.org");
     LRQSubmission lrqSubmission = ConversionUtils.jsonObjectToLRQSubmission(ConversionUtils.stringToJsonObject(TestData.submissionJsonSimple));
     
-    ObjectId objectId = dao.createSubmission(lrqSubmission);
+    ObjectId objectId = dao.createSubmission(lrqSubmission,"v1airr" ,"rearrangement" );
     
     dao.updateSubmissionStatus(objectId.toString(),"RUNNING");
     

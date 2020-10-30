@@ -5,7 +5,6 @@ import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.InsertOneOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
@@ -36,8 +35,8 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
     // these documents will go into the LRQ database under a tenant collection
     this.LRQdb = RuntimeParameters.getInstance().getLrqDB();
     this.LRQcollection = collection;
-
-    if (MongoDBClientSingleton.isInitialized()) {
+    
+    if (MongoDBClientSingleton.isInitialized()) {  // initialization should have been done at runtime startup.
       client = MongoDBClientSingleton.getInstance().getClient();
       if (client != null) isClientReady = true;
     }
@@ -47,10 +46,12 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
   /**
    * Create a new submission document in the DB / Collection
    * @param dto
+   * @param queryDb
+   * @param queryCollection
    * @return new ObjectId of the persisted document or null if creation unsuccessful
    */
   @Override
-  public ObjectId createSubmission(LRQSubmission dto) {
+  public ObjectId createSubmission(LRQSubmission dto, String queryDb, String queryCollection) {
     _log.trace("Create a valid submission for DB: " + LRQdb + ", collection: " + LRQcollection);
   
     try {
@@ -67,6 +68,8 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
         submissionDocument.append("queryType",dto.getQueryType());
         submissionDocument.append("query",dto.getQuery().toString());
         submissionDocument.append("notification",dto.getNotification());
+        submissionDocument.append("queryDb",queryDb);
+        submissionDocument.append("queryCollection",queryCollection);
 
         ObjectId newId = new ObjectId();
         submissionDocument.append("_id", newId );

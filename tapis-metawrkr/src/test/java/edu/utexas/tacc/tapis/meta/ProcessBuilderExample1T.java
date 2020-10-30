@@ -12,7 +12,7 @@ public class ProcessBuilderExample1T {
     String mongoexportCmd = "mongoexport -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement -o=onejson.json -f=\"repertoire_id,locus\" -q='{\"repertoire_id\":\"1993707260355416551-242ac11c-0001-012\"}'";
     
     processBuilder.command("bash", "-c", "mongoexport -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement -o=onejson.json -f=\"repertoire_id,locus\" -q='{\"repertoire_id\":\"1993707260355416551-242ac11c-0001-012\"}'");
-    //processBuilder.command("bash", "-c", mongoexportCmd);
+    // processBuilder.command("bash", "-c", mongoexportCmd);
     
     try {
       
@@ -28,7 +28,7 @@ public class ProcessBuilderExample1T {
       }
       
       int exitCode = process.waitFor();
-      System.out.println("\nExited with error code : " + exitCode);
+      System.out.println("\n Exited with error code : " + exitCode);
       
     } catch (IOException e) {
       e.printStackTrace();

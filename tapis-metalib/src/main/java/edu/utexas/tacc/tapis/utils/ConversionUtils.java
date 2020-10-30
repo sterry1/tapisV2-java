@@ -11,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class helps with the transformation of our LRQ model across different
@@ -74,6 +76,10 @@ public class ConversionUtils {
     }
   }
   
+  public static LRQTask stringToLRQTask(String taskString){
+    return jsonObjectToLRQTask(stringToJsonObject(taskString));
+  }
+  
   public static JsonObject stringToJsonObject(String string){
     JsonObject jsonObject;
     // checked for null and empty
@@ -112,6 +118,11 @@ public class ConversionUtils {
   public static String jsonArrayToString(JsonArray jsonArray){
     String queryArray = gson.toJson(jsonArray);
     return queryArray;
+  }
+  
+  public static JsonArray arrayListOfStringToJsonArray(List<Object> strArray) {
+    JsonArray jsonArray = gson.toJsonTree(strArray).getAsJsonArray();
+    return jsonArray;
   }
   
   public static LRQSubmission jsonObjectToLRQSubmission(JsonObject jsonObject){

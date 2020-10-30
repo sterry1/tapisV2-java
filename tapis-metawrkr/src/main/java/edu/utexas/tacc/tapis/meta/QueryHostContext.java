@@ -1,9 +1,8 @@
 package edu.utexas.tacc.tapis.meta;
 
-import com.mongodb.MongoClientURI;
 import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
-import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -18,23 +17,34 @@ import java.util.Map;
  * TODO flesh out this class to work for both mongoexport and mongodbUri
  */
 public class QueryHostContext {
-  String host;
-  String port;
-  String user;
-  String password;
-  String authDB;
-  String authMechanism;
-  String prodHostContext="";
-  String devHostContext="";
-  Map<String,String> context = new HashedMap();
+  private final String host;            // required
+  private final String port;            // optional
+  private final String user;            // optional
+  private final String password;        // optional
+  private final String authDB;          // optional
+  // String authMechanism;   // optional needed for mongodb uri
+
   
   
   public QueryHostContext(){
     // setup context by grabbing MongoClientUri
-    
+    RuntimeParameters p = RuntimeParameters.getInstance();
+    host = p.getQueryHost();
+    port = p.getQueryPort();
+    user = p.getQueryUser();
+    password =  p.getQueryPwd();
+    authDB = p.getQueryAuthDB();
+    // RuntimeParameters.getQueryAuthMechanism();   // needed for mongodb uri
   }
   
   public Map<String,String> getContext(){
+    Map<String,String> context = new HashedMap();
+    context.put("host",this.host);
+    if(!StringUtils.isEmpty(port)) context.put("port",port);
+    if(!StringUtils.isEmpty(user)) context.put("user",user);
+    if(!StringUtils.isEmpty(password)) context.put("pwd", password);
+    if(!StringUtils.isEmpty(authDB)) context.put("authDB",authDB);
+    // if(!StringUtils.isEmpty(authMechanism)) context.put("authMechanism",authMechanism);  // needed for mongodb uri
     return context;
   }
   

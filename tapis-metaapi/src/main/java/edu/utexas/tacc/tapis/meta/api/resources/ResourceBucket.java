@@ -947,7 +947,8 @@ public class ResourceBucket extends AbstractResource {
     
     LRQSubmission lrqSubmission = validSubmission.getLRQSubmission();
     LRQSubmissionDAO lrqDao = new LRQSubmissionDAOImpl(threadContext.getTenantId());
-    ObjectId objectId = lrqDao.createSubmission(lrqSubmission);
+    // the request context carries the names of the target db and collection the query executes against.
+    ObjectId objectId = lrqDao.createSubmission(lrqSubmission,db ,collection );
     
     // result will be null if creation of document in the collection was unsuccessful
     if (objectId == null) {
