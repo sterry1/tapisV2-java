@@ -137,6 +137,7 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
         FindIterable<Document> documents = collection.find(eq("_id", new ObjectId(id)))
             .projection(fields(include("_id", "status")));
         Document document = documents.first();
+        // TODO document can be null if find doesn't work so don't try to turn it into json.
         String status = document.toJson();
         return status;
       }

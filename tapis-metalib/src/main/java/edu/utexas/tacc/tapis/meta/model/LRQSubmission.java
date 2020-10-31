@@ -33,6 +33,12 @@ public class LRQSubmission implements Serializable {
   @SerializedName("notification")
   @Expose
   private String notification;
+  @SerializedName("queryDb")
+  @Expose
+  private String queryDb;
+  @SerializedName("queryCollection")
+  @Expose
+  private String queryCollection;
   
   public enum qType {
     SIMPLE("SIMPLE"),
@@ -87,6 +93,12 @@ public class LRQSubmission implements Serializable {
   public static long getSerialVersionUID() {
     return serialVersionUID;
   }
+  
+  public String getQueryDb() { return queryDb; }
+  public void setQueryDb(String queryDb) { this.queryDb = queryDb; }
+  
+  public String getQueryCollection() { return queryCollection; }
+  public void setQueryCollection(String queryCollection) { this.queryCollection = queryCollection; }
   
   public String get_id() {
     return _id;

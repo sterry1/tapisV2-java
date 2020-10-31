@@ -3,8 +3,6 @@ package edu.utexas.tacc.tapis.meta.api.resources;
 import com.google.gson.JsonObject;
 import edu.utexas.tacc.aloe.shared.threadlocal.AloeThreadContext;
 import edu.utexas.tacc.aloe.shared.threadlocal.AloeThreadLocal;
-import edu.utexas.tacc.tapis.meta.client.BeanstalkMetaClient;
-import edu.utexas.tacc.tapis.meta.config.BeanstalkConfig;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
@@ -957,8 +955,9 @@ public class ResourceBucket extends AbstractResource {
     }
     //  TODO ----------------   package for message queue validSubmission ----------------
     // create a message and submit to msg client
-    // should I consider beanstalk for work queue?
-    boolean result = sendSubmissionToQueue(validSubmission.getLRQSubmission());
+    // using rabbitMQ for task queue
+    // TODO add db and collection context to submission.
+    boolean result = sendSubmissionToQueue(validSubmission.getLRQSubmission(),db ,collection );
     
     if (!result) {
       // Return an Error Response
@@ -986,12 +985,14 @@ public class ResourceBucket extends AbstractResource {
   // return true;
   //}
   
-  private boolean sendSubmissionToQueue(LRQSubmission dto) {
-    BeanstalkConfig beanstalkConfig = new BeanstalkConfig();
-    BeanstalkMetaClient client = new BeanstalkMetaClient(beanstalkConfig,"vdjserver.org");  // Todo pull from context
+  private boolean sendSubmissionToQueue(LRQSubmission dto, String queryDb, String queryCollection) {
+    // BeanstalkConfig beanstalkConfig = new BeanstalkConfig();
+    // BeanstalkMetaClient client = new BeanstalkMetaClient(beanstalkConfig,"vdjserver.org");  // Todo pull from context
   
-    client.putTask(dto.toJson());
-    client.close();
+    // client.putTask(dto.toJson());
+    // client.close();
+    
+    // need to add
     
     return true;
   }

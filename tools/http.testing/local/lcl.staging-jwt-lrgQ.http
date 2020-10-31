@@ -201,14 +201,14 @@ Content-Type: application/json
 {
   "name": "myQuery",
   "queryType": "SIMPLE",
-  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}, {"cdr1": 1}],
+  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}, {"cdr1": 1, "cdr2": 1, "cdr3": 1 }],
   "notification": "mailto:sterry1@tacc.utexas.edu"
 }
 
 ###
 
 ###
-GET http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq/5f85d75dca1b223c6a877cf7
+GET http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq/5f9c85a6298839408372eeb5
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
