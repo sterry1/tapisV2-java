@@ -2,7 +2,6 @@ package edu.utexas.tacc.tapis.meta;
 
 import edu.utexas.tacc.tapis.utils.TimerUtility;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,14 +12,14 @@ public class MongoExportExecutorT {
     // the Map must include the fields and query entries even if they are empty. In fact, they
     // must be empty if not used for a correct command to be returned.
     Map<String,String> params = new HashMap<>();
-    params.put("host","aloe-dev08.tacc.utexas.edu");
+    params.put("host","aloe-dev04.tacc.utexas.edu");
     params.put("port","27019");
     params.put("user","tapisadmin");
     params.put("password","d3f@ult");
     params.put("authDB","--authenticationDatabase=admin");
     params.put("db","v1airr");
     params.put("collection","rearrangement");
-    params.put("fileOutput","onejson.json.gz");
+    params.put("fileOutput","xyzabc123.gz");
     params.put("fields","");
     params.put("query","{\"repertoire_id\":\"1841923116114776551-242ac11c-0001-012\"}");
   
@@ -31,11 +30,11 @@ public class MongoExportExecutorT {
   
     System.out.println("Export cmd line : \n"+ mec.exportCommandAsString());
     
-    MongoExportExecutor mongoExportExecutor = new MongoExportExecutor(mec);
+    MongoExportExecutor mongoExportExecutor = new MongoExportExecutor();
     
     TimerUtility timer = new TimerUtility();
     timer.start();
-    mongoExportExecutor.runExportCommand();
+    mongoExportExecutor.runExportCommand(mec);
     timer.end();
   }
   

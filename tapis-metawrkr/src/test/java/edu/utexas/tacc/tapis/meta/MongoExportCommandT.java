@@ -46,3 +46,26 @@ public class MongoExportCommandT {
   }
   
 }
+
+/*
+simple query with auth with fields
+mongoexport --quiet -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement  -f="repertoire_id,locus" -q='{"repertoire_id":"1841923116114776551-242ac11c-0001-012"}'  | gzip > onejson.json.gz
+
+simple query with auth wo fields
+mongoexport --quiet -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement   -q='{"repertoire_id":"1841923116114776551-242ac11c-0001-012"}'  | gzip > onejson.json.gz
+
+simple query wo auth wo fields
+mongoexport --quiet -h=aloe-dev08.tacc.utexas.edu:27019    -d=v1airr -c=rearrangement   -q='{"repertoire_id":"1841923116114776551-242ac11c-0001-012"}'  | gzip > onejson.json.gz
+
+simple query wo auth with fields
+mongoexport --quiet -h=aloe-dev08.tacc.utexas.edu:27019    -d=v1airr -c=rearrangement  -f="repertoire_id,locus" -q='{"repertoire_id":"1841923116114776551-242ac11c-0001-012"}'  | gzip > onejson.json.gz
+
+export with auth wo query fields
+mongoexport --quiet -h=aloe-dev04.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement     | gzip > onejson.json.gz
+
+mongoexport --quiet -h=aloe-dev04.tacc.utexas.edu:27019    -d=v1airr -c=rearrangement     | gzip > onejson.json.gz
+
+
+ mongoexport -h=aloe-dev04.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f%40ult --authenticationDatabase=admin -d=v1airr -c=rearrangement  -f="cdr1,cdr2" -q='{"repertoire_id":"1841923116114776551-242ac11c-0001-012"}'
+*
+* */

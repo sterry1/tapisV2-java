@@ -1,21 +1,12 @@
 package edu.utexas.tacc.tapis.meta;
 
-import com.google.gson.*;
-import edu.utexas.tacc.tapis.meta.client.BeanstalkMetaClient;
-import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
-import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission.qType;
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
-import edu.utexas.tacc.tapis.shared.exceptions.TapisException;
 import edu.utexas.tacc.tapis.utils.ConversionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /** ------------------------------------------------------------------------
@@ -54,6 +45,16 @@ public class QueryExecutor {
     // TODO check to make sure this returns a !null
     lrqTaskString = _lrqTaskString;
   }
+  
+  public void checkIntegrationWithQueue(String workerName){
+    System.out.println(workerName+": I'm sleeping here ..");
+    try {
+      Thread.sleep(60000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  
+  }
   /*
   *   1. Extract the query array from the Task
   *   2. Call MongoQuery need qtype, query JsonArray
@@ -66,33 +67,45 @@ public class QueryExecutor {
     // i guess it's safe to assume it is a valid lrq task and conforms to syntactically correct json
     LRQTask lrqTask = ConversionUtils.stringToLRQTask(this.lrqTaskString);
     MongoQuery mongoQuery = null;
-    
+  
+    // It is a simple query so we can query and export at the same time.
+    // we have all the info needed to create an export command
+    // and call the query-export process.
+    Map<String,String> cmdMap = this.createCommandMap();
+    cmdMap.put("db",lrqTask.getQueryDb());
+    cmdMap.put("collection",lrqTask.getQueryCollection());
+    cmdMap.put("fileOutput","lrq-"+lrqTask.get_id()+".gz");
+  
+    // This is a simple query
     if(lrqTask.getQueryType().equals(qType.SIMPLE.toString())){
+      _log.trace("This is a simple query");
       mongoQuery = new MongoQuery(qType.SIMPLE.toString(),lrqTask.getJsonQueryArray());
       try {
-        mongoQuery.unpackQuery();
-      } catch (TapisException e) {
+        mongoQuery.upackSimple(cmdMap,lrqTask.getJsonQueryArray());
+      } catch (Exception e) {
         // TODO logging and exception handling here.
+        _log.debug("Process the SIMPLE query from the task. If this fails we can't go any further.");
         // in general should any part of this process fail, we should error out and fail the submission
         e.printStackTrace();
       }
+      // Our parameters for the command should be complete and we are able to derive the command used for export.
+      MongoExportExecutor mongoExportExecutor = new MongoExportExecutor();
+      // run the command
+      MongoExportCommand mongoExportCommand = new MongoExportCommand(cmdMap);
+      _log.debug("Export cmd : "+mongoExportCommand.exportCommandAsString());
+      mongoExportExecutor.runExportCommand(new MongoExportCommand(cmdMap));
       
-      // It is a simple query so we can query and export at the same time.
-      // we have all the info needed to create an export command
-      // and call the query-export process.
-      Map<String,String> cmdMap = this.createCommandMap();
-      System.out.println();
-      
-      // MongoExportCommand mongoExportCommand = new MongoExportCommand(Map params);
       // but we need a Map of query commands
       // create a new QueryHostContext ie. the mongodb host context info host:port user password security info ect.
       // for production we only need host:port but no security info.
-      
     }else{
       if(lrqTask.getQueryType().equals(qType.AGGREGATION.toString())) {
+        _log.debug("Process the AGGREGATION query from the task. If this fails we can't go any further.");
         mongoQuery = new MongoQuery(qType.AGGREGATION.toString(), lrqTask.getJsonQueryArray());
         // prep the aggregation
-        
+        // TODO run an aggregation against the database with the $out document setting to create a tmp collection.
+        // we need a Mongodb client for this but the pipeline should run
+        _log.debug("Process the AGGREGATION query from the task. If this fails we can't go any further.");
         
       }
     }
@@ -129,6 +142,7 @@ public class QueryExecutor {
     cmdMap.putAll(context.getContext());
   }
   
+  
   private Map<String,String> createCommandMap(){
     
     Map<String,String> params = new HashMap<>();
@@ -144,6 +158,7 @@ public class QueryExecutor {
     params.put("query","");
     // TODO context should be ok from Runtime parameters we can always check
     this.addQueryHostContext(params);
+    System.out.println();
 
     return params;
   }

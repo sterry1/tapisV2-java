@@ -1,4 +1,4 @@
-package edu.utexas.tacc.tapis;
+package edu.utexas.tacc.tapis.meta;
 
 import org.apache.commons.io.IOUtils;
 
@@ -11,7 +11,7 @@ public class TestData {
   public static final String submissionJsonSimple = "{\n" +
       "  \"name\": \"myQuery\",\n" +
       "  \"queryType\": \"SIMPLE\",\n" +
-      "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1}],\n" +
+      "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
       "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
       "}";
   // put <priority>, <delay>, <time to reserve>, <bytes> <data>  number of bytes and the byte[] for data.
@@ -45,13 +45,51 @@ public class TestData {
       "  \"notification\": \"\"\n" +
       "}\n";
   
-  public static final String taskJson = "{\n" +
+  public static final String taskJsonSimpleFields = "{\n" +
       "  \"_id\": \"372653\",\n"   +
       "  \"name\": \"myQuery\",\n" +
       "  \"queryType\": \"SIMPLE\",\n" +
-      "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1}],\n" +
+      "  \"queryDb\": \"v1airr\",\n" +
+      "  \"queryCollection\": \"rearrangement\",\n" +
+      "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
       "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
       "}";
+  
+  public static final String taskJsonSimpleNoFields = "{\n" +
+      "  \"_id\": \"472653\",\n" +
+      "  \"name\": \"myQuery\",\n" +
+      "  \"queryType\": \"SIMPLE\",\n" +
+      "  \"queryDb\": \"v1airr\",\n" +
+      "  \"queryCollection\": \"rearrangement\",\n" +
+      "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}],\n" +
+      "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
+      "}";
+  
+  public static final String getTaskJsonSimpleFields(String id) {
+    String tmp = "{\n" +
+        "  \"_id\": \"" + id + "\",\n" +
+        "  \"name\": \"myQuery\",\n" +
+        "  \"queryType\": \"SIMPLE\",\n" +
+        "  \"queryDb\": \"v1airr\",\n" +
+        "  \"queryCollection\": \"rearrangement\",\n" +
+        "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
+        "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
+        "}";
+    return tmp;
+  }
+  
+  public static final String getTaskJsonSimpleNoFields(String id) {
+    String tmp = "{\n" +
+        "  \"_id\": \"" + id + "\",\n" +
+        "  \"name\": \"myQuery\",\n" +
+        "  \"queryType\": \"SIMPLE\",\n" +
+        "  \"queryDb\": \"v1airr\",\n" +
+        "  \"queryCollection\": \"rearrangement\",\n" +
+        "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}],\n" +
+        "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
+        "}";
+    return tmp;
+  }
   
   public static final String aggregationShort = "  [\n" +
       "    {\"$match\":\n" +
@@ -109,7 +147,7 @@ public class TestData {
   public static final String filter1ShortQuery = "{\"repertoire_id\" : { \"$in\":[\n" +
       "  \"613650018764394986-242ac113-0001-012\",  \"636971691181674986-242ac113-0001-012\",  \"660851709347434986-242ac113-0001-012\"]}}";
   
-  public static Map getSimpleCmdWithAuth(){
+  public static Map getSimpleCmdWithAuthAndFields(){
     Map<String,String> params = new HashMap<>();
     params.put("host","aloe-dev08.tacc.utexas.edu");
     params.put("port","27019");
@@ -119,34 +157,98 @@ public class TestData {
     params.put("db","v1airr");
     params.put("collection","rearrangement");
     params.put("fileOutput","onejson.json.gz");
+    params.put("fields","repertoire_id,locus");
     params.put("query","{\"repertoire_id\":\"1841923116114776551-242ac11c-0001-012\"}");
     return params;
   }
-  public static Map getSimpleCmdWOAuth(){
-    Map<String,String> params = new HashMap<>();
-    params.put("host","aloe-dev08.tacc.utexas.edu");
-    params.put("port","27019");
-    params.put("db","v1airr");
-    params.put("collection","rearrangement");
-    params.put("fileOutput","onejson.json.gz");
-    params.put("query","{\"repertoire_id\":\"1841923116114776551-242ac11c-0001-012\"}");
-    
-    return params;
-  }
-  public static Map getSimpleCmdWithFields(){
+  
+  public static Map getSimpleCmdWithAuthWOFields(){
     Map<String,String> params = new HashMap<>();
     params.put("host","aloe-dev08.tacc.utexas.edu");
     params.put("port","27019");
     params.put("user","tapisadmin");
     params.put("password","d3f@ult");
+    params.put("authDB","--authenticationDatabase=admin");
+    params.put("db","v1airr");
+    params.put("collection","rearrangement");
+    params.put("fileOutput","onejson.json.gz");
+    params.put("fields","");
+    params.put("query","{\"repertoire_id\":\"1841923116114776551-242ac11c-0001-012\"}");
+    return params;
+  }
+  
+  public static Map getSimpleCmdWOAuthWithFields(){
+    Map<String,String> params = new HashMap<>();
+    params.put("host","aloe-dev08.tacc.utexas.edu");
+    params.put("port","27019");
+    params.put("user","");
+    params.put("password","");
+    params.put("authDB","");
     params.put("db","v1airr");
     params.put("collection","rearrangement");
     params.put("fileOutput","onejson.json.gz");
     params.put("fields","repertoire_id,locus");
     params.put("query","{\"repertoire_id\":\"1841923116114776551-242ac11c-0001-012\"}");
     return params;
+  }
+  
+  public static Map getSimpleCmdWOAuthWOFields(){
+    Map<String,String> params = new HashMap<>();
+    params.put("host","aloe-dev08.tacc.utexas.edu");
+    params.put("port","27019");
+    params.put("user","");
+    params.put("password","");
+    params.put("authDB","");
+    params.put("db","v1airr");
+    params.put("collection","rearrangement");
+    params.put("fileOutput","onejson.json.gz");
+    params.put("fields","");
+    params.put("query","{\"repertoire_id\":\"1841923116114776551-242ac11c-0001-012\"}");
+    
+    return params;
+  }
+  
+  public static Map getExportCmdWithAuthWOQueryOrFields(){
+    Map<String,String> params = new HashMap<>();
+    params.put("host","aloe-dev08.tacc.utexas.edu");
+    params.put("port","27019");
+    params.put("user","tapisadmin");
+    params.put("password","d3f@ult");
+    params.put("authDB","--authenticationDatabase=admin");
+    params.put("db","v1airr");
+    params.put("collection","rearrangement");
+    params.put("fileOutput","onejson.json.gz");
+    params.put("fields","");
+    params.put("query","");
+    return params;
     
   }
+  
+  public static Map getExportCmdWOAuthWOQueryOrFields(){
+    Map<String,String> params = new HashMap<>();
+    params.put("host","aloe-dev08.tacc.utexas.edu");
+    params.put("port","27019");
+    params.put("user","");
+    params.put("password","");
+    params.put("authDB","");
+    params.put("db","v1airr");
+    params.put("collection","rearrangement");
+    params.put("fileOutput","onejson.json.gz");
+    params.put("fields","");
+    params.put("query","");
+    return params;
+    
+  }
+  
+  // this comes in from the queue, appropiate transformation here.
+  public static String simpleQTask = "{\n" +
+      "  \"_id\": \"3423849\",\n" +
+      "  \"name\": \"myQuery\",\n" +
+      "  \"queryType\": \"SIMPLE\",\n" +
+      "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
+      "  \"notification\": \"\"\n" +
+      "}";
+  
   
   // otherwise this String will throw Error:(66,28) java: constant string too long during compile
   public static String simpleLargeQuery2Long() throws IOException {

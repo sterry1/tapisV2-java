@@ -42,7 +42,7 @@ public class QueryHostContext {
     context.put("host",this.host);
     if(!StringUtils.isEmpty(port)) context.put("port",port);
     if(!StringUtils.isEmpty(user)) context.put("user",user);
-    if(!StringUtils.isEmpty(password)) context.put("pwd", password);
+    if(!StringUtils.isEmpty(password)) context.put("password", password);
     if(!StringUtils.isEmpty(authDB)) context.put("authDB",authDB);
     // if(!StringUtils.isEmpty(authMechanism)) context.put("authMechanism",authMechanism);  // needed for mongodb uri
     return context;

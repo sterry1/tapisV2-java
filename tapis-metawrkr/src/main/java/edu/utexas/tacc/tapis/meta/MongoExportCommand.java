@@ -50,8 +50,12 @@ public class MongoExportCommand {
             mustacheMap.put("password", new String("-p="+v));
           }
           break;
-        case "authDB" :
-          mustacheMap.put("authDB", v);
+        case "authDB" :   // if filled this is always admin
+          if(StringUtils.isEmpty(v)){
+            mustacheMap.put("authDB", new String(""));
+          }else {
+            mustacheMap.put("authDB", new String("--authenticationDatabase=admin"));
+          }
           break;
         case "db" :
           mustacheMap.put("db", v);

@@ -30,6 +30,7 @@ public class RuntimeParameters {
   private  String queryPwd;
   private  String queryAuthDB;
   
+  
   // Distinguished user-chosen name of this runtime instance.
   private String  instanceName;
   
@@ -76,6 +77,7 @@ public class RuntimeParameters {
   private String lrqDB = "LRQ";
   private String taskQueueHost = "";
   private String taskQueuePort = "";
+  private String taskQueueName = "";
   private String getTaskQueueConnectTimeout = "";
   private String getTaskQueueReadTimeout = "";
   
@@ -140,6 +142,12 @@ public class RuntimeParameters {
   
     parm = System.getenv("tapis.meta.query.authDB");
     if (!StringUtils.isBlank(parm)) setQueryAuthDB(parm);
+  
+    parm = System.getenv("tapis.meta.query.queue.host");
+    if (!StringUtils.isBlank(parm)) setTaskQueueHost(parm);
+  
+    parm = System.getenv("tapis.meta.query.queue.name");
+    if (!StringUtils.isBlank(parm)) setTaskQueueName(parm);
   
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
@@ -222,8 +230,6 @@ public class RuntimeParameters {
   public void setQueryAuthDB(String queryAuthDB) {
     this.queryAuthDB = queryAuthDB;
   }
-  
-  
   
   /* ---------------------------------------------------------------------- */
   /* getRuntimeInfo:                                                        */
@@ -321,7 +327,6 @@ public class RuntimeParameters {
   public String getTenantBaseUrl() {
     return this.tenantBaseUrl;
   }
-  
   public void setTenantBaseUrl(String tenantBaseUrl) {
     this.tenantBaseUrl = tenantBaseUrl;
   }
@@ -329,7 +334,6 @@ public class RuntimeParameters {
   public String getSkSvcURL() {
     return skSvcURL;
   }
-  
   public void setSkSvcURL(String skSvcURL) {
     this.skSvcURL = skSvcURL;
   }
@@ -337,13 +341,11 @@ public class RuntimeParameters {
   public String getMetaToken() {
     return metaToken;
   }
-  
   public void setMetaToken(String metaToken) {
     this.metaToken = metaToken;
   }
   
   public String getLogDirectory() { return logDirectory; }
-  
   public void setLogDirectory(String logDirectory) {
     this.logDirectory = logDirectory;
   }
@@ -351,30 +353,30 @@ public class RuntimeParameters {
   public String getLogFile() {
     return logFile;
   }
-  
   public void setLogFile(String logFile) {
     this.logFile = logFile;
   }
   
   public String getCoreServer() { return coreServer; }
-  
   public void setCoreServer(String coreServer) { this.coreServer = coreServer; }
   
   public String getCoreserver_connection_timeout() { return coreserver_connection_timeout; }
-  
   public void setCoreserver_connection_timeout(String coreserver_connection_timeout) { this.coreserver_connection_timeout = coreserver_connection_timeout; }
   
   public boolean isPermissionsCheck() { return permissionsCheck; }
-  
   public void setPermissionsCheck(boolean permissionsCheck) { this.permissionsCheck = permissionsCheck; }
   
   public String getMongoDbUriLRQ() { return mongoDbUriLRQ; }
-  
   public void setMongoDbUriLRQ(String mongoDbUriLRQ) { this.mongoDbUriLRQ = mongoDbUriLRQ; }
   
   public String getLrqDB() { return lrqDB; }
-  
   public void setLrqDB(String lrqDB) { this.lrqDB = lrqDB; }
+  
+  public String getTaskQueueHost() { return taskQueueHost; }
+  public void setTaskQueueHost(String taskQueueHost) { this.taskQueueHost = taskQueueHost; }
+  
+  public String getTaskQueueName() { return taskQueueName; }
+  public void setTaskQueueName(String taskQueueName) { this.taskQueueName = taskQueueName; }
   
   public void setServiceJWT(){
     _log.debug("calling setServiceJWT ...");

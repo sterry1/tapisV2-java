@@ -12,7 +12,9 @@ import java.util.List;
 
 
 public class QueryExecutorT {
+  
   public void printSubmissionInfo(LRQTask lrqTask){
+    System.out.println("begin printSubmissionInfo");
     List<Object> q = lrqTask.getQuery();
     Gson gson = new Gson();
     String q1 = gson.toJson(q);
@@ -31,12 +33,27 @@ public class QueryExecutorT {
     System.out.println("query: "+gson.toJson(jsonArray));
     
     String tmp = null;
-    System.out.println();
-    
-    // executor.exportQueryResults("mycollection", tmp );
-    
+    System.out.println("end printSubmissionInfo\n");
   }
+  
+  public void runTest(String simpleQTask){
+    System.out.println("begin runTest");
+    // we can reuse this in MongoQuery
+    LRQTask _lrqTask = ConversionUtils.stringToLRQTask(simpleQTask);
+  
+    // just some logging to see what the values are
+    this.printSubmissionInfo(_lrqTask);
+  
+    // this setsup the executor with an immutable lrqtask value
+    System.out.println("logging the submitted lrq : \n"+_lrqTask.toJson());
+    QueryExecutor executor = new QueryExecutor(_lrqTask.toJson());
+  
+    executor.startQueryExecution();
+    System.out.println("end runTest\n");
+  }
+  
   public static void main(String[] args) {
+    System.out.println("*********  Test harness begin QueryExecutorT");
     RuntimeParameters parms = null;
     try {parms = RuntimeParameters.getInstance();}
     catch (Exception e) {
@@ -51,45 +68,16 @@ public class QueryExecutorT {
     QueryExecutorT t = new QueryExecutorT();
     
     // this comes in from the queue, appropiate transformation here.
-    String simpleQSubmission = "{\n" +
-        "  \"_id\": \"3423849\",\n" +
-        "  \"name\": \"myQuery\",\n" +
-        "  \"queryType\": \"SIMPLE\",\n" +
-        "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
-        "  \"notification\": \"\"\n" +
-        "}";
+    // String simpleQTask = TestData.taskJson;
   
-    // we can reuse this in MongoQuery
-    LRQTask _lrqTask = ConversionUtils.stringToLRQTask(simpleQSubmission);
-    // MongoQuery mongoQuery = new MongoQuery(_lrqTask.getQueryType(),_lrqTask.getJsonQueryArray());
-  
-    // just some logging to see what the values are
-    t.printSubmissionInfo(_lrqTask);
-    
-    // this setsup the executor with an immutable lrqtask value
-    System.out.println(_lrqTask.toJson());
-    QueryExecutor executor = new QueryExecutor(_lrqTask.toJson());
-    
-    executor.startQueryExecution();
-    
-    
-    // Pull json string query out and print
-    // the Map must include the fields and query entries even if they are empty. In fact, they
-    // must be empty if not used for a correct command to be returned.
-    // example: "mongoexport -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement -o=onejson.json -f=\"repertoire_id,locus\" -q='{\"repertoire_id\":\"1993707260355416551-242ac11c-0001-012\"}'";
-/*
-    Map<String,String> params = TestData.getSimpleCmdWithAuthWOFields();
-    MongoExportCommand mec = new MongoExportCommand(params);
-    assert (mec.isReady);
-  
-    String mongoexportCmd = mec.exportCommandAsString();
-  
-    System.out.println("Export cmd line : \n"+ mec.exportCommandAsString());
-    
-    MongoExportExecutor mongoExportExecutor = new MongoExportExecutor(mec);
-    mongoExportExecutor.runExportCommand();
-*/
-  
+    t.runTest(TestData.getTaskJsonSimpleFields("123456"));
+    System.out.println("\n============================================================================\n");
+    t.runTest(TestData.getTaskJsonSimpleNoFields("574893"));
+    System.out.println("\n============================================================================\n");
+    t.runTest(TestData.getTaskJsonSimpleFields("789345"));
+    System.out.println("\n============================================================================\n");
+    System.out.println("Done running tests.");
+    System.out.println("*********  Test harness End QueryExecutorT");
   }
   
 }

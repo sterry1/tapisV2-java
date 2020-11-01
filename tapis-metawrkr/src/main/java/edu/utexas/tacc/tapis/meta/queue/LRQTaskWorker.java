@@ -4,6 +4,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import edu.utexas.tacc.tapis.meta.QueryExecutor;
+import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -13,6 +15,8 @@ public class LRQTaskWorker {
   public final String workerName;
   
   public LRQTaskWorker(String _queueName, String _workerName){
+    System.out.println("Task Queue Name constructor : "+_queueName);
+    System.out.println("Task Worker Name constructor : "+_workerName);
     TASK_QUEUE_NAME = _queueName;
     this.workerName = _workerName;
   }
@@ -22,8 +26,11 @@ public class LRQTaskWorker {
   }
   
   public void processTask() throws IOException, TimeoutException {
+    RuntimeParameters runtimeP = RuntimeParameters.getInstance();
     ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost("localhost");
+    System.out.println("Task Queue Host runtime : "+runtimeP.getTaskQueueHost());
+    System.out.println("Task Queue Name runtime : "+runtimeP.getTaskQueueName());
+    factory.setHost(runtimeP.getTaskQueueHost());
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
     channel.basicQos(1);
@@ -49,15 +56,26 @@ public class LRQTaskWorker {
   }
   
   private static void doWork(String task, String workerName) throws InterruptedException {
+    System.out.println(" got this task to do ");
+    System.out.println("    but going to sleep instead.  yaaawwwnnn.");
+    
+    int interrupted = 0;
+    QueryExecutor queryExecutor = new QueryExecutor(task);
+    // queryExecutor.checkIntegrationWithQueue(workerName);
+    queryExecutor.startQueryExecution();
+    
+/*
     for (char ch: task.toCharArray()) {
       if (ch == '.') {
         try {
-          System.out.println(workerName+": I'm working here ..");
-          Thread.sleep(10000);
+          System.out.println(workerName+": I'm sleeping here ..");
+          Thread.sleep(60000);
         } catch (InterruptedException e) {
+          System.out.println("     catch thread interrupted count .. "+interrupted++);
           Thread.currentThread().interrupt();
         }
       }
     }
+*/
   }
 }
