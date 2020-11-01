@@ -95,3 +95,6 @@ Icon
 /tapis-metawrkr/src/main/java/edu/utexas/tacc/tapis/meta/JobWorkerParameters.java
 /tapis-metawrkr/src/test/java/edu/utexas/tacc/tapis/meta/
 /tools/temp-java/JobWorker.java
+/deployment/environment_files/aloe-staging-tc-lcl.env
+/lrq-*.gz
+
