@@ -74,7 +74,7 @@ public class RuntimeParameters {
   // TODO pull in from environment
   // defaults
   private String mongoDbUriLRQ ="mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1";
-  private String lrqDB = "LRQ";
+  private String lrqDB = "LRQ";  // default value
   private String taskQueueHost = "";
   private String taskQueuePort = "";
   private String taskQueueName = "";
@@ -266,23 +266,34 @@ public class RuntimeParameters {
     buf.append(this.getCoreserver_connection_timeout());
     buf.append("\ntapis.meta.permissions.check: ");
     buf.append(this.isPermissionsCheck());
-    buf.append("\ntapis.meta.mongo.lrq.db: ");
-    buf.append(this.getLrqDB());
     buf.append("\ntapis.meta.mongo.lrq.uri: ");
     buf.append(this.getMongoDbUriLRQ());
-
+    buf.append("\ntapis.meta.mongo.lrq.db: ");
+    buf.append(this.getLrqDB());
+    buf.append("\ntapis.meta.query.host: ");
+    buf.append(this.getQueryHost());
+    buf.append("\ntapis.meta.query.port: ");
+    buf.append(this.getQueryPort());
+    buf.append("\ntapis.meta.query.user: ");
+    buf.append(this.getQueryUser());
+    buf.append("\ntapis.meta.query.password: ");
+    buf.append(this.getQueryPwd());
+    buf.append("\ntapis.meta.query.authDB: ");
+    buf.append(this.getQueryAuthDB());
+    buf.append("\ntapis.meta.query.queue.host: ");
+    buf.append(this.getTaskQueueHost());
+    buf.append("\ntapis.meta.query.queue.name: ");
+    buf.append(this.getTaskQueueName());
   
-    
+  
     buf.append("\n\n------- EnvOnly Configuration ---------------------");
     buf.append("\ntapis.envonly.log.security.info: ");
     buf.append(RuntimeParameters.getLogSecurityInfo());
     buf.append("\ntapis.envonly.allow.test.header.parms: ");
-    // buf.append(this.isAllowTestHeaderParms());
     buf.append("\ntapis.envonly.jwt.optional: ");
     buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_JWT_OPTIONAL));
     buf.append("\ntapis.envonly.skip.jwt.verify: ");
     buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_SKIP_JWT_VERIFY));
-  
     buf.append("\naloe.envonly.jwt.optional: ");
     buf.append(AloeEnv.getBoolean(AloeEnv.EnvVar.ALOE_ENVONLY_JWT_OPTIONAL));
     buf.append("\naloe.envonly.skip.jwt.verify: ");
