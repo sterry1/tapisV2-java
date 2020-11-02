@@ -1,8 +1,13 @@
 package edu.utexas.tacc.tapis.meta.api.resources;
 
 import com.google.gson.JsonObject;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 import edu.utexas.tacc.aloe.shared.threadlocal.AloeThreadContext;
 import edu.utexas.tacc.aloe.shared.threadlocal.AloeThreadLocal;
+import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
@@ -26,8 +31,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeoutException;
 
 
 @Path("/")
@@ -937,9 +944,9 @@ public class ResourceBucket extends AbstractResource {
     // Use the DTO from validSubmission validation to
     // create and populate the DAO to create a persistent record of validSubmission
     // give it a unique id
-    _log.debug("write the validSubmission to the database ...");
     // we take a dto and create a dao for storage in DB
     _log.debug("create a dao for storage ... ");
+    _log.debug("write the validSubmission to the database ...");
     // need the collection that will store the validSubmission
     // pull the tenant id from context that will map to the collection to use.
     
@@ -957,7 +964,12 @@ public class ResourceBucket extends AbstractResource {
     // create a message and submit to msg client
     // using rabbitMQ for task queue
     // TODO add db and collection context to submission.
-    boolean result = sendSubmissionToQueue(validSubmission.getLRQSubmission(),db ,collection );
+    LRQSubmission validSubmissionLRQSubmission = validSubmission.getLRQSubmission();
+    validSubmissionLRQSubmission.set_id(objectId.toString());
+    validSubmissionLRQSubmission.setQueryDb(db);
+    validSubmissionLRQSubmission.setQueryCollection(collection);
+    
+    boolean result = sendSubmissionToQueue(validSubmissionLRQSubmission);
     
     if (!result) {
       // Return an Error Response
@@ -979,24 +991,27 @@ public class ResourceBucket extends AbstractResource {
     _log.trace("validating the submission json by schema");
   }
   
-  // private boolean createLRQSubmission(LRQSubmission dto, String tenant){
-  // LRQSubmissionDAO lrqDao = new LRQSubmissionDAOImpl(tenant);
-  // lrqDao.createSubmission(dto);
-  // return true;
-  //}
-  
-  private boolean sendSubmissionToQueue(LRQSubmission dto, String queryDb, String queryCollection) {
-    // BeanstalkConfig beanstalkConfig = new BeanstalkConfig();
-    // BeanstalkMetaClient client = new BeanstalkMetaClient(beanstalkConfig,"vdjserver.org");  // Todo pull from context
-  
-    // client.putTask(dto.toJson());
-    // client.close();
-    
-    // need to add
-    
+  private boolean sendSubmissionToQueue(LRQSubmission dto) {
+    RuntimeParameters runtime = RuntimeParameters.getInstance();
+    _log.debug("Queue Host : "+runtime.getTaskQueueHost());
+    _log.debug("TaskQueue name : "+runtime.getTaskQueueName());
+    // TODO check what kind of exceptions can happen here
+    String message = dto.toJson();
+    ConnectionFactory factory = new ConnectionFactory();
+    factory.setHost(runtime.getTaskQueueHost());
+    try (Connection connection = factory.newConnection();
+         Channel channel = connection.createChannel()) {
+      channel.queueDeclare(runtime.getTaskQueueName(), false, false, false, null);
+      channel.basicPublish("", runtime.getTaskQueueName(),
+          MessageProperties.PERSISTENT_TEXT_PLAIN,
+          message.getBytes("UTF-8"));
+      _log.debug(" [x] Sent '" + message + "'");
+    } catch (TimeoutException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return true;
   }
-  
-  
 }
 

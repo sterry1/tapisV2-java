@@ -12,10 +12,22 @@ Content-Type: application/json
   ],
   "notification": "mailto:sterry1@tacc.utexas.edu"
 }
-
 ###
 
-###  send nothing
+###
+POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myQuery",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}, {"cdr1": 1}],
+  "notification": "mailto:sterry1@tacc.utexas.edu"
+}
+###
+
+###  send nothing  this should be rejected by the endpoint.
 POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
@@ -33,19 +45,6 @@ Content-Type: application/json
 ###
 # {'msg': 'payload is not syntactic JSON'}
 
-###
-POST http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq
-X-JWT-Assertion-vdjserver.org: {{jwt}}
-Content-Type: application/json
-
-{
-  "name": "myQuery",
-  "queryType": "SIMPLE",
-  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}, {"cdr1": 1}],
-  "notification": "mailto:sterry1@tacc.utexas.edu"
-}
-
-###
 
 ###  check status
 GET http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq/5f8f520b5307065fe8040528
