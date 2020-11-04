@@ -21,15 +21,16 @@ MAINTAINER CIC Support <cicsupport@tacc.utexas.edu>
 
 RUN yum -y install nano
 
-WORKDIR /meta
+WORKDIR /metawrkr
 
 # COPY dependencies to image
-COPY project/lib  ./lib
-COPY project/jobslib.jar  ./
+# add
+COPY metawrkr /metawrkr
 
 # Set label for git revision
 LABEL "GIT_COMMIT"=$GIT_COMMIT
 
 # Launch worker on startup
 # CMD java -cp jobslib.jar:lib/* ${JAVA_OPTS} edu/utexas/tacc/aloe/jobs/worker/JobWorker -n ${ALOE_JOBWKR_NAME} -t ${ALOE_JOBWKR_TENANT} -w ${ALOE_JOBWKR_WORKER_THREADS} -q ${ALOE_JOBWKR_QUEUE} ${ALOE_JOBWKR_OPTS}
+# CMD java -cp metawrkr.jar:lib/* edu/utexas/tacc/tapis/meta/LRQWorker
 CMD bash

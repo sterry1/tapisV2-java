@@ -8,7 +8,7 @@
   {
     "tenant": "vdjserver.org",
     "role": "Internal/vdjserver-org-services-admin",
-    "ops": ["GET","PUT","PATCH","POST","DELETE"],
+    "ops": ["GET"],
     "db": "LRQ",
     "collection": "vdjserver.org"
   },
