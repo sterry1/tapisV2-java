@@ -1,6 +1,6 @@
 package edu.utexas.tacc.tapis.meta.model;
 
-public enum Status {
+public enum LRQStatus {
   SUBMITTED("SUBMITTED"),
   STARTED("STARTED"),
   FINISHED("FINISHED"),
@@ -8,6 +8,6 @@ public enum Status {
   
   public final String status;
   
-  private Status(String _status){ this.status=_status;}
+  private LRQStatus(String _status){ this.status=_status;}
   
 }

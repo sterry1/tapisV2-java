@@ -78,8 +78,8 @@ public class RuntimeParameters {
   private String taskQueueHost = "";
   private String taskQueuePort = "";
   private String taskQueueName = "";
-  private String getTaskQueueConnectTimeout = "";
-  private String getTaskQueueReadTimeout = "";
+  private String tenantId = "";
+  private String permissions_file = "";
   
   // these need to move to shared library
   public static final String SERVICE_NAME_META  = "meta";
@@ -99,7 +99,7 @@ public class RuntimeParameters {
       _log.error(msg, e);
       throw new TapisRuntimeException(msg, e);
     }
-  
+    System.out.println("logback.configurationFile "+System.getenv("logback.configurationFile"));
     //----------------------   Input parameters   ----------------------
 
     String parm = System.getenv("tapis.meta.core.server");
@@ -107,6 +107,9 @@ public class RuntimeParameters {
   
     parm = System.getenv("tapis.meta.permissions.check");
     if (!StringUtils.isBlank(parm)) setPermissionsCheck(Boolean.valueOf(parm));
+  
+    parm = System.getenv("tapis.meta.security.permissions.file");
+    if (!StringUtils.isBlank(parm)) setPermissions_file(parm);
   
     parm = inputProperties.getProperty("tapis.log.directory");
     if (!StringUtils.isBlank(parm)) setLogDirectory(parm);
@@ -121,6 +124,9 @@ public class RuntimeParameters {
       parm = inputProperties.getProperty("tapis.meta.coreserver.connection.timeout");
       if (!StringUtils.isBlank(parm)) setCoreserver_connection_timeout(parm);
     }
+  
+    parm = System.getenv("tapis.meta.tenant");
+    if (!StringUtils.isBlank(parm)) setTenantId(parm);
   
     parm = System.getenv("tapis.meta.mongo.lrq.uri");
     if (!StringUtils.isBlank(parm)) setMongoDbUriLRQ(parm);
@@ -148,6 +154,7 @@ public class RuntimeParameters {
   
     parm = System.getenv("tapis.meta.query.queue.name");
     if (!StringUtils.isBlank(parm)) setTaskQueueName(parm);
+    
   
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
@@ -191,10 +198,15 @@ public class RuntimeParameters {
     return _instance;
   }
   
+  public String getPermissions_file() { return permissions_file; }
+  public void setPermissions_file(String permissions_file) { this.permissions_file = permissions_file; }
+  
+  public String getTenantId() { return tenantId; }
+  public void setTenantId(String tenantId) { this.tenantId = tenantId; }
+  
   public String getQueryHost() {
     return queryHost;
   }
-  
   public void setQueryHost(String queryHost) {
     this.queryHost = queryHost;
   }
@@ -202,15 +214,11 @@ public class RuntimeParameters {
   public String getQueryPort() {
     return queryPort;
   }
-  
-  public void setQueryPort(String queryPort) {
-    this.queryPort = queryPort;
-  }
+  public void setQueryPort(String queryPort) { this.queryPort = queryPort; }
   
   public String getQueryUser() {
     return queryUser;
   }
-  
   public void setQueryUser(String queryUser) {
     this.queryUser = queryUser;
   }
@@ -218,7 +226,6 @@ public class RuntimeParameters {
   public String getQueryPwd() {
     return queryPwd;
   }
-  
   public void setQueryPwd(String queryPwd) {
    this.queryPwd = queryPwd;
   }
@@ -226,114 +233,7 @@ public class RuntimeParameters {
   public String getQueryAuthDB() {
     return queryAuthDB;
   }
-  
-  public void setQueryAuthDB(String queryAuthDB) {
-    this.queryAuthDB = queryAuthDB;
-  }
-  
-  /* ---------------------------------------------------------------------- */
-  /* getRuntimeInfo:                                                        */
-  /* ---------------------------------------------------------------------- */
-  /**
-   * Augment the buffer with printable text based mostly on the parameters
-   * managed by this class but also OS and JVM information.  The intent is
-   * that the various job programs and utilities that rely on this class can
-   * print their configuration parameters, including those from this class,
-   * when they start up.
-   *
-   * @param buf
-   */
-  public void getRuntimeInfo(StringBuilder buf)
-  {
-    buf.append("\n------- Logging -----------------------------------");
-    buf.append("\ntapis.log.directory: ");
-    buf.append(this.getLogDirectory());
-    buf.append("\ntapis.log.file: ");
-    buf.append(this.getLogFile());
-    
-    buf.append("\n\n------- Network -----------------------------------");
-    buf.append("\nHost Addresses: ");
-    // buf.append(getNetworkAddresses());
-    
-    buf.append("\n\n------- Tenants -----------------------------------");
-    buf.append("\ntapis.tenant.svc.baseurl: ");
-    buf.append(this.getTenantBaseUrl());
-    
-    buf.append("\n\n------- Service Configuration --------------------------");
-    buf.append("\ntapis.meta.core.server: ");
-    buf.append(this.getCoreServer());
-    buf.append("\ntapis.meta.coreserver.connection.timeout: ");
-    buf.append(this.getCoreserver_connection_timeout());
-    buf.append("\ntapis.meta.permissions.check: ");
-    buf.append(this.isPermissionsCheck());
-    buf.append("\ntapis.meta.mongo.lrq.uri: ");
-    buf.append(this.getMongoDbUriLRQ());
-    buf.append("\ntapis.meta.mongo.lrq.db: ");
-    buf.append(this.getLrqDB());
-    buf.append("\ntapis.meta.query.host: ");
-    buf.append(this.getQueryHost());
-    buf.append("\ntapis.meta.query.port: ");
-    buf.append(this.getQueryPort());
-    buf.append("\ntapis.meta.query.user: ");
-    buf.append(this.getQueryUser());
-    buf.append("\ntapis.meta.query.password: ");
-    buf.append(this.getQueryPwd());
-    buf.append("\ntapis.meta.query.authDB: ");
-    buf.append(this.getQueryAuthDB());
-    buf.append("\ntapis.meta.query.queue.host: ");
-    buf.append(this.getTaskQueueHost());
-    buf.append("\ntapis.meta.query.queue.name: ");
-    buf.append(this.getTaskQueueName());
-  
-  
-    buf.append("\n\n------- EnvOnly Configuration ---------------------");
-    buf.append("\ntapis.envonly.log.security.info: ");
-    buf.append(RuntimeParameters.getLogSecurityInfo());
-    buf.append("\ntapis.envonly.allow.test.header.parms: ");
-    buf.append("\ntapis.envonly.jwt.optional: ");
-    buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_JWT_OPTIONAL));
-    buf.append("\ntapis.envonly.skip.jwt.verify: ");
-    buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_SKIP_JWT_VERIFY));
-    buf.append("\naloe.envonly.jwt.optional: ");
-    buf.append(AloeEnv.getBoolean(AloeEnv.EnvVar.ALOE_ENVONLY_JWT_OPTIONAL));
-    buf.append("\naloe.envonly.skip.jwt.verify: ");
-    buf.append(AloeEnv.getBoolean(AloeEnv.EnvVar.ALOE_ENVONLY_SKIP_JWT_VERIFY));
-
-    buf.append("\n\n------- Java Configuration ------------------------");
-    buf.append("\njava.version: ");
-    buf.append(System.getProperty("java.version"));
-    buf.append("\njava.vendor: ");
-    buf.append(System.getProperty("java.vendor"));
-    buf.append("\njava.vm.version: ");
-    buf.append(System.getProperty("java.vm.version"));
-    buf.append("\njava.vm.vendor: ");
-    buf.append(System.getProperty("java.vm.vendor"));
-    buf.append("\njava.vm.name: ");
-    buf.append(System.getProperty("java.vm.name"));
-    buf.append("\nos.name: ");
-    buf.append(System.getProperty("os.name"));
-    buf.append("\nos.arch: ");
-    buf.append(System.getProperty("os.arch"));
-    buf.append("\nos.version: ");
-    buf.append(System.getProperty("os.version"));
-    buf.append("\nuser.name: ");
-    buf.append(System.getProperty("user.name"));
-    buf.append("\nuser.home: ");
-    buf.append(System.getProperty("user.home"));
-    buf.append("\nuser.dir: ");
-    buf.append(System.getProperty("user.dir"));
-    
-    buf.append("\n\n------- JVM Runtime Values ------------------------");
-    NumberFormat formatter = NumberFormat.getIntegerInstance();
-    buf.append("\navailableProcessors: ");
-    buf.append(formatter.format(Runtime.getRuntime().availableProcessors()));
-    buf.append("\nmaxMemory: ");
-    buf.append(formatter.format(Runtime.getRuntime().maxMemory()));
-    buf.append("\ntotalMemory: ");
-    buf.append(formatter.format(Runtime.getRuntime().totalMemory()));
-    buf.append("\nfreeMemory: ");
-    buf.append(formatter.format(Runtime.getRuntime().freeMemory()));
-  }
+  public void setQueryAuthDB(String queryAuthDB) { this.queryAuthDB = queryAuthDB; }
   
   public String getTenantBaseUrl() {
     return this.tenantBaseUrl;
@@ -411,4 +311,112 @@ public class RuntimeParameters {
     }
     return serviceJWT.getAccessJWT();
   }
+  
+  /* ---------------------------------------------------------------------- */
+  /* getRuntimeInfo:                                                        */
+  /* ---------------------------------------------------------------------- */
+  /**
+   * Augment the buffer with printable text based mostly on the parameters
+   * managed by this class but also OS and JVM information.  The intent is
+   * that the various job programs and utilities that rely on this class can
+   * print their configuration parameters, including those from this class,
+   * when they start up.
+   *
+   * @param buf
+   */
+  public void getRuntimeInfo(StringBuilder buf)
+  {
+    buf.append("\n------- Logging -----------------------------------");
+    buf.append("\ntapis.log.directory: ");
+    buf.append(this.getLogDirectory());
+    buf.append("\ntapis.log.file: ");
+    buf.append(this.getLogFile());
+    
+    buf.append("\n\n------- Network -----------------------------------");
+    buf.append("\nHost Addresses: ");
+    // buf.append(getNetworkAddresses());
+    
+    buf.append("\n\n------- Tenants -----------------------------------");
+    buf.append("\ntapis.tenant.svc.baseurl: ");
+    buf.append(this.getTenantBaseUrl());
+    
+    buf.append("\n\n------- Service Configuration --------------------------");
+    buf.append("\ntapis.meta.core.server: ");
+    buf.append(this.getCoreServer());
+    buf.append("\ntapis.meta.coreserver.connection.timeout: ");
+    buf.append(this.getCoreserver_connection_timeout());
+    buf.append("\ntapis.meta.permissions.check: ");
+    buf.append(this.isPermissionsCheck());
+    buf.append("\ntapis.meta.security.permissions.file: ");
+    buf.append(this.getPermissions_file());
+    buf.append("\ntapis.meta.mongo.lrq.uri: ");
+    buf.append(this.getMongoDbUriLRQ());
+    buf.append("\ntapis.meta.mongo.lrq.db: ");
+    buf.append(this.getLrqDB());
+    buf.append("\ntapis.meta.query.host: ");
+    buf.append(this.getQueryHost());
+    buf.append("\ntapis.meta.query.port: ");
+    buf.append(this.getQueryPort());
+    buf.append("\ntapis.meta.query.user: ");
+    buf.append(this.getQueryUser());
+    buf.append("\ntapis.meta.query.password: ");
+    buf.append(this.getQueryPwd());
+    buf.append("\ntapis.meta.query.authDB: ");
+    buf.append(this.getQueryAuthDB());
+    buf.append("\ntapis.meta.query.queue.host: ");
+    buf.append(this.getTaskQueueHost());
+    buf.append("\ntapis.meta.query.queue.name: ");
+    buf.append(this.getTaskQueueName());
+    
+    
+    buf.append("\n\n------- EnvOnly Configuration ---------------------");
+    buf.append("\ntapis.envonly.log.security.info: ");
+    buf.append(RuntimeParameters.getLogSecurityInfo());
+    buf.append("\ntapis.envonly.allow.test.header.parms: ");
+    buf.append("\ntapis.envonly.jwt.optional: ");
+    buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_JWT_OPTIONAL));
+    buf.append("\ntapis.envonly.skip.jwt.verify: ");
+    buf.append(TapisEnv.getBoolean(TapisEnv.EnvVar.TAPIS_ENVONLY_SKIP_JWT_VERIFY));
+    buf.append("\naloe.envonly.jwt.optional: ");
+    buf.append(AloeEnv.getBoolean(AloeEnv.EnvVar.ALOE_ENVONLY_JWT_OPTIONAL));
+    buf.append("\naloe.envonly.skip.jwt.verify: ");
+    buf.append(AloeEnv.getBoolean(AloeEnv.EnvVar.ALOE_ENVONLY_SKIP_JWT_VERIFY));
+    
+    buf.append("\n\n------- Java Configuration ------------------------");
+    buf.append("\njava.version: ");
+    buf.append(System.getProperty("java.version"));
+    buf.append("\njava.vendor: ");
+    buf.append(System.getProperty("java.vendor"));
+    buf.append("\njava.vm.version: ");
+    buf.append(System.getProperty("java.vm.version"));
+    buf.append("\njava.vm.vendor: ");
+    buf.append(System.getProperty("java.vm.vendor"));
+    buf.append("\njava.vm.name: ");
+    buf.append(System.getProperty("java.vm.name"));
+    buf.append("\nos.name: ");
+    buf.append(System.getProperty("os.name"));
+    buf.append("\nos.arch: ");
+    buf.append(System.getProperty("os.arch"));
+    buf.append("\nos.version: ");
+    buf.append(System.getProperty("os.version"));
+    buf.append("\nuser.name: ");
+    buf.append(System.getProperty("user.name"));
+    buf.append("\nuser.home: ");
+    buf.append(System.getProperty("user.home"));
+    buf.append("\nuser.dir: ");
+    buf.append(System.getProperty("user.dir"));
+    
+    buf.append("\n\n------- JVM Runtime Values ------------------------");
+    NumberFormat formatter = NumberFormat.getIntegerInstance();
+    buf.append("\navailableProcessors: ");
+    buf.append(formatter.format(Runtime.getRuntime().availableProcessors()));
+    buf.append("\nmaxMemory: ");
+    buf.append(formatter.format(Runtime.getRuntime().maxMemory()));
+    buf.append("\ntotalMemory: ");
+    buf.append(formatter.format(Runtime.getRuntime().totalMemory()));
+    buf.append("\nfreeMemory: ");
+    buf.append(formatter.format(Runtime.getRuntime().freeMemory()));
+  }
+  
+  
 }
