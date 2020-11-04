@@ -98,3 +98,5 @@ Icon
 /deployment/environment_files/aloe-staging-tc-lcl.env
 /lrq-*.gz
 
+/deployment/environment_files/devdb-lcl.env
+/deployment/environment_files/stagingdb-lcl.env
