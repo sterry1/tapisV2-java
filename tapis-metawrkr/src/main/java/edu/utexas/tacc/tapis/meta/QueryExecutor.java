@@ -1,5 +1,9 @@
 package edu.utexas.tacc.tapis.meta;
 
+import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
+import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
+import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
+import edu.utexas.tacc.tapis.meta.model.LRQStatus;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission.qType;
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
 import edu.utexas.tacc.tapis.utils.ConversionUtils;
@@ -34,6 +38,8 @@ public class QueryExecutor {
   
   private static final Logger _log = LoggerFactory.getLogger(QueryExecutor.class);
   private final String lrqTaskString;
+  private final String tenant;
+  
   // private static final RuntimeParameters _instance = RuntimeParameters.getInstance();
   
   
@@ -41,9 +47,18 @@ public class QueryExecutor {
    *                       Constructors
    * -----------------------------------------------------------------------*/
   
-  public QueryExecutor(String _lrqTaskString){
+  public QueryExecutor(String _lrqTaskString, String _tenant){
     // TODO check to make sure this returns a !null
     lrqTaskString = _lrqTaskString;
+    this.tenant = _tenant;
+  }
+  
+  private void updateStatus(LRQTask lrqTask){
+    RuntimeParameters runtime = RuntimeParameters.getInstance();
+    // TODO we need the tenant context here because we use it for queue identification
+    // and we use it for DAO storate location; this is not sustainable
+    LRQSubmissionDAO lrqSubDAO = new LRQSubmissionDAOImpl(tenant);
+    lrqSubDAO.updateSubmissionStatus(lrqTask.get_id(), LRQStatus.STARTED.status);
   }
   
   public void checkIntegrationWithQueue(String workerName){
@@ -66,8 +81,9 @@ public class QueryExecutor {
     // we are reasonably assured the task was delivered uncorrupted from the task queue
     // i guess it's safe to assume it is a valid lrq task and conforms to syntactically correct json
     LRQTask lrqTask = ConversionUtils.stringToLRQTask(this.lrqTaskString);
+    System.out.println(lrqTask.toJson());
     MongoQuery mongoQuery = null;
-  
+    updateStatus(lrqTask);
     // It is a simple query so we can query and export at the same time.
     // we have all the info needed to create an export command
     // and call the query-export process.
@@ -86,6 +102,8 @@ public class QueryExecutor {
         // TODO logging and exception handling here.
         _log.debug("Process the SIMPLE query from the task. If this fails we can't go any further.");
         // in general should any part of this process fail, we should error out and fail the submission
+        // we need to update the DAO to FAILED
+        // pass the failure along
         e.printStackTrace();
       }
       // Our parameters for the command should be complete and we are able to derive the command used for export.

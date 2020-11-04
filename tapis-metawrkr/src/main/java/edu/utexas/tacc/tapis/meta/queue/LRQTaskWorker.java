@@ -6,19 +6,26 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import edu.utexas.tacc.tapis.meta.QueryExecutor;
 import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class LRQTaskWorker {
+  private static final Logger _log = LoggerFactory.getLogger(LRQTaskWorker.class);
+  
   private final String TASK_QUEUE_NAME;
   public final String workerName;
+  public final String tenantId;
   
-  public LRQTaskWorker(String _queueName, String _workerName){
-    System.out.println("Task Queue Name constructor : "+_queueName);
-    System.out.println("Task Worker Name constructor : "+_workerName);
+  public LRQTaskWorker(String _queueName, String _workerName, String tenantId){
+    _log.debug("Tenant ID  constructor : "+tenantId);
+    _log.debug("Task Queue Name constructor : "+_queueName);
+    _log.debug("Task Worker Name constructor : "+_workerName);
     TASK_QUEUE_NAME = _queueName;
     this.workerName = _workerName;
+    this.tenantId = tenantId;
   }
   
   public String getWorkerName(){
@@ -43,7 +50,7 @@ public class LRQTaskWorker {
     
       System.out.println(" [x] "+this.workerName+" Received '" + message + "'");
       try {
-        doWork(message, this.workerName);
+        doWork(message, this.workerName, tenantId);
       } catch (InterruptedException e) {
         System.out.println(" [x] "+this.workerName+" Interrupted");
       } finally {
@@ -55,27 +62,14 @@ public class LRQTaskWorker {
     channel.basicConsume(TASK_QUEUE_NAME, autoAck, deliverCallback, consumerTag -> { });
   }
   
-  private static void doWork(String task, String workerName) throws InterruptedException {
+  private static void doWork(String task, String workerName, String tenantId) throws InterruptedException {
     System.out.println(" got this task to do ");
     System.out.println("    but going to sleep instead.  yaaawwwnnn.");
     
     int interrupted = 0;
-    QueryExecutor queryExecutor = new QueryExecutor(task);
+    QueryExecutor queryExecutor = new QueryExecutor(task, tenantId);
     // queryExecutor.checkIntegrationWithQueue(workerName);
     queryExecutor.startQueryExecution();
     
-/*
-    for (char ch: task.toCharArray()) {
-      if (ch == '.') {
-        try {
-          System.out.println(workerName+": I'm sleeping here ..");
-          Thread.sleep(60000);
-        } catch (InterruptedException e) {
-          System.out.println("     catch thread interrupted count .. "+interrupted++);
-          Thread.currentThread().interrupt();
-        }
-      }
-    }
-*/
   }
 }

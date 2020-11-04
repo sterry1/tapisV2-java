@@ -1,8 +1,5 @@
 package edu.utexas.tacc.tapis.meta;
 
-import edu.utexas.tacc.tapis.meta.model.LRQTask;
-import edu.utexas.tacc.tapis.meta.model.Status;
-
 public class LRQWorkerT {
   public static void main(String[] args) {
     /*------------------------------------------------------------------------

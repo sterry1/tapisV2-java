@@ -40,13 +40,13 @@ public class QueryExecutorT {
     System.out.println("begin runTest");
     // we can reuse this in MongoQuery
     LRQTask _lrqTask = ConversionUtils.stringToLRQTask(simpleQTask);
-  
+    RuntimeParameters runtime = RuntimeParameters.getInstance();
     // just some logging to see what the values are
     this.printSubmissionInfo(_lrqTask);
   
     // this setsup the executor with an immutable lrqtask value
     System.out.println("logging the submitted lrq : \n"+_lrqTask.toJson());
-    QueryExecutor executor = new QueryExecutor(_lrqTask.toJson());
+    QueryExecutor executor = new QueryExecutor(_lrqTask.toJson(), runtime.getTenantId());
   
     executor.startQueryExecution();
     System.out.println("end runTest\n");
