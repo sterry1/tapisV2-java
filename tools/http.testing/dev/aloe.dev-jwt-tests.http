@@ -1,4 +1,17 @@
 ############   modified jwts the jwt verify flag must be set to false on the app for these jwts to work
+###
+POST http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myQuery",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}, {"cdr1": 1}],
+  "notification": "mailto:sterry1@tacc.utexas.edu"
+}
+###
+
 
 ### use vdjuser.jwt.mod
 GET http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr
