@@ -49,6 +49,7 @@ public class LRQWorker {
   
   public static void main(String[] args) {
     RuntimeParameters runtime = RuntimeParameters.getInstance();
+    
     StringBuilder buf = new StringBuilder(2500); // capacity to avoid resizing
     buf.append("\n------- Starting Meta Worker ");
     buf.append(" -------");
