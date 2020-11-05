@@ -2,18 +2,14 @@
 # environment tag 0.0.1-T2dev to distinguish from regular metaV3 security contatiner.
 #
 meta-security:
-   image: jenkins2.tacc.utexas.edu:5000/tapis/metaapi:0.0.4-T2dev
+   image: jenkins2.tacc.utexas.edu:5000/tapis/metawrkr:0.0.4-T2dev
    restart: "always"
    log_driver: json-file
    log_opt:
       max-size: 100m
       max-file: "5"
-   command: catalina.sh run
-   container_name: meta-tapis-security
-   links:
-      - restheart
-   ports:
-      - "8199:8080"
+   command:
+   container_name: meta-tapis-wrkr
    environment:
       - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
       - 'aloe.envonly.skip.jwt.verify=true'

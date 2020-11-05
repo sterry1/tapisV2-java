@@ -13,7 +13,7 @@
 #
 # export VER=0.0.1
 # export TAPIS_ENV=T2dev
-# usage : $TAPIS_ROOT/deployment/build-metaapi.sh
+# usage : $TAPIS_ROOT/deployment/build-metawrkr.sh
 #
 ###########################################################
 VER=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -43,7 +43,9 @@ echo "JAR_NAME: $JAR_NAME"
 echo "JAVA VERSION : $(java -version)"
 
 cd tapis-metawrkr
-# echo " ***   do a build on metaapi  "
+echo " ***   We assume a global build has already taken place.  "
+
+# echo " ***   do a build on metawrkr  "
 # echo " ***   mvn clean install -DskipTests"
 # mvn clean install -DskipTests
 
@@ -53,12 +55,16 @@ cd ..  # jump back up to project root directory
 
 echo "***      removing any old metawrkr jar from Docker build context"
 echo "***      $IMAGE_BUILD_DIR/$JAR_NAME "
-# if test -d "$IMAGE_BUILD_DIR/$WAR_NAME"; then
-#      rm -rf $IMAGE_BUILD_DIR/$WAR_NAME
-#      echo " removed $IMAGE_BUILD_DIR/$WAR_NAME "
+# if test -d "$IMAGE_BUILD_DIR/$JAR_NAME"; then
+#      rm -rf $IMAGE_BUILD_DIR/$JAR_NAME
+#      echo " removed $IMAGE_BUILD_DIR/$JAR_NAME "
 # fi
 
+echo " mkdir -p ${IMAGE_BUILD_DIR}/${SRVC_API}"
+mkdir -p ${IMAGE_BUILD_DIR}/${SRVC_API}
+
 echo "";echo "point 1";echo ""
+
 
 echo "***   copy the new worker package to our docker build directory "
 echo "***   cp  $SRVC_DIR/$JAR_NAME ${IMAGE_BUILD_DIR}/${SRVC_API}/$JAR_NAME "
@@ -82,7 +88,7 @@ echo "";echo "point 4";echo ""
 
 # echo "***    push the image to docker hub "
  echo "***      export META_IMAGE=$TAG-$TAPIS_ENV"
-                export META_IMAGE=$TAG-$TAPIS_ENV
+#                export META_IMAGE=$TAG-$TAPIS_ENV
 # echo "         push docker hub  -  $META_IMAGE   currently NA "
                 # docker push "$META_IMAGE"
  echo "***      tag image for our private repository  -  jenkins2.tacc.utexas.edu:5000/$META_IMAGE"
