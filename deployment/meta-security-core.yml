@@ -2,7 +2,7 @@
 # environment tag 0.0.1-T2dev to distinguish from regular metaV3 security contatiner.
 #
 meta-security:
-   image: jenkins2.tacc.utexas.edu:5000/tapis/metaapi:0.0.3-T2dev
+   image: jenkins2.tacc.utexas.edu:5000/tapis/metaapi:0.0.4-T2dev
    restart: "always"
    log_driver: json-file
    log_opt:
