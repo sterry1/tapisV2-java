@@ -8,6 +8,7 @@ meta-security:
    log_opt:
       max-size: 100m
       max-file: "5"
+   command: catalina.sh run
    container_name: meta-tapis-security
    links:
       - restheart
@@ -17,16 +18,26 @@ meta-security:
       - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
       - 'aloe.envonly.skip.jwt.verify=true'
       - 'aloe_envonly_jwt_optional=false'
+      - 'tapis.meta.mongo.lrq.uri=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1'
       - 'tapis.meta.core.server=http://restheart:8080/'
       - 'tapis.meta.coreserver.connection.timeout=5'
-      - 'tapis.meta.log.directory=/usr/local/tomcat/logs'
-      - 'tapis.meta.log.file=meta-service.log'
-      - 'tapis.meta.security.permissions.file=/opt/tomcat/etc/permissions.json'
       - 'tapis.log.directory=/usr/local/tomcat/logs'
+      - 'tapis.log.file=meta-service.log'
+      - 'tapis.meta.security.permissions.file=/opt/tomcat/etc/permissions.json'
+      - 'tapis.meta.query.host=aloe-dev04.tacc.utexas.edu'
+      - 'tapis.meta.query.port=27019'
+      - 'tapis.meta.query.user=tapisadmin'
+      - 'tapis.meta.query.password=d3f@ult'
+      - 'tapis.meta.query.authDB=admin'
+      - 'tapis.meta.query.queue.host=aloe-dev04.tacc.utexas.edu'
+      - 'CATALINA_OPTS=-Xms1g -Xmx2g -Dlogback.configurationFile=/opt/tomcat/etc/logback.xml'
+      - 'tapis.meta.query.queue.name=lrq-vdjserver.org'
+
    volumes:
       - '/var/log/splunk/meta-security:/usr/local/tomcat/logs'
       - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
       - './etc/permissions.json:/opt/tomcat/etc/permissions.json'
+      - './etc/logback.xml:/opt/tomcat/etc/logback.xml'
 
 restheart:
    image: jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-rh-core:4.1.6
