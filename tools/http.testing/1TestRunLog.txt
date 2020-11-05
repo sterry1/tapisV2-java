@@ -1,0 +1,46 @@
+04.11.2020 test submissions of queries
+envfile deployment/environment_files/stagingdb-lcl.env
+# had to add the logback config to java commandline as a parameter
+# -Dlogback.configurationFile=$PROJECT_DIR$/deployment/environment_files/logback.xml
+local tc
+local rabbit
+staging querydb v1airr
+staging db LRQ
+
+submit multiple lrqs  to local tc
+   submissions written to LRQ on staging
+   send tasks to local rabbit.
+
+check rabbit
+check aloe-dev08 mongo
+
+test runs worked well
+now check against the aloe dev environment.
+
+#######################################################################
+04.11.2020 test submissions of queries to dev env
+envfile deployment/environment_files/devdb-lcl.env
+# had to add the logback config to java commandline as a parameter as CATALINA_OPTS
+# -Dlogback.configurationFile=$PROJECT_DIR$/deployment/environment_files/logback.xml
+
+local tc
+dev rabbit
+dev querydb v1airr
+dev db LRQ
+
+local tc for submitting to dev ran good with some regression tests also working.
+left 3 submissions in db and 2 in rabbit.
+
+now testing a new docker-compose setup for security portion and will redeploy.
+
+
+#######################################################################
+04.11.2020 test submissions of queries to container locally pointed to dev
+
+local security container
+dev rabbit
+dev querydb v1airr
+dev db LRQ
+
+local container tc for submitting to dev
+

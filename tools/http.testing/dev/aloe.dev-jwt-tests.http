@@ -1,4 +1,12 @@
+###   sanity check to core server
+GET http://aloe-dev02.tacc.utexas.edu:8080/v1airr/rearrangement
+Accept: application/json
+
+###
 ############   modified jwts the jwt verify flag must be set to false on the app for these jwts to work
+
+
+
 ###
 POST http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement/_lrq
 X-JWT-Assertion-vdjserver.org: {{jwt}}
@@ -25,6 +33,20 @@ Content-Type: application/json
 %}
 
 ###
+
+### use vdjuser.jwt.mod
+GET http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+
+> {%
+    client.test("Request vdjuser read collection list on  v1airr successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
 
 ### use vdjuser.jwt.mod
 PUT http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/newcollection
