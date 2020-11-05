@@ -63,8 +63,8 @@ public class RuntimeParameters {
   private ServiceJWT serviceJWT;
   
   // The slf4j/logback target directory and file.
-  private String  logDirectory ="/usr/local/tomcat/logs";
-  private String  logFile ="meta-service.log";
+  private String  logDirectory ="";  // "/usr/local/tomcat/logs"
+  private String  logFile ="";       // "meta-service.log"
   // default core server setup
   private String  coreServer = "http://restheart:8080/";
   private String coreserver_connection_timeout="3";   // default 2 minutes
@@ -73,7 +73,7 @@ public class RuntimeParameters {
   //
   // TODO pull in from environment
   // defaults
-  private String mongoDbUriLRQ ="mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1";
+  private String mongoDbUriLRQ ="";
   private String lrqDB = "LRQ";  // default value
   private String taskQueueHost = "";
   private String taskQueuePort = "";
@@ -99,9 +99,9 @@ public class RuntimeParameters {
       _log.error(msg, e);
       throw new TapisRuntimeException(msg, e);
     }
-    System.out.println("logback.configurationFile "+System.getenv("logback.configurationFile"));
+    
     //----------------------   Input parameters   ----------------------
-
+    
     String parm = System.getenv("tapis.meta.core.server");
     if (!StringUtils.isBlank(parm)) setCoreServer(parm);
   
@@ -159,10 +159,12 @@ public class RuntimeParameters {
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
     MongoClientURI uri = new MongoClientURI(mongoDbUriLRQ);
+    _log.debug("mongo uri setting : "+uri.toString());
     MongoDBClientSingleton.init(uri);
     if(!MongoDBClientSingleton.isInitialized()){
       String msg ="TAPIS_MONGODB_INITIALIZATION_FAILED";
       _log.error(msg);
+      _log.error("mongo uri setting : "+uri.toString());
     }
     
   
@@ -339,6 +341,8 @@ public class RuntimeParameters {
     buf.append("\n\n------- Tenants -----------------------------------");
     buf.append("\ntapis.tenant.svc.baseurl: ");
     buf.append(this.getTenantBaseUrl());
+    buf.append("\ntapis.meta.tenant: ");
+    buf.append(this.getTenantId());
     
     buf.append("\n\n------- Service Configuration --------------------------");
     buf.append("\ntapis.meta.core.server: ");
