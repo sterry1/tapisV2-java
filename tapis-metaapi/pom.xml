@@ -151,6 +151,7 @@
             <version>0.0.4</version>
             <scope>compile</scope>
         </dependency>
+<!--
         <dependency>
             <groupId>com.dinstone</groupId>
             <artifactId>beanstalkc</artifactId>
@@ -166,6 +167,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+-->
     </dependencies>
 
     <build>
