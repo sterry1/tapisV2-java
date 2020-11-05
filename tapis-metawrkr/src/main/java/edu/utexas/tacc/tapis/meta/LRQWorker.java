@@ -27,25 +27,9 @@ public class LRQWorker {
     this.tenant = _tenant;
   }
   
-  protected void updateTaskStatus(String _tenant, String _id, LRQStatus status) {
-    _log.trace("... update the db with status info. ");
-    LRQSubmissionDAO dao = new LRQSubmissionDAOImpl(_tenant);
-  }
-  
-  protected void spawnQueryExecutor(LRQTask lrqTask) {
-    _log.trace("TODO ... ");
-    _log.trace("... spawn a query executor with the task. ");
-  }
-  
   protected void monitorTaskExecution() {
     _log.trace("... monitor task execution. ");
   }
-  
-  protected void sendNotification(String tenant, LRQTask task) {
-    _log.trace("... send notification of done or failure. ");
-  }
-  
-  
   
   public static void main(String[] args) {
     RuntimeParameters runtime = RuntimeParameters.getInstance();

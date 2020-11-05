@@ -31,6 +31,7 @@ public class RuntimeParameters {
   private  String queryAuthDB;
   
   
+  
   // Distinguished user-chosen name of this runtime instance.
   private String  instanceName;
   
@@ -75,11 +76,15 @@ public class RuntimeParameters {
   // defaults
   private String mongoDbUriLRQ ="";
   private String lrqDB = "LRQ";  // default value
-  private String taskQueueHost = "";
-  private String taskQueuePort = "";
-  private String taskQueueName = "";
   private String tenantId = "";
   private String permissions_file = "";
+  
+  // Queue settings
+  private String taskQueueHost = "";
+  private String taskQueuePort = "";
+  private String taskQueueUser = "";
+  private String taskQueuePassword = "";
+  private String taskQueueName = "";
   
   // these need to move to shared library
   public static final String SERVICE_NAME_META  = "meta";
@@ -134,6 +139,7 @@ public class RuntimeParameters {
     parm = System.getenv("tapis.meta.mongo.lrq.db");
     if (!StringUtils.isBlank(parm)) setLrqDB(parm);
   
+    //  Target Query host and parameters
     parm = System.getenv("tapis.meta.query.host");
     if (!StringUtils.isBlank(parm)) setQueryHost(parm);
   
@@ -149,12 +155,21 @@ public class RuntimeParameters {
     parm = System.getenv("tapis.meta.query.authDB");
     if (!StringUtils.isBlank(parm)) setQueryAuthDB(parm);
   
-    parm = System.getenv("tapis.meta.query.queue.host");
+    //   Queue parameters
+    parm = System.getenv("tapis.meta.queue.host");
     if (!StringUtils.isBlank(parm)) setTaskQueueHost(parm);
   
-    parm = System.getenv("tapis.meta.query.queue.name");
+    parm = System.getenv("tapis.meta.queue.port");
+    if (!StringUtils.isBlank(parm)) setTaskQueuePort(parm);
+  
+    parm = System.getenv("tapis.meta.queue.name");
     if (!StringUtils.isBlank(parm)) setTaskQueueName(parm);
-    
+  
+    parm = System.getenv("tapis.meta.queue.user");
+    if (!StringUtils.isBlank(parm)) setTaskQueueUser(parm);
+  
+    parm = System.getenv("tapis.meta.queue.password");
+    if (!StringUtils.isBlank(parm)) setTaskQueuePassword(parm);
   
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
@@ -199,6 +214,21 @@ public class RuntimeParameters {
   public static RuntimeParameters getInstance() {
     return _instance;
   }
+  
+  public String getTaskQueuePort() { return taskQueuePort; }
+  public void setTaskQueuePort(String taskQueuePort) { this.taskQueuePort = taskQueuePort; }
+  
+  public String getTaskQueueUser() { return taskQueueUser; }
+  public void setTaskQueueUser(String taskQueueUser) { this.taskQueueUser = taskQueueUser; }
+  
+  public String getTaskQueuePassword() { return taskQueuePassword; }
+  public void setTaskQueuePassword(String taskQueuePassword) { this.taskQueuePassword = taskQueuePassword; }
+  
+  public String getTaskQueueHost() { return taskQueueHost; }
+  public void setTaskQueueHost(String taskQueueHost) { this.taskQueueHost = taskQueueHost; }
+  
+  public String getTaskQueueName() { return taskQueueName; }
+  public void setTaskQueueName(String taskQueueName) { this.taskQueueName = taskQueueName; }
   
   public String getPermissions_file() { return permissions_file; }
   public void setPermissions_file(String permissions_file) { this.permissions_file = permissions_file; }
@@ -284,12 +314,6 @@ public class RuntimeParameters {
   
   public String getLrqDB() { return lrqDB; }
   public void setLrqDB(String lrqDB) { this.lrqDB = lrqDB; }
-  
-  public String getTaskQueueHost() { return taskQueueHost; }
-  public void setTaskQueueHost(String taskQueueHost) { this.taskQueueHost = taskQueueHost; }
-  
-  public String getTaskQueueName() { return taskQueueName; }
-  public void setTaskQueueName(String taskQueueName) { this.taskQueueName = taskQueueName; }
   
   public void setServiceJWT(){
     _log.debug("calling setServiceJWT ...");

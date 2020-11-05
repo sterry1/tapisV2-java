@@ -999,6 +999,9 @@ public class ResourceBucket extends AbstractResource {
     String message = dto.toJson();
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost(runtime.getTaskQueueHost());
+    factory.setPort(Integer.parseInt(runtime.getTaskQueuePort()));
+    factory.setUsername(runtime.getTaskQueueUser());
+    factory.setPassword(runtime.getTaskQueuePassword());
     try (Connection connection = factory.newConnection();
          Channel channel = connection.createChannel()) {
       channel.queueDeclare(runtime.getTaskQueueName(), false, false, false, null);

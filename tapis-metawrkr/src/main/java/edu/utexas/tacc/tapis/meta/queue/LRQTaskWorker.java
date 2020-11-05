@@ -38,6 +38,9 @@ public class LRQTaskWorker {
     System.out.println("Task Queue Host runtime : "+runtimeP.getTaskQueueHost());
     System.out.println("Task Queue Name runtime : "+runtimeP.getTaskQueueName());
     factory.setHost(runtimeP.getTaskQueueHost());
+    factory.setPort(Integer.parseInt(runtimeP.getTaskQueuePort()));
+    factory.setUsername(runtimeP.getTaskQueueUser());
+    factory.setPassword(runtimeP.getTaskQueuePassword());
     Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
     channel.basicQos(1);
