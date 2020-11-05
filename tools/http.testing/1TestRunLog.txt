@@ -1,4 +1,16 @@
 #######################################################################
+05.11.2020 test dev deployment of tag v0.0.4-rc3
+
+using jwts so I don't have to go thru auth.
+API test worked as expected
+submitted SIMPLE query to aloe-dev LRQ/vdjserver.org has document ObjectId("5fa41e346d4bed529181921d")
+as SUBMITTED.
+
+added query task to queue but there is no worker to pull them off the queue.
+
+
+
+#######################################################################
 04.11.2020 test submissions of queries to dev env
 envfile deployment/environment_files/devdb-lcl.env
 # had to add the logback config to java commandline as a parameter as CATALINA_OPTS
