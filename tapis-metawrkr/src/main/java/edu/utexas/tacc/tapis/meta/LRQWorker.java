@@ -20,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 public class LRQWorker {
   
   private static final Logger _log = LoggerFactory.getLogger(LRQWorker.class);
+  
   public Map<String, LRQTaskWorker> workerList = new HashedMap();
   public final String tenant;
   
@@ -41,14 +42,14 @@ public class LRQWorker {
     runtime.getRuntimeInfo(buf);
     buf.append("\n---------------------------------------------------\n");
     // Write the output information.
-    System.out.println(buf.toString());
+    _log.debug(buf.toString());
     
     // TODO pull the tenant from the environment
     
     LRQWorker lrqWorker = new LRQWorker(runtime.getTenantId());
-    System.out.println("LRQWorker start :");
-    System.out.println("LRQWorker  tenant Id : "+runtime.getTenantId());
-    System.out.println("LRQWorker  queue name : "+runtime.getTaskQueueName());
+    _log.debug("LRQWorker start :");
+    _log.debug("LRQWorker  tenant Id : "+runtime.getTenantId());
+    _log.debug("LRQWorker  queue name : "+runtime.getTaskQueueName());
     
     // which queue do we want to use
     
@@ -61,11 +62,11 @@ public class LRQWorker {
     // fill our worker list with new workers
     // TODO no management of list here, no checking on workers ect.
     names.forEach(name -> {
-      System.out.println(name.toLowerCase());
+      _log.debug(name.toLowerCase());
       lrqWorker.workerList.put(name,new LRQTaskWorker(taskQName, name, lrqWorker.tenant ));
     });
   
-    System.out.println("   We have a list of workers to deal with.");
+    _log.debug("   We have a list of workers to deal with.");
     lrqWorker.workerList.forEach((name,lrqTaskWorker) ->{
       try {
         lrqTaskWorker.processTask();
@@ -75,7 +76,7 @@ public class LRQWorker {
         e.printStackTrace();
       }
     });
-    System.out.println("\nAll done here.");
+    _log.debug("\nAll done here.");
   
   
   }

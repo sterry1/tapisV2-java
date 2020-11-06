@@ -171,6 +171,9 @@ public class RuntimeParameters {
     parm = System.getenv("tapis.meta.queue.password");
     if (!StringUtils.isBlank(parm)) setTaskQueuePassword(parm);
   
+    parm = System.getenv("tapis.meta.queue.name");
+    if (!StringUtils.isBlank(parm)) setTaskQueueName(parm);
+  
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
     MongoClientURI uri = new MongoClientURI(mongoDbUriLRQ);
@@ -393,7 +396,7 @@ public class RuntimeParameters {
     buf.append(this.getQueryAuthDB());
     buf.append("\ntapis.meta.query.queue.host: ");
     buf.append(this.getTaskQueueHost());
-    buf.append("\ntapis.meta.query.queue.name: ");
+    buf.append("\ntapis.meta.queue.name: ");
     buf.append(this.getTaskQueueName());
     
     

@@ -66,8 +66,8 @@ public class LRQTaskWorker {
   }
   
   private static void doWork(String task, String workerName, String tenantId) throws InterruptedException {
-    System.out.println(" got this task to do ");
-    System.out.println("    but going to sleep instead.  yaaawwwnnn.");
+    _log.debug(" have this task :\n"+task+"\n   for worker named "+workerName+" with tenant id "+tenantId);
+
     
     int interrupted = 0;
     QueryExecutor queryExecutor = new QueryExecutor(task, tenantId);
