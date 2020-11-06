@@ -56,7 +56,7 @@ public class RuntimeParameters {
     return TapisEnv.getLogSecurityInfo();
   }
   
-  // service locations.
+  // service locations .
   private String tenantBaseUrl = "";       // "https://dev.develop.tapis.io/";
   private String skSvcURL      = "";       // "https://dev.develop.tapis.io/v3";
   private String tokenBaseUrl  = "";       // "https://dev.develop.tapis.io/";
@@ -66,20 +66,21 @@ public class RuntimeParameters {
   // The slf4j/logback target directory and file.
   private String  logDirectory ="";  // "/usr/local/tomcat/logs"
   private String  logFile ="";       // "meta-service.log"
-  // default core server setup
-  private String  coreServer = "http://restheart:8080/";
-  private String coreserver_connection_timeout="3";   // default 2 minutes
-  private boolean permissionsCheck=true;
   
-  //
-  // TODO pull in from environment
-  // defaults
-  private String mongoDbUriLRQ ="";
-  private String lrqDB = "LRQ";  // default value
-  private String tenantId = "";
+  //----------------   default core server setup   ---------------- //
+  private String coreServer = "http://restheart:8080/";
+  private String coreserver_connection_timeout="3";   // default 3 minutes
+  
+  //----------------   permissions   ----------------
+  private boolean permissionsCheck=true;
   private String permissions_file = "";
   
-  // Queue settings
+  //----------------   default values   ----------------
+  private String mongoDbUriLRQ ="";
+  private String lrqDB = "LRQ";
+  private String tenantId = "";
+  
+  //----------------------   Queue parameters   ----------------------
   private String taskQueueHost = "";
   private String taskQueuePort = "";
   private String taskQueueUser = "";
@@ -106,21 +107,11 @@ public class RuntimeParameters {
     }
     
     //----------------------   Input parameters   ----------------------
-    
+    /*------------------------------------------------------------------------
+     *                      Core server settings
+     * -----------------------------------------------------------------------*/
     String parm = System.getenv("tapis.meta.core.server");
     if (!StringUtils.isBlank(parm)) setCoreServer(parm);
-  
-    parm = System.getenv("tapis.meta.permissions.check");
-    if (!StringUtils.isBlank(parm)) setPermissionsCheck(Boolean.valueOf(parm));
-  
-    parm = System.getenv("tapis.meta.security.permissions.file");
-    if (!StringUtils.isBlank(parm)) setPermissions_file(parm);
-  
-    parm = inputProperties.getProperty("tapis.log.directory");
-    if (!StringUtils.isBlank(parm)) setLogDirectory(parm);
-  
-    parm = inputProperties.getProperty("tapis.log.file");
-    if (!StringUtils.isBlank(parm)) setLogFile(parm);
   
     parm = System.getenv("tapis.meta.coreserver.connection.timeout");
     if (!StringUtils.isBlank(parm)){
@@ -129,17 +120,39 @@ public class RuntimeParameters {
       parm = inputProperties.getProperty("tapis.meta.coreserver.connection.timeout");
       if (!StringUtils.isBlank(parm)) setCoreserver_connection_timeout(parm);
     }
+    /*------------------------------------------------------------------------
+     *                       Permissions settings
+     * -----------------------------------------------------------------------*/
+    parm = System.getenv("tapis.meta.permissions.check");
+    if (!StringUtils.isBlank(parm)) setPermissionsCheck(Boolean.valueOf(parm));
+  
+    parm = System.getenv("tapis.meta.security.permissions.file");
+    if (!StringUtils.isBlank(parm)) setPermissions_file(parm);
+  
+    /*------------------------------------------------------------------------
+     *                      Logging settings
+     * -----------------------------------------------------------------------*/
+    parm = inputProperties.getProperty("tapis.log.directory");
+    if (!StringUtils.isBlank(parm)) setLogDirectory(parm);
+  
+    parm = inputProperties.getProperty("tapis.log.file");
+    if (!StringUtils.isBlank(parm)) setLogFile(parm);
   
     parm = System.getenv("tapis.meta.tenant");
     if (!StringUtils.isBlank(parm)) setTenantId(parm);
-  
+   
+    /*------------------------------------------------------------------------
+     *       MongoDB URI for LRQ database
+     * -----------------------------------------------------------------------*/
     parm = System.getenv("tapis.meta.mongo.lrq.uri");
     if (!StringUtils.isBlank(parm)) setMongoDbUriLRQ(parm);
   
     parm = System.getenv("tapis.meta.mongo.lrq.db");
     if (!StringUtils.isBlank(parm)) setLrqDB(parm);
   
-    //  Target Query host and parameters
+    /*------------------------------------------------------------------------
+     *          Target Query host and parameters
+     * -----------------------------------------------------------------------*/
     parm = System.getenv("tapis.meta.query.host");
     if (!StringUtils.isBlank(parm)) setQueryHost(parm);
   
@@ -155,7 +168,9 @@ public class RuntimeParameters {
     parm = System.getenv("tapis.meta.query.authDB");
     if (!StringUtils.isBlank(parm)) setQueryAuthDB(parm);
   
-    //   Queue parameters
+    /*------------------------------------------------------------------------
+     *           Queue parameters
+     * -----------------------------------------------------------------------*/
     parm = System.getenv("tapis.meta.queue.host");
     if (!StringUtils.isBlank(parm)) setTaskQueueHost(parm);
   
@@ -176,6 +191,7 @@ public class RuntimeParameters {
   
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
+    // TODO if mongoDbUriLRQ is null or empty or invalid  then we should fail immediately
     MongoClientURI uri = new MongoClientURI(mongoDbUriLRQ);
     _log.debug("mongo uri setting : "+uri.toString());
     MongoDBClientSingleton.init(uri);
@@ -371,7 +387,7 @@ public class RuntimeParameters {
     buf.append("\ntapis.meta.tenant: ");
     buf.append(this.getTenantId());
     
-    buf.append("\n\n------- Service Configuration --------------------------");
+    buf.append("\n\n------- Core Service and Permissions Configuration ------------");
     buf.append("\ntapis.meta.core.server: ");
     buf.append(this.getCoreServer());
     buf.append("\ntapis.meta.coreserver.connection.timeout: ");
@@ -380,6 +396,8 @@ public class RuntimeParameters {
     buf.append(this.isPermissionsCheck());
     buf.append("\ntapis.meta.security.permissions.file: ");
     buf.append(this.getPermissions_file());
+  
+    buf.append("\n\n----- LRQ Query Configuration ----- ");
     buf.append("\ntapis.meta.mongo.lrq.uri: ");
     buf.append(this.getMongoDbUriLRQ());
     buf.append("\ntapis.meta.mongo.lrq.db: ");
@@ -394,7 +412,9 @@ public class RuntimeParameters {
     buf.append(this.getQueryPwd());
     buf.append("\ntapis.meta.query.authDB: ");
     buf.append(this.getQueryAuthDB());
-    buf.append("\ntapis.meta.query.queue.host: ");
+  
+    buf.append("\n\n----- Queue Configuration ----- ");
+    buf.append("\ntapis.meta.queue.host: ");
     buf.append(this.getTaskQueueHost());
     buf.append("\ntapis.meta.queue.name: ");
     buf.append(this.getTaskQueueName());

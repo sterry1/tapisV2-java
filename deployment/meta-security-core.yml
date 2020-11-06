@@ -34,7 +34,7 @@ meta-security:
       - 'tapis.meta.queue.user=guest'
       - 'tapis.meta.queue.password=guest'
       - 'CATALINA_OPTS=-Xms1g -Xmx2g -Dlogback.configurationFile=/opt/tomcat/etc/logback.xml'
-      - 'tapis.meta.query.queue.name=lrq-vdjserver.org'
+      - 'tapis.meta.queue.name=lrq-vdjserver.org'
 
    volumes:
       - '/var/log/splunk/meta-security:/usr/local/tomcat/logs'
