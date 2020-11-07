@@ -101,3 +101,5 @@ Icon
 /deployment/environment_files/devdb-lcl.env
 /deployment/environment_files/stagingdb-lcl.env
 /deployment/keystores/
+/deployment/meta-security-core-aloedev2.yml
+/deployment/meta-worker-tst.yml
