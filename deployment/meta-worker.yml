@@ -8,18 +8,12 @@ meta-security:
    log_opt:
       max-size: 100m
       max-file: "5"
-   command:
+   command: "java ${JAVA_OPTS} -cp metawrkr.jar:lib/* edu/utexas/tacc/tapis/meta/LRQWorker"
    container_name: meta-tapis-wrkr
    environment:
-      - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
-      - 'aloe.envonly.skip.jwt.verify=true'
-      - 'aloe_envonly_jwt_optional=false'
       - 'tapis.meta.mongo.lrq.uri=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1'
-      - 'tapis.meta.core.server=http://restheart:8080/'
-      - 'tapis.meta.coreserver.connection.timeout=5'
-      - 'tapis.log.directory=/usr/local/tomcat/logs'
-      - 'tapis.log.file=meta-service.log'
-      - 'tapis.meta.security.permissions.file=/opt/tomcat/etc/permissions.json'
+      - 'tapis.log.directory=/metawrkr/logs'
+      - 'tapis.log.file=meta-worker.log'
       - 'tapis.meta.query.host=aloe-dev04.tacc.utexas.edu'
       - 'tapis.meta.query.port=27019'
       - 'tapis.meta.query.user=tapisadmin'
@@ -29,30 +23,9 @@ meta-security:
       - 'tapis.meta.queue.port=5672'
       - 'tapis.meta.queue.user=guest'
       - 'tapis.meta.queue.password=guest'
-      - 'CATALINA_OPTS=-Xms1g -Xmx2g -Dlogback.configurationFile=/opt/tomcat/etc/logback.xml'
-      - 'tapis.meta.query.queue.name=lrq-vdjserver.org'
+      - 'JAVA_OPTS=-Xms1g -Xmx2g -Dlogback.configurationFile=/metawrkr/logback.xml'
+      - 'tapis.meta.queue.name=lrq-vdjserver.org'
 
    volumes:
-      - '/var/log/splunk/meta-security:/usr/local/tomcat/logs'
-      - './keystores/.AloeKeyStore.p12:/root/.AloeKeyStore.p12'
-      - './etc/permissions.json:/opt/tomcat/etc/permissions.json'
-      - './etc/logback.xml:/opt/tomcat/etc/logback.xml'
-
-restheart:
-   image: jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-rh-core:4.1.6
-   restart: "always"
-   log_driver: json-file
-   log_opt:
-      max-size: 100m
-      max-file: "5"
-   container_name: restheart-core
-   # command: 'java -Xms2G -Xmx2G -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
-   command: 'java -Dfile.encoding=UTF-8  -server -jar restheart.jar etc/restheart.yml --envFile etc/config.properties'
-   ports:
-      - "8080:8080"
-   environment:
-      - 'MONGO_URI=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin'
-   volumes:
-      - './etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
-      - './etc/config.properties:/opt/restheart/etc/config.properties:ro'
-      - '/var/log/splunk/meta-security:/var/log'
+      - '/var/log/splunk/meta-worker:/metawrkr/logs'
+      - './etc/logback.xml:/metawrkr/logback.xml'
