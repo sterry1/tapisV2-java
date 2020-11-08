@@ -14,6 +14,7 @@
 ##########################################################################
 FROM tapis/tapis-meta-base
 
+ARG VER
 ARG GIT_COMMIT
 
 MAINTAINER CIC Support <cicsupport@tacc.utexas.edu>
@@ -25,7 +26,7 @@ WORKDIR /metawrkr
 COPY metawrkr /metawrkr
 
 # Set label for git revision
-LABEL "GIT_COMMIT"=$GIT_COMMIT
+LABEL "GIT_COMMIT"=$GIT_COMMIT "VER"=$VER
 
 # Launch worker on startup
 # CMD java -cp jobslib.jar:lib/* ${JAVA_OPTS} edu/utexas/tacc/aloe/jobs/worker/JobWorker -n ${ALOE_JOBWKR_NAME} -t ${ALOE_JOBWKR_TENANT} -w ${ALOE_JOBWKR_WORKER_THREADS} -q ${ALOE_JOBWKR_QUEUE} ${ALOE_JOBWKR_OPTS}

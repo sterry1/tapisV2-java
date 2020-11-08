@@ -90,7 +90,7 @@ public class QueryExecutor {
     Map<String,String> cmdMap = this.createCommandMap();
     cmdMap.put("db",lrqTask.getQueryDb());
     cmdMap.put("collection",lrqTask.getQueryCollection());
-    cmdMap.put("fileOutput","lrq-"+lrqTask.get_id()+".gz");
+    cmdMap.put("fileOutput","lrqdata/lrq-"+lrqTask.get_id()+".gz");
   
     // This is a simple query
     if(lrqTask.getQueryType().equals(qType.SIMPLE.toString())){
@@ -122,6 +122,9 @@ public class QueryExecutor {
         mongoQuery = new MongoQuery(qType.AGGREGATION.toString(), lrqTask.getJsonQueryArray());
         // prep the aggregation
         // TODO run an aggregation against the database with the $out document setting to create a tmp collection.
+        // check the aggregation pipeline array to determine if an $out operator exists
+        // and if it does replace it or if not add our $out for the lrq collection name.
+        
         // we need a Mongodb client for this but the pipeline should run
         _log.debug("Process the AGGREGATION query from the task. If this fails we can't go any further.");
         

@@ -36,7 +36,7 @@ public class QueryExecutorT {
     System.out.println("end printSubmissionInfo\n");
   }
   
-  public void runTest(String simpleQTask){
+  public void runTestSimple(String simpleQTask){
     System.out.println("begin runTest");
     // we can reuse this in MongoQuery
     LRQTask _lrqTask = ConversionUtils.stringToLRQTask(simpleQTask);
@@ -70,11 +70,11 @@ public class QueryExecutorT {
     // this comes in from the queue, appropiate transformation here.
     // String simpleQTask = TestData.taskJson;
   
-    t.runTest(TestData.getTaskJsonSimpleFields("123456"));
+    t.runTestSimple(TestData.getTaskJsonSimpleFields("123456"));
     System.out.println("\n============================================================================\n");
-    t.runTest(TestData.getTaskJsonSimpleNoFields("574893"));
+    t.runTestSimple(TestData.getTaskJsonSimpleNoFields("574893"));
     System.out.println("\n============================================================================\n");
-    t.runTest(TestData.getTaskJsonSimpleFields("789345"));
+    t.runTestSimple(TestData.getTaskJsonSimpleFields("789345"));
     System.out.println("\n============================================================================\n");
     System.out.println("Done running tests.");
     System.out.println("*********  Test harness End QueryExecutorT");
