@@ -42,7 +42,7 @@ echo "GIT_COMMIT: $GIT_COMMIT"
 echo "JAR_NAME: $JAR_NAME"
 echo "JAVA VERSION : $(java -version)"
 
-cd tapis-metawrkr
+# cd tapis-metawrkr
 echo " ***   We assume a global build has already taken place.  "
 
 # echo " ***   do a build on metawrkr  "
@@ -51,7 +51,7 @@ echo " ***   We assume a global build has already taken place.  "
 
 echo "";echo ""
 
-cd ..  # jump back up to project root directory
+# cd ..  # jump back up to project root directory
 
 echo "***      removing any old metawrkr jar from Docker build context"
 echo "***      $IMAGE_BUILD_DIR/$JAR_NAME "

@@ -17,7 +17,7 @@
 ###########################################################
 VER=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
 
-TAPIS_ENV=$TAPIS_ENV
+export TAPIS_ENV=T2dev
 export SRVC=meta
 export SRVC_API=${SRVC}wrkr
 export TAPIS_ROOT=$(pwd)
@@ -33,6 +33,20 @@ echo "JAVA VERSION : ";$(java -version)
 
 echo " ***   Global build of modules.  "
 echo " ***   mvn clean install -DskipTests";echo ""
+
 mvn clean install -DskipTests
+
+echo ""; echo ""
+
+echo " ***   build api image and publish ";echo ""
+deployment/build-metaapi.sh
+
+echo " ***   build worker image and publish ";echo ""
+deployment/build-metawrkr.sh
+
+
+echo " ***   Images published and ready to deploy ";echo ""
+
+
 
 

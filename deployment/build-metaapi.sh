@@ -42,14 +42,14 @@ echo "GIT_COMMIT: $GIT_COMMIT"
 echo "WAR_NAME: $WAR_NAME"
 echo "JAVA VERSION : $(java -version)"
 
-cd tapis-metaapi
+# cd tapis-metaapi
 # echo " ***   do a build on metaapi  "
 # echo " ***   mvn clean install -DskipTests"
-mvn clean install -DskipTests
+# mvn clean install -DskipTests
 
 echo "";echo ""
 
-cd ..  # jump back up to project root directory
+# cd ..  # jump back up to project root directory
 
 echo "***      removing any old service war meta directory from Docker build context"
 echo "***      $IMAGE_BUILD_DIR/$WAR_NAME "
