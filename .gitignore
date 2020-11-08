@@ -103,3 +103,5 @@ Icon
 /deployment/keystores/
 /deployment/meta-security-core-aloedev2.yml
 
+/deployment/aloedev-core-compose/
+/deployment/lrqdata/
