@@ -19,18 +19,18 @@ meta-security:
       - 'aloe.envonly.keystore.password=Umg&FR7VwWL*04lj8vd+'
       - 'aloe.envonly.skip.jwt.verify=true'
       - 'aloe_envonly_jwt_optional=false'
-      - 'tapis.meta.mongo.lrq.uri=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1'
+      - 'tapis.meta.mongo.lrq.uri=mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1'
       - 'tapis.meta.core.server=http://restheart:8080/'
       - 'tapis.meta.coreserver.connection.timeout=5'
       - 'tapis.log.directory=/usr/local/tomcat/logs'
       - 'tapis.log.file=meta-service.log'
       - 'tapis.meta.security.permissions.file=/opt/tomcat/etc/permissions.json'
-      - 'tapis.meta.query.host=aloe-dev04.tacc.utexas.edu'
+      - 'tapis.meta.query.host=aloe-dev08.tacc.utexas.edu'
       - 'tapis.meta.query.port=27019'
       - 'tapis.meta.query.user=tapisadmin'
       - 'tapis.meta.query.password=d3f@ult'
       - 'tapis.meta.query.authDB=admin'
-      - 'tapis.meta.queue.host=aloe-dev04.tacc.utexas.edu'
+      - 'tapis.meta.queue.host=aloe-dev08.tacc.utexas.edu'
       - 'tapis.meta.queue.port=5672'
       - 'tapis.meta.queue.user=guest'
       - 'tapis.meta.queue.password=guest'
@@ -56,7 +56,7 @@ restheart:
    ports:
       - "8080:8080"
    environment:
-      - 'MONGO_URI=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin'
+      - 'MONGO_URI=mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin'
    volumes:
       - './etc/restheart.yml:/opt/restheart/etc/restheart.yml:ro'
       - './etc/config.properties:/opt/restheart/etc/config.properties:ro'
@@ -76,15 +76,15 @@ meta-worker:
    command: "java ${JAVA_OPTS} -cp metawrkr.jar:lib/* edu/utexas/tacc/tapis/meta/LRQWorker"
    container_name: meta-tapis-wrkr-tst
    environment:
-      - 'tapis.meta.mongo.lrq.uri=mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1'
+      - 'tapis.meta.mongo.lrq.uri=mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1'
       - 'tapis.log.directory=/metawrkr/logs'
       - 'tapis.log.file=meta-worker.log'
-      - 'tapis.meta.query.host=aloe-dev04.tacc.utexas.edu'
+      - 'tapis.meta.query.host=aloe-dev08.tacc.utexas.edu'
       - 'tapis.meta.query.port=27019'
       - 'tapis.meta.query.user=tapisadmin'
       - 'tapis.meta.query.password=d3f@ult'
       - 'tapis.meta.query.authDB=admin'
-      - 'tapis.meta.queue.host=aloe-dev04.tacc.utexas.edu'
+      - 'tapis.meta.queue.host=aloe-dev08.tacc.utexas.edu'
       - 'tapis.meta.queue.port=5672'
       - 'tapis.meta.queue.user=guest'
       - 'tapis.meta.queue.password=guest'
