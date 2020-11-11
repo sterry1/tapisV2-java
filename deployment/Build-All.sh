@@ -46,7 +46,7 @@ echo " ***   build api image and publish ";echo ""
 # deployment/build-metaapi.sh
 
 echo " ***   build worker image and publish ";echo ""
-# deployment/build-metawrkr.sh
+deployment/build-metawrkr.sh
 
 
 echo " ***   Images published and ready to deploy ";echo ""

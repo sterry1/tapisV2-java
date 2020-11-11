@@ -21,7 +21,7 @@ VER=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression
 TAPIS_ENV=$TAPIS_ENV
 export SRVC=metawrkr
 export SRVC_API=${SRVC}
-export TAPIS_ROOT=.    #$(pwd)
+export TAPIS_ROOT=$(pwd)
 export SRVC_DIR="${TAPIS_ROOT}/tapis-${SRVC_API}/target"
 export TAG="tapis/${SRVC_API}:$VER"
 export IMAGE_BUILD_DIR="$TAPIS_ROOT/deployment/tapis-${SRVC_API}"
@@ -55,10 +55,10 @@ echo "";echo ""
 
 echo "***      removing any old metawrkr jar from Docker build context"
 echo "***      $IMAGE_BUILD_DIR/$JAR_NAME "
-# if test -d "$IMAGE_BUILD_DIR/$JAR_NAME"; then
-#      rm -rf $IMAGE_BUILD_DIR/$JAR_NAME
-#      echo " removed $IMAGE_BUILD_DIR/$JAR_NAME "
-# fi
+if test -d "$IMAGE_BUILD_DIR/$JAR_NAME"; then
+      rm -rf $IMAGE_BUILD_DIR/$JAR_NAME
+     echo " removed $IMAGE_BUILD_DIR/$JAR_NAME "
+ fi
 
 echo " mkdir -p ${IMAGE_BUILD_DIR}/${SRVC_API}"
 mkdir -p ${IMAGE_BUILD_DIR}/${SRVC_API}
