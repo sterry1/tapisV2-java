@@ -3,7 +3,9 @@ package edu.utexas.tacc.tapis.utils;
 import com.google.gson.*;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class helps with the transformation of our LRQ model across different
@@ -120,6 +123,11 @@ public class ConversionUtils {
     return queryArray;
   }
   
+  public static JsonArray stringToJsonArray(String _jsonArray){
+    JsonArray jsonArray = gson.fromJson(_jsonArray,JsonArray.class);
+    return jsonArray;
+  }
+  
   public static JsonArray arrayListOfStringToJsonArray(List<Object> strArray) {
     JsonArray jsonArray = gson.toJsonTree(strArray).getAsJsonArray();
     return jsonArray;
@@ -152,8 +160,5 @@ public class ConversionUtils {
     }
     return  lrqTask;
   }
-  
-  
-  
   
 }

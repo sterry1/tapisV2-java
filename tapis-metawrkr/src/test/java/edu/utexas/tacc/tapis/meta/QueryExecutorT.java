@@ -52,6 +52,20 @@ public class QueryExecutorT {
     System.out.println("end runTest\n");
   }
   
+  public void runTestAggr(String aggrQTask){
+    System.out.println("begin runTest");
+    LRQTask _lrqTask = ConversionUtils.stringToLRQTask(aggrQTask);
+    RuntimeParameters runtime = RuntimeParameters.getInstance();
+    // just some logging to see what the values are
+    this.printSubmissionInfo(_lrqTask);
+    // this setsup the executor with an immutable lrqtask value
+    System.out.println("logging the submitted lrq : \n"+_lrqTask.toJson());
+    QueryExecutor executor = new QueryExecutor(_lrqTask.toJson(), runtime.getTenantId());
+  
+    executor.startQueryExecution();
+    System.out.println("end runTest\n");
+  }
+  
   public static void main(String[] args) {
     System.out.println("*********  Test harness begin QueryExecutorT");
     RuntimeParameters parms = null;
@@ -63,19 +77,23 @@ public class QueryExecutorT {
       throw e;
     }
     System.out.println("**** SUCCESS:  RuntimeParameters read ****");
-    
+    StringBuilder sb = new StringBuilder("  ");
+    parms.getRuntimeInfo(sb);
+    System.out.println(sb.toString());
     // this is basically the doWork function of the LRQWorker Task
     QueryExecutorT t = new QueryExecutorT();
     
+    String aggrQTask = TestData.taskJsonAggr;
+    t.runTestAggr(aggrQTask);
     // this comes in from the queue, appropiate transformation here.
     // String simpleQTask = TestData.taskJson;
   
-    t.runTestSimple(TestData.getTaskJsonSimpleFields("123456"));
-    System.out.println("\n============================================================================\n");
-    t.runTestSimple(TestData.getTaskJsonSimpleNoFields("574893"));
-    System.out.println("\n============================================================================\n");
-    t.runTestSimple(TestData.getTaskJsonSimpleFields("789345"));
-    System.out.println("\n============================================================================\n");
+    //t.runTestSimple(TestData.getTaskJsonSimpleFields("123456"));
+    //System.out.println("\n============================================================================\n");
+    //t.runTestSimple(TestData.getTaskJsonSimpleNoFields("574893"));
+    //System.out.println("\n============================================================================\n");
+    //t.runTestSimple(TestData.getTaskJsonSimpleFields("789345"));
+    // System.out.println("\n============================================================================\n");
     System.out.println("Done running tests.");
     System.out.println("*********  Test harness End QueryExecutorT");
   }

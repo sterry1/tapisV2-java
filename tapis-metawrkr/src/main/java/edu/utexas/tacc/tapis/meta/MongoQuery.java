@@ -4,20 +4,18 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import edu.utexas.tacc.tapis.meta.model.LRQTask;
-import edu.utexas.tacc.tapis.shared.exceptions.TapisException;
-import org.apache.commons.collections.map.HashedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 
 public class MongoQuery {
+  private static final Logger _log = LoggerFactory.getLogger(MongoQuery.class);
+  
   // if qType is an Aggregation then this variable represents an Aggregation query.
   private final String qType;
   private final JsonArray jsonQueryArray;
-  // private JsonObject match;
-  // private JsonObject projection;
-  private JsonArray aggregationPipeline;
   public boolean hasProjections = false;
   public boolean isInitialized = false;
   
@@ -32,12 +30,7 @@ public class MongoQuery {
     }
   }
   
-  public Map<String,String> getQueryParameters(){
-    Map<String,String> params = new HashedMap();
-    // TODO finish this out.
-    return params;
-  }
-  
+/*
   public void unpackQuery(Map<String, String> queryParams) throws TapisException {
     // 1. get the query type
     if(isInitialized){
@@ -50,6 +43,7 @@ public class MongoQuery {
       }
     }
   }
+*/
   
   protected void upackSimple(Map<String, String> queryParams, JsonArray jsonQueryArray){
     // unpack
@@ -73,29 +67,14 @@ public class MongoQuery {
         queryParams.put("query",query);
         break;
       }
-      default:  System.out.println("nothing here");
+      default:  _log.debug("nothing here");
     }
-  
-  }
-  
-  private void unpackAggregation(JsonArray jsonQueryArray){
-    // unpack
-    aggregationPipeline = jsonQueryArray;
   
   }
   
   /*------------------------------------------------------------------------
    *                              Getters and Setters
    * -----------------------------------------------------------------------*/
-  /**
-   *
-   * @return a json string of an aggregation array.
-   */
-  public String getAggregationAsJsonString(){
-    
-    return null;
-  }
-  
   /**
    *
    * @return a json string of an simple matching query document
@@ -108,16 +87,42 @@ public class MongoQuery {
   /**
    *
    * @return a simple string of fields to include in results document
-s
    * @param projection*/
   public String getSimpleQueryProjetionAsFields(JsonObject projection){
     StringBuilder sb = new StringBuilder();
     for(Map.Entry<String, JsonElement> entry : projection.entrySet()) {
       sb.append(entry.getKey()+",");
-      System.out.println("Key = " + entry.getKey() + " Value = " + entry.getValue() );
+      _log.debug("Key = " + entry.getKey() + " Value = " + entry.getValue() );
     }
     String fields = sb.toString().replaceAll(",$","");
     return fields;
+  }
+  
+  public void injectOutDefinition(String id) {
+    String tmp = new String("{\"$out\":\""+id+"\"}");
+    Gson gson = new Gson();
+    JsonElement ele = gson.fromJson(tmp,JsonElement.class);
+    jsonQueryArray.add(ele);
+  }
+  
+  public JsonArray getJsonQueryArray(){
+   return jsonQueryArray;
+  }
+  
+  public JsonArray getSimpleQueryArray(){
+    if(jsonQueryArray != null && jsonQueryArray.size() > 0 && qType.equals("SIMPLE")){
+      return jsonQueryArray;
+    }else{
+      return null;
+    }
+  }
+  
+  public JsonArray getAggregationQueryArray(){
+    if(jsonQueryArray != null && jsonQueryArray.size() > 0 && qType.equals("AGGREGATION")){
+      return jsonQueryArray;
+    }else{
+      return null;
+    }
   }
   
 }

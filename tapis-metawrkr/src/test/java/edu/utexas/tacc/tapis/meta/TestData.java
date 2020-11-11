@@ -45,6 +45,35 @@ public class TestData {
       "  \"notification\": \"\"\n" +
       "}\n";
   
+  public static final String taskJsonAggr = "{\n" +
+      "  \"_id\": \"5db9f4e34149c40001f6ea00\",\n" +
+      "  \"name\": \"myQuery\",\n" +
+      "  \"queryType\": \"AGGREGATION\",\n" +
+      "  \"queryDb\": \"v1airr\",\n" +
+      "  \"queryCollection\": \"rearrangement\",\n" +
+      "  \"query\": [\n" +
+      "    {\n" +
+      "      \"$match\": {\n" +
+      "        \"repertoire_id\": {\n" +
+      "          \"$in\": [\n" +
+      "            \"978739827430911510-242ac11a-0001-012\",\n" +
+      "            \"967272264750591510-242ac11a-0001-012\"\n" +
+      "          ]\n" +
+      "        }\n" +
+      "      }\n" +
+      "    },\n" +
+      "    {\n" +
+      "      \"$group\": {\n" +
+      "        \"_id\": \"$repertoire_id\",\n" +
+      "        \"count\": {\n" +
+      "          \"$sum\": \"1\"\n" +
+      "        }\n" +
+      "      }\n" +
+      "    }\n" +
+      "  ],\n" +
+      "  \"notification\": \"\"\n" +
+      "}\n";
+  
   public static final String taskJsonSimpleFields = "{\n" +
       "  \"_id\": \"372653\",\n" +
       "  \"name\": \"myQuery\",\n" +
@@ -117,7 +146,7 @@ public class TestData {
       "            \"count\":{\"$sum\":\"1\"}\n" +
       "        }\n" +
       "    },\n" +
-      "    { $out : \"10.22.2020-tst\" }" +
+      "    { $out : \"11.09.2020-tst-1.38\" }" +
       "  ]";
   
   public static final String aggregationLong = "  [\n" +

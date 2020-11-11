@@ -108,7 +108,7 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
         MongoDatabase db = client.getDatabase(LRQdb);
         MongoCollection<Document> collection = db.getCollection(LRQcollection);
 
-       UpdateResult result = collection.updateOne(eq("_id", new ObjectId(id)), Updates.set("status","RUNNING"));
+       UpdateResult result = collection.updateOne(eq("_id", new ObjectId(id)), Updates.set("status",_status));
        System.out.println();
       }
     } catch (Exception e) {

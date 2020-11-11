@@ -1,12 +1,16 @@
 package edu.utexas.tacc.tapis.meta;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
+import edu.utexas.tacc.tapis.meta.dao.AggregationQueryDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
 import edu.utexas.tacc.tapis.meta.model.LRQStatus;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission.qType;
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
 import edu.utexas.tacc.tapis.utils.ConversionUtils;
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +57,12 @@ public class QueryExecutor {
     this.tenant = _tenant;
   }
   
-  private void updateStatus(LRQTask lrqTask){
+  private void updateStatus(LRQTask lrqTask, LRQStatus lrqStatus){
     RuntimeParameters runtime = RuntimeParameters.getInstance();
     // TODO we need the tenant context here because we use it for queue identification
     // and we use it for DAO storate location; this is not sustainable
     LRQSubmissionDAO lrqSubDAO = new LRQSubmissionDAOImpl(tenant);
-    lrqSubDAO.updateSubmissionStatus(lrqTask.get_id(), LRQStatus.STARTED.status);
+    lrqSubDAO.updateSubmissionStatus(lrqTask.get_id(), lrqStatus.status);
   }
   
   public void checkIntegrationWithQueue(String workerName){
@@ -81,21 +85,22 @@ public class QueryExecutor {
     // we are reasonably assured the task was delivered uncorrupted from the task queue
     // i guess it's safe to assume it is a valid lrq task and conforms to syntactically correct json
     LRQTask lrqTask = ConversionUtils.stringToLRQTask(this.lrqTaskString);
-    System.out.println(lrqTask.toJson());
+    _log.debug("LRQ Task converted to json "+lrqTask.toJson());
     MongoQuery mongoQuery = null;
-    updateStatus(lrqTask);
+    updateStatus(lrqTask, LRQStatus.RUNNING );
+    String taskId = lrqTask.get_id();
     // It is a simple query so we can query and export at the same time.
     // we have all the info needed to create an export command
     // and call the query-export process.
     Map<String,String> cmdMap = this.createCommandMap();
     cmdMap.put("db",lrqTask.getQueryDb());
-    cmdMap.put("collection",lrqTask.getQueryCollection());
-    cmdMap.put("fileOutput","lrqdata/lrq-"+lrqTask.get_id()+".gz");
+    cmdMap.put("fileOutput","lrqdata/lrq-"+taskId+".gz");
   
     // This is a simple query
     if(lrqTask.getQueryType().equals(qType.SIMPLE.toString())){
       _log.trace("This is a simple query");
       mongoQuery = new MongoQuery(qType.SIMPLE.toString(),lrqTask.getJsonQueryArray());
+      cmdMap.put("collection",lrqTask.getQueryCollection());
       try {
         mongoQuery.upackSimple(cmdMap,lrqTask.getJsonQueryArray());
       } catch (Exception e) {
@@ -119,17 +124,37 @@ public class QueryExecutor {
     }else{
       if(lrqTask.getQueryType().equals(qType.AGGREGATION.toString())) {
         _log.debug("Process the AGGREGATION query from the task. If this fails we can't go any further.");
-        mongoQuery = new MongoQuery(qType.AGGREGATION.toString(), lrqTask.getJsonQueryArray());
-        // prep the aggregation
+        JsonArray queryArray = lrqTask.getJsonQueryArray();
+        mongoQuery = new MongoQuery(qType.AGGREGATION.toString(), queryArray );
+        // the Aggregation takes the initial collection for the query but later we need to export the tmp collection
+        cmdMap.put("collection",lrqTask.getQueryCollection());
+
         // TODO run an aggregation against the database with the $out document setting to create a tmp collection.
-        // check the aggregation pipeline array to determine if an $out operator exists
-        // and if it does replace it or if not add our $out for the lrq collection name.
+        // assume the aggregation pipeline array does not have an $out operator.
+        // create and add our $out for the lrq collection name.
         
-        // we need a Mongodb client for this but the pipeline should run
-        _log.debug("Process the AGGREGATION query from the task. If this fails we can't go any further.");
-        
+        mongoQuery.injectOutDefinition(lrqTask.get_id());
+        // running the aggregation
+        AggregationQueryDAO queryDAO = new AggregationQueryDAO(lrqTask.getQueryDb(),lrqTask.getQueryCollection());
+        if(mongoQuery.getAggregationQueryArray() != null){
+          queryDAO.runAggregation(mongoQuery.getAggregationQueryArray());
+        }
+  
+        // Our parameters for the command should be complete and we are able to derive the command used for export.
+        MongoExportExecutor mongoExportExecutor = new MongoExportExecutor();
+        // For export we want to use the tmp collection named after the LRQ id.
+        cmdMap.put("collection",lrqTask.get_id());
+        // run the command
+        MongoExportCommand mongoExportCommand = new MongoExportCommand(cmdMap);
+        _log.debug("Export cmd : "+mongoExportCommand.exportCommandAsString());
+        mongoExportExecutor.runExportCommand(new MongoExportCommand(cmdMap));
+
       }
     }
+    
+    // Update the status of LRQ task.
+    this.updateStatus(lrqTask,LRQStatus.FINISHED);
+    
     // major ERROR condition
     if(mongoQuery != null){
       return false;

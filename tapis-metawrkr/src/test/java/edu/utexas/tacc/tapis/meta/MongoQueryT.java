@@ -6,14 +6,14 @@ import edu.utexas.tacc.tapis.utils.ConversionUtils;
 
 public class MongoQueryT {
   public static void main(String[] args) {
-    String stringTask = TestData.simpleQTask;
+    String stringTask = TestData.taskJsonAggr;
     LRQTask task = ConversionUtils.stringToLRQTask(stringTask);
     JsonArray jsonArray = ConversionUtils.arrayListOfStringToJsonArray(task.getQuery());
     MongoQuery mongoQuery = new MongoQuery(task.getQueryType(),jsonArray);
     assert mongoQuery.isInitialized;
     assert mongoQuery.hasProjections;
     try {
-      // mongoQuery.unpackQuery();
+      mongoQuery.injectOutDefinition("12322344");
     } catch (Exception e) {
       e.printStackTrace();
     }

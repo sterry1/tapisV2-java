@@ -2,7 +2,7 @@ package edu.utexas.tacc.tapis.meta.model;
 
 public enum LRQStatus {
   SUBMITTED("SUBMITTED"),
-  STARTED("STARTED"),
+  RUNNING("RUNNING"),
   FINISHED("FINISHED"),
   FAILED("FAILED");
   

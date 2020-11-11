@@ -43,6 +43,7 @@
         </dependency>
         <!-- make mongodb parent dependency -->
         <!-- https://github.com/dinstone/beanstalkc  -->
+<!--
         <dependency>
             <groupId>com.dinstone</groupId>
             <artifactId>beanstalkc</artifactId>
@@ -58,6 +59,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+-->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
