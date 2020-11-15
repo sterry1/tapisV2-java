@@ -1,8 +1,8 @@
 ---
 version: "3"
 
-volumes:
-  pgdata:
+# volumes:
+#   pgdata:
 
 services:
 
@@ -20,18 +20,18 @@ services:
       - '15672:15672'
       - '25672:25672'  
 
-  postgres:
-    image: postgres:11.4
-    container_name: tapis-postgres
-    labels:
-      name: tapis-postgres
-    restart: always
-    environment:
-      - 'POSTGRES_USER=postgres'
-      - 'POSTGRES_PASSWORD=password'
-      - 'POSTGRES_DB=postgres'
-    ports:
-      - '5432:5432'
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+#  postgres:
+#    image: postgres:11.4
+#    container_name: tapis-postgres
+#    labels:
+#      name: tapis-postgres
+#    restart: always
+#    environment:
+#      - 'POSTGRES_USER=postgres'
+#      - 'POSTGRES_PASSWORD=password'
+#      - 'POSTGRES_DB=postgres'
+#    ports:
+#      - '5432:5432'
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
       

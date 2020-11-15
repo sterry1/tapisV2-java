@@ -73,7 +73,7 @@ meta-worker:
    log_opt:
       max-size: 100m
       max-file: "5"
-   command: "java ${JAVA_OPTS} -cp metawrkr.jar:lib/* edu/utexas/tacc/tapis/meta/LRQWorker"
+   command: "java -Xms1g -Xmx2g -Dlogback.configurationFile=/metawrkr/logback.xml -cp metawrkr.jar:lib/* edu/utexas/tacc/tapis/meta/LRQWorker"
    container_name: meta-tapis-wrkr-tst
    environment:
       - 'tapis.meta.mongo.lrq.uri=mongodb://tapisadmin:d3f%40ult@aloe-dev08.tacc.utexas.edu:27019/?authSource=admin&authMechanism=SCRAM-SHA-1'
@@ -98,19 +98,30 @@ meta-worker:
       - './etc/logback.xml:/metawrkr/logback.xml'
       - './lrqdata:/metawrkr/lrqdata'
 
+mongodb:
+   image: mongo:4.2
+   container_name: restheart-mongo
+   command: "mongod --auth --bind_ip_all"
+   environment:
+      MONGO_INITDB_ROOT_USERNAME: 'tapisadmin'
+      MONGO_INITDB_ROOT_PASSWORD: 'd3fault'
+   volumes:
+      - "./mongodb/dbdata:/data/db"
+   ### mongodb port must be mapped for the test to run
+   ports:
+      - "27017:27017"
 
-# mongodb:
-#    image: mongo:4.2
-#    container_name: restheart-mongo
-#    command: "mongod --auth --bind_ip_all"
-#    environment:
-#       MONGO_INITDB_ROOT_USERNAME: 'tapisadmin'
-#       MONGO_INITDB_ROOT_PASSWORD: 'd3fault'
-#    volumes:
-#       - "./mongodb/dbdata:/data/db"
-#    ### mongodb port must be mapped for the test to run
-#    ports:
-#       - "27017:27017"
-
-
+rabbitmq:
+   image: rabbitmq:3.7.16-management
+   container_name: tapis-rabbitmq
+   labels:
+      name: tapis-rabbitmq
+   restart: on-failure
+   ports:
+      - '4369:4369'
+      - '5671:5671'
+      - '5672:5672'
+      - '15671:15671'
+      - '15672:15672'
+      - '25672:25672'
 

@@ -1,0 +1,12 @@
+mongodb:
+  image: mongo:4.2
+  container_name: restheart-mongo
+  command: "mongod --auth --bind_ip_all"
+  environment:
+    MONGO_INITDB_ROOT_USERNAME: 'tapisadmin'
+    MONGO_INITDB_ROOT_PASSWORD: 'd3fault'
+  volumes:
+    - "./mongodb/dbdata:/data/db"
+  ### mongodb port must be mapped for the test to run
+  ports:
+    - "27017:27017"

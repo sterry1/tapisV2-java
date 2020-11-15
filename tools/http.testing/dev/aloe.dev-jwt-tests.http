@@ -23,7 +23,7 @@ Content-Type: application/json
 
 ### use vdjuser.jwt.mod
 GET http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr
-X-JWT-Assertion-dev: {{jwt}}
+X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
 > {%

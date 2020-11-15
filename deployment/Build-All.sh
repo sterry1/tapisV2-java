@@ -43,7 +43,7 @@ docker push jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-base
 cd $TAPIS_ROOT
 
 echo " ***   build api image and publish ";echo ""
-# deployment/build-metaapi.sh
+deployment/build-metaapi.sh
 
 echo " ***   build worker image and publish ";echo ""
 deployment/build-metawrkr.sh
