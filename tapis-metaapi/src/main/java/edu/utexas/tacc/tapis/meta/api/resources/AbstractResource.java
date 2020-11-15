@@ -27,6 +27,7 @@ public class AbstractResource {
     } catch (IOException e) {
       _log.error("Payload has a problem. It is probably closed");
     }
+    _log.error("Payload isn't available for some reason");
     return false;
   }
   

@@ -918,12 +918,13 @@ public class ResourceBucket extends AbstractResource {
     //  TODO ----------------   process the json payload ----------------
     // *****   validSubmission validation    *****
     // check the payload for empty
-    _log.debug("checking the validSubmission payload ...");
-    if (!checkPayload(payload)) {
-      return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'ERROR empty request payload' }").build();
-    }
-    
+
     JsonObject jsonObject = getValidJson(payload);
+  
+//    _log.debug("checking the validSubmission payload ...");
+//    if (!checkPayload(payload)) {
+//      return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'ERROR empty request payload' }").build();
+//    }
     
     if (jsonObject == null) {
       return javax.ws.rs.core.Response.status(500).entity("{ 'msg' : 'ERROR payload is not syntactic JSON' }").build();
