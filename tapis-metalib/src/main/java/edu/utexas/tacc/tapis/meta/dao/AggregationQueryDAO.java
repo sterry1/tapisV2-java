@@ -26,6 +26,7 @@ public class AggregationQueryDAO {
   private final String db;
   private final String collection;
   
+  // TODO separate Query host and LRQ book keeping host runtime is already partitioned for this.
   public AggregationQueryDAO (String _db, String _collection){
     db = _db;
     collection = _collection;
