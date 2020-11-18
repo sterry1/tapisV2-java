@@ -24,6 +24,9 @@ public class AggregationQueryDAOT {
 
     JsonArray jsonArray = ConversionUtils.stringToJsonArray(aggr);
     AggregationQueryDAO dao = new AggregationQueryDAO("v1airr","rearrangement");
-    dao.runAggregation(jsonArray);
+    // dao.runAggregation(jsonArray);
+    dao.removeCollection("test1");
+    dao.removeCollection("test2");
+    dao.removeCollection("test3");
   }
 }

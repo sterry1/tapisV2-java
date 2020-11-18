@@ -31,7 +31,7 @@ public class MongoExportExecutor {
   public MongoExportExecutor(){
   }
   
-  public void runExportCommand(MongoExportCommand exportCommand){
+  public int runExportCommand(MongoExportCommand exportCommand){
     String mongoexportCmd = exportCommand.exportCommandAsString();
     ProcessBuilder processBuilder = new ProcessBuilder();
     processBuilder.command("bash", "-c", mongoexportCmd);
@@ -59,6 +59,7 @@ public class MongoExportExecutor {
     }else{
       _log.error("ERROR something went wrong exitCode : "+exitCode);
     }
+    return exitCode;
   }
   
 }

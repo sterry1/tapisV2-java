@@ -147,7 +147,9 @@ public class QueryExecutor {
         // run the command
         MongoExportCommand mongoExportCommand = new MongoExportCommand(cmdMap);
         _log.debug("Export cmd : "+mongoExportCommand.exportCommandAsString());
-        mongoExportExecutor.runExportCommand(new MongoExportCommand(cmdMap));
+        int exitCode = mongoExportExecutor.runExportCommand(new MongoExportCommand(cmdMap));
+        _log.debug("Exit code from mongoexport : "+exitCode);
+        queryDAO.removeCollection(lrqTask.get_id());
 
       }
     }

@@ -4,8 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCommandException;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
 import edu.utexas.tacc.tapis.utils.ConversionUtils;
@@ -41,7 +43,6 @@ public class AggregationQueryDAO {
     LocalTime begin = LocalTime.now();
     _log.debug("beginning time: "+ begin);
   
-  
     // pipeline must contain the $out name for the collection.
     MongoCollection<Document> mongoCollection = client.getDatabase(db).getCollection(collection);
     ArrayList jstages = new ArrayList();
@@ -74,8 +75,18 @@ public class AggregationQueryDAO {
       long diff = Math.abs(duration.toMillis());
       long secs = diff/1000;
       _log.debug("ms : "+diff+" secs : "+secs+"   mins : "+secs/60+" : "+secs%60+" secs");
-  
-  
     }
   }
+  
+  public void removeCollection(String collectionName){
+    MongoDatabase mongoDb = client.getDatabase(db);
+    MongoCollection<Document> collection = mongoDb.getCollection(collectionName);
+    try {
+      collection.drop();
+    } catch (MongoCommandException e) {
+      e.printStackTrace();
+    }
+    _log.debug("Collection : "+collectionName+" was successfully removed.");
+  }
+  
 }
