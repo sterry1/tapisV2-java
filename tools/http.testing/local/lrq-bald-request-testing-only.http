@@ -47,7 +47,7 @@ Content-Type: application/json
 
 
 ###  check status
-GET http://localhost:8199/meta/v3/LRQ/vdjserver.org/_lrq/5f8f520b5307065fe8040528
+GET http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/LRQ/vdjserver.org/_lrq/5fa319e521b2452a8deacf24
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 

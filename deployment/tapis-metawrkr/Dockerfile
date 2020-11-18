@@ -21,6 +21,15 @@ MAINTAINER CIC Support <cicsupport@tacc.utexas.edu>
 
 WORKDIR /metawrkr
 
+USER root
+
+RUN groupadd -r G-803419 -g 803419 && \
+    useradd -u 816290 -r -g G-803419 -m -d /home/vdj -s /sbin/nologin -c "vdj user" vdj && \
+    chmod 755 /metawrkr
+#    useradd -u 816290 -r -g imixs -m -d /home/imixs -s /sbin/nologin -c "imixs user" imixs && \
+#    chmod 755 /opt
+# RUN groupadd -r G-803419 -g 803419 && useradd -u 816290 -r -g G-803419 -s /sbin/nologin
+
 # COPY dependencies to image
 # add
 COPY metawrkr /metawrkr

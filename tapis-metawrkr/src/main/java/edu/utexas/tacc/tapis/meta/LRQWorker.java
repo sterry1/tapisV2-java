@@ -44,6 +44,7 @@ public class LRQWorker {
     // Write the output information.
     _log.debug(buf.toString());
     
+    
     // TODO pull the tenant from the environment
     
     LRQWorker lrqWorker = new LRQWorker(runtime.getTenantId());
@@ -51,13 +52,17 @@ public class LRQWorker {
     _log.debug("LRQWorker  tenant Id : "+runtime.getTenantId());
     _log.debug("LRQWorker  queue name : "+runtime.getTaskQueueName());
     
-    // which queue do we want to use
     
+    
+    // which queue do we want to use
     String taskQName = runtime.getTaskQueueName();
     LRQTaskWorker worker = null;
     
     // Startup an array of workers
-    List<String> names = new ArrayList<String>(Arrays.asList("worker1"));
+    List<String> names = new ArrayList<String>();
+    for (int i = 0; i < runtime.getTaskQueueWorkers(); i++) {
+      names.add("worker"+i);
+    }
     
     // fill our worker list with new workers
     // TODO no management of list here, no checking on workers ect.

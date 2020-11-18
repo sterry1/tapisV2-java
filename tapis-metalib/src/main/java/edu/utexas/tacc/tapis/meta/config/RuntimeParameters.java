@@ -81,6 +81,7 @@ public class RuntimeParameters {
   private String tenantId = "";
   
   //----------------------   Queue parameters   ----------------------
+  private int taskQueueWorkers = 25; // default number of workers
   private String taskQueueHost = "";
   private String taskQueuePort = "";
   private String taskQueueUser = "";
@@ -171,6 +172,9 @@ public class RuntimeParameters {
     /*------------------------------------------------------------------------
      *           Queue parameters
      * -----------------------------------------------------------------------*/
+    parm = System.getenv("tapis.meta.queue.workers");
+    if (!StringUtils.isBlank(parm)) setTaskQueueWorkers(Integer.parseInt(parm));
+  
     parm = System.getenv("tapis.meta.queue.host");
     if (!StringUtils.isBlank(parm)) setTaskQueueHost(parm);
   
@@ -233,6 +237,9 @@ public class RuntimeParameters {
   public static RuntimeParameters getInstance() {
     return _instance;
   }
+  
+  public int getTaskQueueWorkers() { return taskQueueWorkers; }
+  public void setTaskQueueWorkers(int taskQueueWorkers) { this.taskQueueWorkers = taskQueueWorkers; }
   
   public String getTaskQueuePort() { return taskQueuePort; }
   public void setTaskQueuePort(String taskQueuePort) { this.taskQueuePort = taskQueuePort; }
@@ -414,6 +421,8 @@ public class RuntimeParameters {
     buf.append(this.getQueryAuthDB());
   
     buf.append("\n\n----- Queue Configuration ----- ");
+    buf.append("\ntapis.meta.queue.workers: ");
+    buf.append(String.valueOf(getTaskQueueWorkers()));
     buf.append("\ntapis.meta.queue.host: ");
     buf.append(this.getTaskQueueHost());
     buf.append("\ntapis.meta.queue.name: ");
