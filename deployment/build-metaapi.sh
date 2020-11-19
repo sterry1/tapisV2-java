@@ -27,6 +27,7 @@ export TAG="tapis/${SRVC_API}:$VER"
 export IMAGE_BUILD_DIR="$TAPIS_ROOT/deployment/tapis-${SRVC_API}"
 export BUILD_FILE="$IMAGE_BUILD_DIR/Dockerfile"
 export GIT_COMMIT=$(git log -1 --pretty=format:"%h")
+export GIT_TAG=$(git tag --points-at)
 export WAR_NAME=meta    # matches final name in pom file
 
 echo "VER: $VER"
@@ -39,6 +40,7 @@ echo "TAG: $TAG"
 echo "IMAGE_BUILD_DIR: $IMAGE_BUILD_DIR"
 echo "BUILD_FILE: $BUILD_FILE"
 echo "GIT_COMMIT: $GIT_COMMIT"
+echo "GIT_TAG: $GIT_TAG"
 echo "WAR_NAME: $WAR_NAME"
 echo "JAVA VERSION : $(java -version)"
 

@@ -21,12 +21,14 @@ export TAPIS_ENV=T2dev
 export SRVC=meta
 export TAPIS_ROOT=$(pwd)
 export GIT_COMMIT=$(git log -1 --pretty=format:"%h")
+export GIT_TAG=$(git tag --points-at)
 
 echo "VER: $VER"
 echo "TAPIS_ENV: $TAPIS_ENV"
 echo "SRVC: $SRVC"
 echo "TAPIS_ROOT: $TAPIS_ROOT"
 echo "GIT_COMMIT: $GIT_COMMIT"
+echo "GIT_TAG: $GIT_TAG"
 echo "JAVA VERSION : ";$(java -version)
 
 echo " ***   Global build of modules.  "
