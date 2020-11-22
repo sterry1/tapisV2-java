@@ -1,0 +1,9 @@
+POST http://localhost:3000/
+X-JWT-Assertion-dev: {{jwt}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "status" : "this is the status"
+}
+###
