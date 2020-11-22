@@ -15,7 +15,7 @@
     </parent>
 
     <artifactId>tapisV2</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <packaging>pom</packaging>
 
     <name>TACC Tapis Java Parent POM</name>

@@ -7,12 +7,12 @@
     <parent>
         <groupId>edu.utexas.tacc.tapis</groupId>
         <artifactId>tapisV2</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.5</version>
     </parent>
 
     <groupId>edu.utexas.tacc.tapis</groupId>
     <artifactId>tapis-metaapi</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <packaging>war</packaging>
 
     <name>TapisV2 MetaV3 API</name>
@@ -148,7 +148,7 @@
         <dependency>
             <groupId>edu.utexas.tacc.tapis</groupId>
             <artifactId>tapis-metalib</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
