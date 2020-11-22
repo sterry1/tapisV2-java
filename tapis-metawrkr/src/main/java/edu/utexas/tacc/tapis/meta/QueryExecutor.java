@@ -2,10 +2,12 @@ package edu.utexas.tacc.tapis.meta;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import edu.utexas.tacc.tapis.meta.client.Notification;
 import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 import edu.utexas.tacc.tapis.meta.dao.AggregationQueryDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAO;
 import edu.utexas.tacc.tapis.meta.dao.LRQSubmissionDAOImpl;
+import edu.utexas.tacc.tapis.meta.json.JsonResponseBuilder;
 import edu.utexas.tacc.tapis.meta.model.LRQStatus;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission.qType;
 import edu.utexas.tacc.tapis.meta.model.LRQTask;
@@ -154,17 +156,28 @@ public class QueryExecutor {
       }
     }
     
+    // TODO where do we need to update the task to FAILED
     // Update the status of LRQ task.
     this.updateStatus(lrqTask,LRQStatus.FINISHED);
     
-    // major ERROR condition
-    if(mongoQuery != null){
+    // send notification
+    Notification notification = new Notification(lrqTask.getNotification());
+    if(!notification.isValidNotificationUrl()){
+      _log.debug("Notification for LRQ task : "+lrqTask.get_id()+" could not be sent.");
       return false;
+    }else{
+      // Build response
+      //TODO default storage location
+      String defaultLocation = RuntimeParameters.getInstance().getTenantDefaultStorageLocation();
+      String location = defaultLocation+"/lrq-"+lrqTask.get_id()+".gz";
+      
+      JsonResponseBuilder builder = new JsonResponseBuilder(lrqTask.get_id(),location,LRQStatus.FINISHED.status,"LRQ results complete");
+      notification.sendNotification(builder.getBasicResponse());
     }
-  
     return false;
   }
   
+/*
   // create a cmd map to drive the export command.
   private void simpleQueryExecution(){
     // create a map to drive the ExportCommand
@@ -182,6 +195,7 @@ public class QueryExecutor {
   private void aggregationExecution(){
   // TODO this is the aggregation run
   }
+*/
   
   private void addQueryHostContext(Map<String,String>  cmdMap){
     QueryHostContext context = new QueryHostContext();

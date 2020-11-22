@@ -42,24 +42,7 @@
             <version>2.5.4</version>
         </dependency>
         <!-- make mongodb parent dependency -->
-        <!-- https://github.com/dinstone/beanstalkc  -->
-<!--
-        <dependency>
-            <groupId>com.dinstone</groupId>
-            <artifactId>beanstalkc</artifactId>
-            <version>2.3.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
--->
+
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>

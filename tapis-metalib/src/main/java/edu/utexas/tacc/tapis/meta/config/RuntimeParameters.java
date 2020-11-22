@@ -79,6 +79,7 @@ public class RuntimeParameters {
   private String mongoDbUriLRQ ="";
   private String lrqDB = "LRQ";
   private String tenantId = "";
+  private String tenantDefaultStorageLocation = "";
   
   //----------------------   Queue parameters   ----------------------
   private int taskQueueWorkers = 25; // default number of workers
@@ -139,8 +140,14 @@ public class RuntimeParameters {
     parm = inputProperties.getProperty("tapis.log.file");
     if (!StringUtils.isBlank(parm)) setLogFile(parm);
   
+    /*------------------------------------------------------------------------
+     *                      Tenant settings for worker
+     * -----------------------------------------------------------------------*/
     parm = System.getenv("tapis.meta.tenant");
     if (!StringUtils.isBlank(parm)) setTenantId(parm);
+    
+    parm = System.getenv("tapis.meta.tenant.default.storage");
+    if (!StringUtils.isBlank(parm)) setTenantDefaultStorageLocation(parm);
    
     /*------------------------------------------------------------------------
      *       MongoDB URI for LRQ database
@@ -150,6 +157,7 @@ public class RuntimeParameters {
   
     parm = System.getenv("tapis.meta.mongo.lrq.db");
     if (!StringUtils.isBlank(parm)) setLrqDB(parm);
+    
   
     /*------------------------------------------------------------------------
      *          Target Query host and parameters
@@ -192,6 +200,7 @@ public class RuntimeParameters {
   
     parm = System.getenv("tapis.meta.queue.name");
     if (!StringUtils.isBlank(parm)) setTaskQueueName(parm);
+
   
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
@@ -237,6 +246,9 @@ public class RuntimeParameters {
   public static RuntimeParameters getInstance() {
     return _instance;
   }
+  
+  public String getTenantDefaultStorageLocation() { return tenantDefaultStorageLocation; }
+  public void setTenantDefaultStorageLocation(String tenantDefaultStorageLocation) { this.tenantDefaultStorageLocation = tenantDefaultStorageLocation; }
   
   public int getTaskQueueWorkers() { return taskQueueWorkers; }
   public void setTaskQueueWorkers(int taskQueueWorkers) { this.taskQueueWorkers = taskQueueWorkers; }
@@ -307,9 +319,7 @@ public class RuntimeParameters {
     this.skSvcURL = skSvcURL;
   }
   
-  public String getMetaToken() {
-    return metaToken;
-  }
+  public String getMetaToken() { return metaToken; }
   public void setMetaToken(String metaToken) {
     this.metaToken = metaToken;
   }
