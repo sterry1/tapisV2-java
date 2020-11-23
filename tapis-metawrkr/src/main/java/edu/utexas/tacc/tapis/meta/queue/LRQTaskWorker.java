@@ -45,7 +45,7 @@ public class LRQTaskWorker {
     Channel channel = connection.createChannel();
     channel.basicQos(1);
   
-    channel.queueDeclare(TASK_QUEUE_NAME, false, false, false, null);
+    channel.queueDeclare(TASK_QUEUE_NAME, true, false, false, null);
     System.out.println(" [*] "+this.workerName+" Waiting for messages. To exit press CTRL+C");
   
     DeliverCallback deliverCallback = (consumerTag, delivery) -> {

@@ -1005,7 +1005,8 @@ public class ResourceBucket extends AbstractResource {
     factory.setPassword(runtime.getTaskQueuePassword());
     try (Connection connection = factory.newConnection();
          Channel channel = connection.createChannel()) {
-      channel.queueDeclare(runtime.getTaskQueueName(), false, false, false, null);
+      // set durable to true may have to remove queue
+      channel.queueDeclare(runtime.getTaskQueueName(), true, false, false, null);
       channel.basicPublish("", runtime.getTaskQueueName(),
           MessageProperties.PERSISTENT_TEXT_PLAIN,
           message.getBytes("UTF-8"));
