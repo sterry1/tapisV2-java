@@ -3,7 +3,7 @@
 #
 #
 meta-security:
-   image: tapis/metaapi:0.0.4-T2dev
+   image: tapis/metaapi:0.0.5-T2dev
    restart: "always"
    log_driver: json-file
    log_opt:
@@ -25,6 +25,7 @@ meta-security:
       - 'tapis.log.directory=/usr/local/tomcat/logs'
       - 'tapis.log.file=meta-service.log'
       - 'tapis.meta.security.permissions.file=/opt/tomcat/etc/permissions.json'
+      - 'tapis.meta.queue.workers=10'
       - 'tapis.meta.query.host=aloe-dev08.tacc.utexas.edu'
       - 'tapis.meta.query.port=27019'
       - 'tapis.meta.query.user=tapisadmin'
@@ -36,6 +37,8 @@ meta-security:
       - 'tapis.meta.queue.password=guest'
       - 'CATALINA_OPTS=-Xms1g -Xmx2g -Dlogback.configurationFile=/opt/tomcat/etc/logback.xml'
       - 'tapis.meta.queue.name=lrq-vdjserver.org'
+      - 'tapis.meta.data.dir=lrqdata'
+      - 'tapis.meta.tenant.default.storage=irplus/data/lrqdata'
 
    volumes:
       - '/Users/sterry1/var/log/splunk/meta-security:/usr/local/tomcat/logs'
@@ -84,6 +87,7 @@ meta-worker:
       - 'tapis.meta.query.user=tapisadmin'
       - 'tapis.meta.query.password=d3f@ult'
       - 'tapis.meta.query.authDB=admin'
+      - 'tapis.meta.queue.workers=10'
       - 'tapis.meta.queue.host=aloe-dev08.tacc.utexas.edu'
       - 'tapis.meta.queue.port=5672'
       - 'tapis.meta.queue.user=guest'
@@ -92,6 +96,8 @@ meta-worker:
       - 'tapis.meta.queue.name=lrq-vdjserver.org'
       - 'tapis.meta.tenant=vdjserver.org'
       - 'tapis.meta.data.dir=lrqdata'
+      - 'tapis.meta.tenant.default.storage=irplus/data/lrqdata'
+
 
    volumes:
       - '/Users/sterry1/var/log/splunk/meta-worker:/metawrkr/logs'
