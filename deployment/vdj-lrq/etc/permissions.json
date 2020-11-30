@@ -7,7 +7,31 @@
     },
   {
     "tenant": "vdjserver.org",
-    "role": "Internal/vdj-metav3",
+    "role": "Internal/vdjserver-org-services-admin",
+    "ops": ["GET"],
+    "db": "LRQ"
+  },
+  {
+    "tenant": "vdjserver.org",
+    "role": "Internal/vdj",
+    "ops": ["GET"],
+    "db": "v1airr"
+  },
+  {
+    "tenant": "vdjserver.org",
+    "role": "Internal/vdj",
+    "ops": ["GET"],
+    "db": "LRQ"
+  },
+  {
+    "tenant": "dev",
+    "role": "Internal/dev-services-admin",
+    "ops": ["GET","PUT","PATCH","POST","DELETE"],
+    "db": "v1airr"
+  },
+  {
+    "tenant": "dev",
+    "role": "Internal/everyone",
     "ops": ["GET"],
     "db": "v1airr"
   },

@@ -1,0 +1,5 @@
+export tok=694610a8c7e4c1f97ef4fc3ee7f4fc
+
+curl -H "Authorization:Bearer $tok"  https://vdj-agave-api.tacc.utexas.edu/files/v2/media/system/data.vdjserver.org//irplus/data/lrqdata/lrq-5fbbeda247dff81e2d82173e.gz  --output lrq-5fbbeda247dff81e2d82173e.gz
+
+curl -H "Authorization:Bearer $tok"  https://vdj-agave-api.tacc.utexas.edu/files/v2/media/system/data.vdjserver.org//irplus/data/lrqdata/lrq-5fb93b90d3c35b0235aad82e.gz  --output^C--output lrq-5fb93b90d3c35b0235aad82e.gz

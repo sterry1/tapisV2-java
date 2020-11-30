@@ -1,0 +1,118 @@
+# sanity check
+###   will list aggrs and other properties for this collection
+# GET http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_meta
+# X-JWT-Assertion-vdjserver.org: {{jwt}}
+# Content-Type: application/json
+###
+
+# status check
+###   returns the status of the lrq by id
+GET http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/LRQ/vdjserver.org/5fbbeda247dff81e2d82173e
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+###
+
+
+
+###
+# POST http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq
+# X-JWT-Assertion-vdjserver.org: {{jwt}}
+# Content-Type: application/json
+#
+# {
+#   "name": "myAggrQuerylProd-TstRun-2",
+#   "queryType": "AGGREGATION",
+#   "query": [
+#     {"$match": {"repertoire_id": {"$in": ["1841923116114776551-242ac11c-0001-012", "7997882631039226346-242ac113-0001-012","2648490830777881066-242ac113-0001-012"]}}},
+#     {"$group": {"_id": "$repertoire_id", "count": {"$sum": "1"}}}
+#   ],
+#   "notification": "https://httpbin.org/delay/10"
+# }
+
+###
+
+#  this doesn't really have any data in it
+###
+POST http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myQuery1-TstRun-11.23-15.42",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}, {"cdr1": 1,"cdr2": 1}],
+  "notification": "https://httpbin.org/delay/10"
+}
+
+###
+#  5fb5938719b6631a32bfef3e
+
+
+###
+POST http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+ {
+   "name": "myQuery2-TstRun-11.23-1",
+   "queryType": "SIMPLE",
+   "query": [{"repertoire_id":"7997882631039226346-242ac113-0001-012"}],
+   "notification": "https://httpbin.org/delay/10"
+ }
+
+###
+# 5fb593aa19b6631a32bfef3f  2.8G Nov 18 17:34 lrq-5fb593aa19b6631a32bfef3f.gz
+# 5fb5f3e519b6631a32bfef43
+
+###
+POST http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myQuery3-TstRun-11.23-1",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id" : "2648490830777881066-242ac113-0001-012"}],
+  "notification": "https://httpbin.org/delay/10"
+}
+
+###
+# ~ 50K
+#  5fb5a4bb19b6631a32bfef41
+#  5fb69b2619b6631a32bfef49
+
+###
+POST http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myQuery4-TstRun-6",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id" : "976330656418754070-242ac113-0001-012" }],
+  "notification": "https://httpbin.org/delay/10"
+}
+
+###
+#  ~ 277M
+# 5fb5a6b919b6631a32bfef42
+# 5fb69b2719b6631a32bfef4a
+
+###
+POST http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myQuery5-TstRun-2",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id" : { "$in":["976330656418754070-242ac113-0001-012","7997882631039226346-242ac113-0001-012"] }}],
+  "notification": "https://httpbin.org/delay/10"
+}
+
+###
+# ~ 3G
+# 5fb5f3e519b6631a32bfef43
+# 5fb69b2719b6631a32bfef4b
+
+

@@ -1,0 +1,14 @@
+2020-11-25 18:56:35.644 DEBUG [http-nio-8080-exec-5/fonh] e.u.t.t.m.a.resources.ResourceBucket:396 - Data Received: {"endpoint":"rearrangement","method":"POST","query":{"filte
+rs":{"op":"and","content":[{"op":"contains","content":{"field":"junction_aa","value":"FFQAEDGIRDSI"}},{"op":"in","content":{"field":"repertoire_id","value":["79978826310392263
+46-242ac113-0001-012"]}}]},"facets":"repertoire_id"},"ip":"206.12.90.9","status":"error","message":"VDJ-ADC-API ERROR (queryRearrangements, facets): Error: Request error: {\"f
+ault\":{\"code\":101504,\"type\":\"Status report\",\"message\":\"Runtime Error\",\"description\":\"Send timeout\"}}\nWhile performing query: { \"$and\":[{\"vdjserver_junction_
+suffixes\": {\"$regex\": \"^FFQAEDGIRDSI\"}},{\"repertoire_id\": { \"$in\":[\"7997882631039226346-242ac113-0001-012\"]}}]}","count":null,"start":1606330554629,"end":1606330595
+447}
+
+
+log entry from timeout
+ call to host : GET http://restheart-tst:8080/v1airr/rearrangement_0/_aggrs/facets?avars={"match":{"v_subgroup":"IGHV1"},"field":"$repertoire_id"}&page=1&pagesize=1000
+response :
+{"http status code":408,"http status description":"Request Timeout","message":"Operation exceeded time limit"}
+
+curl http://restheart-tst:8080/v1airr/rearrangement_0/_aggrs/facets?avars={"match":{"v_subgroup":"IGHV1"},"field":"$repertoire_id"}&page=1&pagesize=1000

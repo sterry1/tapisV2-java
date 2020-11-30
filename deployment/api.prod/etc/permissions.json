@@ -7,9 +7,23 @@
     },
   {
     "tenant": "vdjserver.org",
+    "role": "Internal/vdjserver-org-services-admin",
+    "ops": ["GET"],
+    "db": "LRQ",
+    "collection" : "vdjserver.org"
+  },
+  {
+    "tenant": "vdjserver.org",
     "role": "Internal/vdj-metav3",
     "ops": ["GET"],
     "db": "v1airr"
+  },
+  {
+    "tenant": "vdjserver.org",
+    "role": "Internal/vdj-metav3",
+    "ops": ["GET"],
+    "db": "LRQ",
+    "collection" : "vdjserver.org"
   },
   {
     "tenant": "designsafe",

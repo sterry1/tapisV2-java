@@ -1,3 +1,21 @@
+###   time out thru the frontend
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_aggrs/facets?avars={"match": {"repertoire_id": "7997882631039226346-242ac113-0001-012"}, "field": "$repertoire_id"}'
+Authorization: Bearer 30c1f314420f181b69f46d7395dad3
+Content-Type: application/json
+
+###
+
+###   time out thru the frontend
+GET http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_0/_aggrs/facets?avars={"match": {"repertoire_id": "7997882631039226346-242ac113-0001-012"}, "field": "$repertoire_id"}'
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+# Authorization: Bearer 30c1f314420f181b69f46d7395dad3
+
+
+###
+
+
+
 ##############################################################
 #  Scott - 9.16 evening
 #  reproduce problem with paging and pagesize pass thru for
