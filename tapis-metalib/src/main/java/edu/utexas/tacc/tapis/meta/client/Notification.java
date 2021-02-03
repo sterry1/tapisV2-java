@@ -60,6 +60,7 @@ public class Notification {
       _log.debug("Response 1 failed: \n" + e);
     }
   
+/*
     OkHttpClient client2 = getInstance();
     client2 = new OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -74,6 +75,7 @@ public class Notification {
     } catch (IOException e) {
       _log.debug("Response 2 failed: \n" + e);
     }
+*/
   
   
   
