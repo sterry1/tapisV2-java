@@ -984,7 +984,7 @@ public class ResourceBucket extends AbstractResource {
     // else
     //   response will indicate the error that occurred.
     
-    return javax.ws.rs.core.Response.status(201).entity("{ 'msg': 'SUCCESS created document',  '_id': '"+objectId.toString()+"' }").build();
+    return javax.ws.rs.core.Response.status(201).entity("{ \"msg\": \"SUCCESS created document\",  \"_id\": \""+objectId.toString()+"\" }").build();
   }
   
   private void submissionLRQ(ValidateSubmissionJson submission) {
