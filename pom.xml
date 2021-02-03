@@ -18,7 +18,7 @@
 
     <artifactId>tapisV2</artifactId>
     <groupId>edu.utexas.tacc.tapis</groupId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <packaging>pom</packaging>
 
     <name>TACC Tapis Java Parent POM</name>
