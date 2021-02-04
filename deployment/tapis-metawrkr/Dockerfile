@@ -12,7 +12,7 @@
 #
 #   Tested with Docker version 18.06.0-ce
 ##########################################################################
-FROM tapis/tapis-meta-base
+FROM tapis/tapis-meta-base:4.4
 
 ARG VER
 ARG GIT_COMMIT
