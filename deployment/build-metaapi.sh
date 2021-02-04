@@ -51,7 +51,7 @@ echo "JAVA VERSION : $(java -version)"
 
 echo "";echo ""
 
-# cd ..  # jump back up to project root directory
+cd ..  # jump back up to project root directory
 
 echo "***      removing any old service war meta directory from Docker build context"
 echo "***      $IMAGE_BUILD_DIR/$WAR_NAME "
@@ -86,8 +86,8 @@ echo "";echo "point 4";echo ""
 # echo "         push docker hub  -  $META_IMAGE   currently NA "
                 # docker push "$META_IMAGE"
  echo "***      tag image for our private repository  -  jenkins2.tacc.utexas.edu:5000/$META_IMAGE"
-                docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
-                docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
+                 docker tag $META_IMAGE jenkins2.tacc.utexas.edu:5000/$META_IMAGE
+                 docker push jenkins2.tacc.utexas.edu:5000/$META_IMAGE
 
 echo "***      "
 echo "***      rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}"
