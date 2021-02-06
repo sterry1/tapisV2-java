@@ -39,12 +39,13 @@ mvn clean install -DskipTests
 echo ""; echo ""
 cd deployment/tapis_meta_base
 docker image build -t tapis/tapis-meta-base:4.4 .
-docker tag tapis/tapis-meta-base jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-base:4.4
+docker tag tapis/tapis-meta-base:4.4 jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-base:4.4
 docker push jenkins2.tacc.utexas.edu:5000/tapis/tapis-meta-base:4.4
 
 cd $TAPIS_ROOT
 
 echo " ***   build api image and publish ";echo ""
+
 deployment/build-metaapi.sh
 
 echo " ***   build worker image and publish ";echo ""
