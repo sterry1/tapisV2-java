@@ -1,4 +1,4 @@
-# tapis-java
+# TapisV2 - Meta V3 java
 Texas Advanced Computing Center APIs
 Currently images are built locally and pushed to private repo. Some needed jars were deleted from the .m2 local repository on jenkins3. The build should work but doesn't. It is much faster building on jenkins than it is on my local machine.
 
