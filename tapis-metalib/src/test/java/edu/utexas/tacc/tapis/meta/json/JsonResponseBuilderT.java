@@ -9,10 +9,12 @@ import edu.utexas.tacc.tapis.utils.ConversionUtils;
 public class JsonResponseBuilderT {
   public static void main(String[] args) {
     LRQTask task = ConversionUtils.stringToLRQTask(TestData.simpleQTask);
-    String defaultLocation = RuntimeParameters.getInstance().getTenantDefaultStorageLocation()+"/lrq-"+task.get_id()+".gz";
+    // RuntimeParameters.getInstance().getTenantDefaultStorageLocation()
+    String defaultLocation = "https://vdj-agave-api.tacc.utexas.edu/files/v2/media/system/data.vdjserver.org//irplus/data/lrqdata//lrq-"+task.get_id()+".gz";
     
     String msg = "Your results are complete.";
     JsonResponseBuilder jsonResponseBuilder = new JsonResponseBuilder(task.get_id(),defaultLocation, LRQStatus.FINISHED.status, msg);
     String string = jsonResponseBuilder.getBasicResponse();
+    System.out.println(string);
   }
 }
