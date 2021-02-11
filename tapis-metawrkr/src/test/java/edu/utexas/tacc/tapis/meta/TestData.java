@@ -71,7 +71,7 @@ public class TestData {
       "      }\n" +
       "    }\n" +
       "  ],\n" +
-      "  \"notification\": \"https://httpbin.org/delay/10\"\n" +
+      "  \"notification\": \"https://httpbin.org/delay/5\"\n" +
       "}\n";
   
   public static final String taskJsonSimpleFields = "{\n" +
