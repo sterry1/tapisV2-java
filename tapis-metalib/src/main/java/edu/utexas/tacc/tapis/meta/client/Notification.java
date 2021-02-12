@@ -44,8 +44,7 @@ public class Notification {
         .retryOnConnectionFailure(true)
         .build();
     
-    RequestBody body = RequestBody.create(
-        MediaType.parse("application/json"), jsonResponse);
+    RequestBody body = RequestBody.create(MediaType.parse("application/json"), jsonResponse);
   
     Request request = new Request.Builder()
         .url(notificationUrl)
@@ -53,6 +52,7 @@ public class Notification {
         .build();
     _log.debug("Sending FINISHED response to : "+notificationUrl);
     try(Response response = client.newCall(request).execute()){
+      _log.debug("This Request body sent : "+jsonResponse);
       _log.debug("This Response 1 succeeded : "+ response);
       _log.debug(response.body().string());
     
@@ -76,8 +76,6 @@ public class Notification {
       _log.debug("Response 2 failed: \n" + e);
     }
 */
-  
-  
   
   
   }

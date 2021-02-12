@@ -1,10 +1,7 @@
 package edu.utexas.tacc.tapis.meta.json;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import edu.utexas.tacc.tapis.shared.utils.TapisGsonUtils;
-import edu.utexas.tacc.tapis.shared.utils.TapisUtils;
-import edu.utexas.tacc.tapis.sharedapi.responses.RespBasic;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class JsonResponseBuilder {
   private final String location;
@@ -23,24 +20,26 @@ public class JsonResponseBuilder {
    * -----------------------------------------------------------------------*/
   public String getBasicResponse(){
     // Create a basic response to fill in for core server empty response
-    RespBasic resp = new RespBasic();
-    resp.status = String.valueOf(status);
-    resp.message = coreMsg;
+    LRQResponse lrqResponse = new LRQResponse();
+    
+    lrqResponse.setStatus(status);
+    lrqResponse.setMessage(coreMsg);
     // TODO fix maven generation of files resp.version = TapisUtils.getTapisVersion();
-    resp.version = "0.0.4";
+    lrqResponse.setVersion( "0.0.6");
     
     //  get the location of the resource
-    String id = this.id;
-    StringBuilder sb = new StringBuilder();
+    LrqResponseResult result = new LrqResponseResult();
+    result.set_id(getId());
+    result.setLocation(getLocation());
+    lrqResponse.setResult(result);
     
-    // append the _id of the newly created resource, namely document
-    // to the response json
-    sb.append("{\"_id\":\"").append(this.id).append("\",");
-    sb.append("\"location\":\"").append(location).append("\"}");
+    GsonBuilder builder = new GsonBuilder();
+    builder.setPrettyPrinting();
+  
+    Gson gson = builder.create();
+    String json = gson.toJson(lrqResponse, LRQResponse.class);
     
-    JsonObject jsonObject = JsonParser.parseString(sb.toString()).getAsJsonObject();
-    resp.result = jsonObject;
-    return TapisGsonUtils.getGson().toJson(resp);
+    return json;
   }
   
   public String getLocation() { return location; }
