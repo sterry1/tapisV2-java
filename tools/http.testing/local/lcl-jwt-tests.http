@@ -341,7 +341,7 @@ X-Tapis-User: streamsTACCAdmin
 X-Tapis-Tenant: dev
 Content-Type: application/json
 
-###  result
+###  lrqResponseResult
 # er ETag Header returned  ETag: 5e4c452b537bd1305796e5e2
 
 # /meta/v3/StreamsTACCDB/TstCollection streamsTACCAdmin
@@ -352,7 +352,7 @@ X-Tapis-Token: {{token}}
 X-Tapis-User: streamsTACCAdmin
 X-Tapis-Tenant: dev
 Content-Type: application/json
-###  result msg with ETag header
+###  lrqResponseResult msg with ETag header
 # ETag: 5e4c452b537bd1305796e5e2
 # {
 #   "http status code": 409,
@@ -371,7 +371,7 @@ X-Tapis-Tenant: dev
 If-Match: 5e4c452b537bd1305796e5e2
 Content-Type: application/json
 
-###  result msg with ETag header
+###  lrqResponseResult msg with ETag header
 # ETag: 5e4c452b537bd1305796e5e2
 # {
 #   "http status code": 409,
@@ -389,7 +389,7 @@ X-Tapis-User: streamsTACCAdmin
 X-Tapis-Tenant: dev
 Content-Type: application/json
 
-###  result 201  er  Created
+###  lrqResponseResult 201  er  Created
 
 
 # /meta/v3/StreamsTACCDB/Proj1   streamsTACCAdmin
@@ -403,7 +403,7 @@ Content-Type: application/json
 
 { "name": "test document 4.2-5:02", "jimmyList":["1","3"],"description": "new whatever"}
 
-###  result 201  er  Created ETag: 5e4c4e6b537bd1305796e5e4
+###  lrqResponseResult 201  er  Created ETag: 5e4c4e6b537bd1305796e5e4
 
 ##############################################################
 #     document endpoints
@@ -418,7 +418,7 @@ X-Tapis-User: streamsTACCAdmin
 X-Tapis-Tenant: dev
 Content-Type: application/json
 
-###  result 204  er  no Content
+###  lrqResponseResult 204  er  no Content
 
 
 
@@ -431,7 +431,7 @@ X-Tapis-User: streamsTACCAdmin
 X-Tapis-Tenant: dev
 Content-Type: application/json
 
-###  result is a 409 without ETag
+###  lrqResponseResult is a 409 without ETag
 
 
 #  get a document from StreamsTACCDB/Proj1/5e29ffe1a93eebf39fba93c4 /meta/v3/StreamsTACCDB/Proj1

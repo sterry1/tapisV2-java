@@ -273,7 +273,7 @@ public class TestData {
       "  \"name\": \"myQuery\",\n" +
       "  \"queryType\": \"SIMPLE\",\n" +
       "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
-      "  \"notification\": \"\"\n" +
+      "  \"notification\": \"https://httpbin.org/delay/5\"\n" +
       "}";
   
   
