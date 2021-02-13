@@ -10,9 +10,7 @@
         <version>0.0.6</version>
     </parent>
 
-    <groupId>edu.utexas.tacc.tapis</groupId>
     <artifactId>tapis-metalib</artifactId>
-    <version>0.0.6</version>
     <packaging>jar</packaging>
 
     <name>TapisV2 MetaV3 Lib</name>
@@ -100,6 +98,10 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
