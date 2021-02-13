@@ -17,7 +17,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Properties;
 
 public class RuntimeParameters {
@@ -29,7 +34,9 @@ public class RuntimeParameters {
   private  String queryUser;
   private  String queryPwd;
   private  String queryAuthDB;
-  
+  private  String revision;
+  private  String buildTime;
+  private  String version;
   
   
   // Distinguished user-chosen name of this runtime instance.
@@ -109,6 +116,12 @@ public class RuntimeParameters {
     }
     
     //----------------------   Input parameters   ----------------------
+    /*------------------------------------------------------------------------
+     *                      Build, Version and GIT info settings
+     * -----------------------------------------------------------------------*/
+    setVersion(this.getFileContents("tapis.version"));
+    setBuildTime(this.getFileContents("build.time"));
+    setRevision(this.getFileContents("git.info"));
     /*------------------------------------------------------------------------
      *                      Core server settings
      * -----------------------------------------------------------------------*/
@@ -201,7 +214,7 @@ public class RuntimeParameters {
     parm = System.getenv("tapis.meta.queue.name");
     if (!StringUtils.isBlank(parm)) setTaskQueueName(parm);
 
-  
+    
     //----------------------   Initialize MongoDB client connection pool    ----------------------
     // "mongodb://tapisadmin:d3f%40ult@aloe-dev04.tacc.utexas.edu:27019/?authSource=admin"
     // TODO if mongoDbUriLRQ is null or empty or invalid  then we should fail immediately
@@ -351,6 +364,45 @@ public class RuntimeParameters {
   public String getLrqDB() { return lrqDB; }
   public void setLrqDB(String lrqDB) { this.lrqDB = lrqDB; }
   
+  public String getRevision() { return revision; }
+  public void setRevision(String revision) { this.revision = revision; }
+  
+  public String getBuildTime() { return buildTime; }
+  public void setBuildTime(String buildTime) { this.buildTime = buildTime; }
+  
+  public String getVersion() { return version; }
+  public void setVersion(String version) { this.version = version; }
+  
+  private String getFileContents(String fileName){
+    String contents = "";
+    File file = getFileResource(fileName);
+    //validate file path
+    _log.info("File path "+file.getPath());
+  
+    //Read file
+    List<String> lines = null;
+    try {
+      lines = Files.readAllLines(file.toPath());
+    } catch (IOException e) {
+      _log.error("File read operation failed for "+fileName);
+      e.printStackTrace();
+    }
+  
+    contents = lines.get(0);
+    return contents;
+  }
+  
+  private File getFileResource(String filePath){
+    ClassLoader classLoader = getClass().getClassLoader();
+    URL resource = classLoader.getResource(filePath);
+  
+    if (resource == null) {
+      throw new IllegalArgumentException("file is not found!");
+    } else {
+      return new File(resource.getFile());
+    }
+  }
+  
   public void setServiceJWT(){
     _log.debug("calling setServiceJWT ...");
     ServiceJWTParms serviceJWTParms = new ServiceJWTParms();
@@ -438,7 +490,6 @@ public class RuntimeParameters {
     buf.append("\ntapis.meta.queue.name: ");
     buf.append(this.getTaskQueueName());
     
-    
     buf.append("\n\n------- EnvOnly Configuration ---------------------");
     buf.append("\ntapis.envonly.log.security.info: ");
     buf.append(RuntimeParameters.getLogSecurityInfo());
@@ -486,7 +537,13 @@ public class RuntimeParameters {
     buf.append(formatter.format(Runtime.getRuntime().totalMemory()));
     buf.append("\nfreeMemory: ");
     buf.append(formatter.format(Runtime.getRuntime().freeMemory()));
+  
+    buf.append("\n\n------- Version Info -----------------------------------");
+    buf.append("\nbuild time: ");
+    buf.append(getBuildTime());
+    buf.append("\ngit revision: ");
+    buf.append(getRevision());
+    buf.append("\ntapis build version: ");
+    buf.append(getVersion());
   }
-  
-  
 }

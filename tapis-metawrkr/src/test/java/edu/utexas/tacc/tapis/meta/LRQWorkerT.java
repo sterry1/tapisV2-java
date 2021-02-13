@@ -1,5 +1,7 @@
 package edu.utexas.tacc.tapis.meta;
 
+import edu.utexas.tacc.tapis.meta.model.LRQTask;
+
 public class LRQWorkerT {
   public static void main(String[] args) {
     /*------------------------------------------------------------------------
@@ -15,7 +17,7 @@ public class LRQWorkerT {
     LRQWorker lrqWorker = new LRQWorker(_tenant);
   
     // 1. get a task from the queue
-    //LRQTask task = lrqWorker.getTaskFromQueue();
+    // LRQTask task = lrqWorker.getTaskFromQueue();
     //assert task.get_id() != null : "Task is null";
   
   
