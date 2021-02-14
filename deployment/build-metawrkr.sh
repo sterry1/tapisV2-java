@@ -18,7 +18,7 @@
 ###########################################################
 VER=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
 
-TAPIS_ENV=$TAPIS_ENV
+TAPIS_ENV=T2
 export SRVC=metawrkr
 export SRVC_API=${SRVC}
 export TAPIS_ROOT=$(pwd)
@@ -99,5 +99,5 @@ echo "";echo "point 4";echo ""
 
 echo "***      "
 echo "***      rm -rf ${IMAGE_BUILD_DIR}/${JAR_NAME}"
-               # rm -rf ${IMAGE_BUILD_DIR}/${WAR_NAME}
+
 

@@ -119,9 +119,9 @@ public class RuntimeParameters {
     /*------------------------------------------------------------------------
      *                      Build, Version and GIT info settings
      * -----------------------------------------------------------------------*/
-    setVersion(this.getFileContents("tapis.version"));
-    setBuildTime(this.getFileContents("build.time"));
-    setRevision(this.getFileContents("git.info"));
+    // setVersion(this.getFileContents("tapis.version"));
+    // setBuildTime(this.getFileContents("build.time"));
+    // setRevision(this.getFileContents("git.info"));
     /*------------------------------------------------------------------------
      *                      Core server settings
      * -----------------------------------------------------------------------*/
