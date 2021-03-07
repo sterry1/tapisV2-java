@@ -1,15 +1,57 @@
 # sanity check
 ###   will list aggrs and other properties for this collection
-# GET http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_meta
+# GET http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_meta
 # X-JWT-Assertion-vdjserver.org: {{jwt}}
 # Content-Type: application/json
 ###
 
 # status check
 ###   returns the status of the lrq by id
-GET http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/LRQ/vdjserver.org/5fbbeda247dff81e2d82173e
+GET http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/LRQ/vdjserver.org/603d183d113a520c3f0d02a4
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
+###
+
+###
+POST http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+  {
+    "name": "myAggrQuerylProd-TstRun-2",
+    "queryType": "AGGREGATION",
+    "query": [ {"$match": {"repertoire_id":"5499492664745333226-242ac116-0001-012"}}],
+    "notification": "https://httpbin.org/delay/2"
+  }
+
+###
+
+# curl -X POST --location "http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq"
+#    -H "X-JWT-Assertion-vdjserver.org: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik5tSm1PR1V4TXpabFlqTTJaRFJoTlRabFlUQTFZemRoWlRSaU9XRTBOV0kyTTJKbU9UYzFaQT09In0.eyJpc3MiOiJ3c28yLm9yZy9wcm9kdWN0cy9hbSIsImV4cCI6MTU2NTM1OTExMzkyMiwiaHR0cDovL3dzbzIub3JnL2NsYWltcy9zdWJzY3JpYmVyIjoiQUxPRURFVi92ZGphZG1pbiIsImh0dHA6Ly93c28yLm9yZy9jbGFpbXMvYXBwbGljYXRpb25pZCI6IjY2OSIsImh0dHA6Ly93c28yLm9yZy9jbGFpbXMvYXBwbGljYXRpb25uYW1lIjoicnN0aHJ0YXBwIiwiaHR0cDovL3dzbzIub3JnL2NsYWltcy9hcHBsaWNhdGlvbnRpZXIiOiJVbmxpbWl0ZWQiLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2FwaWNvbnRleHQiOiIvcmgvdjIiLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL3ZlcnNpb24iOiJ2MiIsImh0dHA6Ly93c28yLm9yZy9jbGFpbXMvdGllciI6IlVubGltaXRlZCIsImh0dHA6Ly93c28yLm9yZy9jbGFpbXMva2V5dHlwZSI6IlBST0RVQ1RJT04iLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL3VzZXJ0eXBlIjoiQVBQTElDQVRJT04iLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2VuZHVzZXIiOiJ2ZGphZG1pbkBjYXJib24uc3VwZXIiLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2VuZHVzZXJUZW5hbnRJZCI6Ii0xMjM0IiwiaHR0cDovL3dzbzIub3JnL2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ2ZGphZG1pbkB0YWNjLnV0ZXhhcy5lZHUiLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2Z1bGxuYW1lIjoidmRqYWRtaW4iLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2xhc3RuYW1lIjoidmRqYWRtaW4iLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL3JvbGUiOiJJbnRlcm5hbC92ZGpzZXJ2ZXItb3JnLXNlcnZpY2VzLWFkbWluLEludGVybmFsL3ZkaixJbnRlcm5hbC9ldmVyeW9uZSJ9.AkoHntY-6sklJYOXMcVDxOZ_D2A5z3-D2qsKQK22pbRBGG6hMPKJUk9Un02UQoA-ZhOYwoo7Pri_iqjZ9JHW2-QEXSjAJtHRax1rWRDbgrettFvYycqX-q_Og-zBUsPFbKXvSdX4Xbmpq1vgLijyz_WyJ_hG_9xT1kKHptIgGfNZPT952P3zJhDytmmCb0MbpHwakC3S6TpFrY7nMPVVueJgAODmlXNQj5seYam73FCvfxQj_4fBA524OjEqt64t2URgXGJhI93tBJJcjk39sj9CStVq9oKaaE8SJy3a21sNtTknOLUtPt3azmoxiDTqHTGcWk__OFLFL-iTqUAKXg"
+#    -H "Content-Type: application/json"
+#    -d "  {
+#            \"name\": \"myAggrQuerylProd-TstRun-2\",
+#            \"queryType\": \"AGGREGATION\",
+#            \"query\": [ {\"$match\": {\"repertoire_id\":\"5499492664745333226-242ac116-0001-012\"}}],
+#            \"notification\": \"https://httpbin.org/delay/2\"
+#          }"
+POST http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_1/_lrq
+X-JWT-Assertion-vdjserver.org: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik5tSm1PR1V4TXpabFlqTTJaRFJoTlRabFlUQTFZemRoWlRSaU9XRTBOV0kyTTJKbU9UYzFaQT09In0.eyJpc3MiOiJ3c28yLm9yZy9wcm9kdWN0cy9hbSIsImV4cCI6MTU2NTM1OTExMzkyMiwiaHR0cDovL3dzbzIub3JnL2NsYWltcy9zdWJzY3JpYmVyIjoiQUxPRURFVi92ZGphZG1pbiIsImh0dHA6Ly93c28yLm9yZy9jbGFpbXMvYXBwbGljYXRpb25pZCI6IjY2OSIsImh0dHA6Ly93c28yLm9yZy9jbGFpbXMvYXBwbGljYXRpb25uYW1lIjoicnN0aHJ0YXBwIiwiaHR0cDovL3dzbzIub3JnL2NsYWltcy9hcHBsaWNhdGlvbnRpZXIiOiJVbmxpbWl0ZWQiLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2FwaWNvbnRleHQiOiIvcmgvdjIiLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL3ZlcnNpb24iOiJ2MiIsImh0dHA6Ly93c28yLm9yZy9jbGFpbXMvdGllciI6IlVubGltaXRlZCIsImh0dHA6Ly93c28yLm9yZy9jbGFpbXMva2V5dHlwZSI6IlBST0RVQ1RJT04iLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL3VzZXJ0eXBlIjoiQVBQTElDQVRJT04iLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2VuZHVzZXIiOiJ2ZGphZG1pbkBjYXJib24uc3VwZXIiLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2VuZHVzZXJUZW5hbnRJZCI6Ii0xMjM0IiwiaHR0cDovL3dzbzIub3JnL2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ2ZGphZG1pbkB0YWNjLnV0ZXhhcy5lZHUiLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2Z1bGxuYW1lIjoidmRqYWRtaW4iLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL2xhc3RuYW1lIjoidmRqYWRtaW4iLCJodHRwOi8vd3NvMi5vcmcvY2xhaW1zL3JvbGUiOiJJbnRlcm5hbC92ZGpzZXJ2ZXItb3JnLXNlcnZpY2VzLWFkbWluLEludGVybmFsL3ZkaixJbnRlcm5hbC9ldmVyeW9uZSJ9.AkoHntY-6sklJYOXMcVDxOZ_D2A5z3-D2qsKQK22pbRBGG6hMPKJUk9Un02UQoA-ZhOYwoo7Pri_iqjZ9JHW2-QEXSjAJtHRax1rWRDbgrettFvYycqX-q_Og-zBUsPFbKXvSdX4Xbmpq1vgLijyz_WyJ_hG_9xT1kKHptIgGfNZPT952P3zJhDytmmCb0MbpHwakC3S6TpFrY7nMPVVueJgAODmlXNQj5seYam73FCvfxQj_4fBA524OjEqt64t2URgXGJhI93tBJJcjk39sj9CStVq9oKaaE8SJy3a21sNtTknOLUtPt3azmoxiDTqHTGcWk__OFLFL-iTqUAKXg
+Content-Type: application/json
+
+{
+  "name": "myAggrQuerylProd-TstRun-2",
+  "queryType": "AGGREGATION",
+  "query": [
+    {
+      "$match": {
+        "repertoire_id": "5499492664745333226-242ac116-0001-012"
+      }
+    }
+  ],
+  "notification": "https://httpbin.org/delay/2"
+}
+
 ###
 
 
@@ -38,7 +80,7 @@ X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
 {
-  "name": "myQuery1-TstRun-prod-startup-11.25-13.00",
+  "name": "myQuery1-TstRun-prod-2021.03.01",
   "queryType": "SIMPLE",
   "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}, {"cdr1": 1,"cdr2": 1}],
   "notification": "https://httpbin.org/delay/10"
@@ -73,7 +115,7 @@ Content-Type: application/json
   "name": "myQuery3-TstRun-prod-startup-11.25-13.00",
   "queryType": "SIMPLE",
   "query": [{"repertoire_id" : "2648490830777881066-242ac113-0001-012"}],
-  "notification": "https://httpbin.org/delay/10"
+  "notification": "https://httpbin.org/delay/2"
 }
 
 ###
@@ -104,10 +146,10 @@ X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 
 {
-  "name": "myQuery5-TstRun-2",
+  "name": "myQuery5-TstRun-2021.03.01",
   "queryType": "SIMPLE",
-  "query": [{"repertoire_id" : { "$in":["976330656418754070-242ac113-0001-012","7997882631039226346-242ac113-0001-012"] }}],
-  "notification": "https://httpbin.org/delay/10"
+  "query": [{"repertoire_id" : { "$in":["976330656418754070-242ac113-0001-012","7997882631039226346-242ac113-0001-012"]}}],
+  "notification": "https://httpbin.org/delay/2"
 }
 
 ###
@@ -115,4 +157,29 @@ Content-Type: application/json
 # 5fb5f3e519b6631a32bfef43
 # 5fb69b2719b6631a32bfef4b
 
+###  This
+POST http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_0/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
 
+{
+  "name": "fromLogs-02.28-prod",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id": { "$in":["9135128879355662826-242ac113-0001-012","9152222849193742826-242ac113-0001-012","9170905956931342826-242ac113-0001-012","9191221152241422826-242ac113-0001-012","9210935052130062826-242ac113-0001-012","9215837423653088790-242ac113-0001-012","4580745558677262826-242ac113-0001-012","4624167678039822826-242ac113-0001-012","4637181428946702826-242ac113-0001-012","4712171557934862826-242ac113-0001-012","4759630946555662826-242ac113-0001-012","4800003639138062826-242ac113-0001-012","4842781513406222826-242ac113-0001-012","4856396559734542826-242ac113-0001-012","4869796857698062826-242ac113-0001-012","4883197155661582826-242ac113-0001-012","4924299992684302826-242ac113-0001-012","4975410103506702826-242ac113-0001-012","5029011295360782826-242ac113-0001-012","5082054141466382826-242ac113-0001-012","5136729075144462826-242ac113-0001-012","5151546712315662826-242ac113-0001-012","5172334354028302826-242ac113-0001-012","5191704656533262826-242ac113-0001-012","5214038486472462826-242ac113-0001-012","5256386864011022826-242ac113-0001-012","5318577990457102826-242ac113-0001-012","5364877737907982826-242ac113-0001-012","5416546194478862826-242ac113-0001-012","5436646641424142826-242ac113-0001-012","5456661189023502826-242ac113-0001-012","5473712209188622826-242ac113-0001-012","5489088192108302826-242ac113-0001-012","5532596210816782826-242ac113-0001-012","5590105822910222826-242ac113-0001-012","5645167303644942826-242ac113-0001-012","5703149362140942826-242ac113-0001-012"]}}],
+  "notification": "https://httpbin.org/delay/2"
+}
+###
+
+###
+POST http://api-prod-agave.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement_0/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "myQuery1-TstRun-prod-2021.03.01",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id" : "2564613624180576746-242ac113-0001-012"}, {"cdr1": 1,"cdr2": 1}],
+  "notification": "https://httpbin.org/delay/2"
+}
+
+###

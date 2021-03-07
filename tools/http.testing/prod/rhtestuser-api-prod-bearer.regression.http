@@ -1,0 +1,217 @@
+###  sanity test to see if service is alive  token is from rhtestuser
+# use rhtestuser-prod-bearer environment.
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request root executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###  sanity check returned collections for v1airr. now the real testing begins.
+
+##############################################################
+#      setup for tests using creates for needed resources
+#       run with env  streams.master
+#       streams master token
+#  Assumes collection and other resouces do not exist
+##############################################################
+
+#  create a test collection tstTmp in db /meta/v3/db/collection
+###
+PUT https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/tstTmp
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request {{db}} create collection executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 200");
+    });
+%}
+
+###
+
+#  create a document in /meta/v3/{{db}}/{{collection}}
+# adding a name on the end of a PUT will create a document by that name
+###
+PUT https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}/tstDoc
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "test document slt 4.28.2020-15:23", "jimmyList":["1","3"],"description": "PUT tstDoc for testing"}
+
+> {%
+    client.test("Create document in collection executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+
+    client.test("Response content-type is json", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+    });
+%}
+
+###
+
+#  create a document in /meta/v3/{{db}}/{{collection}}
+# adding a name on the end of a PUT will create a document by that name and basic response  !!! PUT doesn't return basic response
+###
+PUT https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}/tstDoc1?basic=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "test document slt 4.28.2020-15:23", "jimmyList":["1","3"],"description": "PUT tstDoc1 for testing"}
+
+> {%
+    client.test("Create document in collection executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+
+    client.test("Response content-type is json", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+    });
+%}
+
+###
+
+#  create a document in /meta/v3/{{db}}/{{collection}}
+# adding a name on the end of a PUT will create a document by that name and basic response  !!! PUT doesn't return basic response
+###
+POST https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}?basic=true
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "test document slt 4.28.2020-15:43", "jimmyList":["1","3"],"description": "POST a new document with basic response"}
+
+> {%
+    client.test("Create document in collection executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+
+    client.test("Response content-type is json", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+    });
+%}
+
+###  id 5ea9e6fea93eebf39fcd2601
+
+##############################################################
+#      DB endpoints
+##############################################################
+
+###   db list collections
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request {{db}} list collections executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+###   db metadata
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/_meta
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get db metadata executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+##############################################################
+#     Collection endpoints
+##############################################################
+#
+#  get a document list under {{db}}/{{collection}} /meta/v3/{{db}}/{{collection}}
+#
+###
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+#
+#  get metadata for {{db}}/{{collection}} /meta/v3/{{db}}/{{collection}}
+#
+###
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}/_meta
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+#  query for list under {{db}}/{{collection}} /meta/v3/{{db}}/{{collection}}
+###
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}?filter={"_id": "tstDoc"}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+##############################################################
+#     Document endpoints
+##############################################################
+###
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}/tstDoc
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Get a single document from collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+###
+GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}?filter={"_id": "tstDoc"}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Request get list docs in collection executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+###
+DELETE https://vdj-agave-api.tacc.utexas.edu/meta/v3/{{db}}/{{collection}}/tstDoc
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+> {%
+    client.test("Remove a single document from collection executed successfully", function() {
+        client.assert(response.status === 204, "Response status is not 204");
+    });
+%}
+###
+

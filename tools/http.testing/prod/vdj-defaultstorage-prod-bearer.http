@@ -1,6 +1,6 @@
 # curl -H "Authorization:Bearer $tok"  https://vdj-agave-api.tacc.utexas.edu/files/v2/listings//irplus/data/lrqdata?pretty=true
 GET https://vdj-agave-api.tacc.utexas.edu/files/v2/listings//irplus/data/lrqdata
-Authorization: Bearer {{tok}}
+Authorization: Bearer {{token}}
 
 ###
 
@@ -9,18 +9,23 @@ Authorization: Bearer {{tok}}
 
 # curl -H "Authorization:Bearer $tok"  https://vdj-agave-api.tacc.utexas.edu/files/v2/listings//irplus/data/lrqdata?pretty=true
 GET https://vdj-agave-api.tacc.utexas.edu/files/v2/listings//irplus/data/lrqdata?pretty=true
-Authorization: Bearer {{tok}}
+Authorization: Bearer "{{token}}
 ###
 
 # curl -H "Authorization:Bearer $tok"  https://vdj-agave-api.tacc.utexas.edu/files/v2/listings//irplus/data/lrqdata?pretty=true
 GET https://vdj-agave-api.tacc.utexas.edu/files/v2/listings//irplus/data/lrqdata?pretty=true
-Authorization: Bearer {{tok}}
+Authorization: Bearer "{{token}}
 
 ###
 
 
 ###
-GET https://vdj-agave-api.tacc.utexas.edu/files/v2/media/system/data.vdjserver.org//irplus/data/lrqdata/lrq-5fbc2ff50c6684237bca22e3.gz
-Authorization: Bearer {{tok}}
+GET https://vdj-agave-api.tacc.utexas.edu/files/v2/media/system/data.vdjserver.org//irplus/data/lrqdata/lrq-60397b20d6aab6290c2e6542.gz
+Authorization: Bearer {{token}}
+
 
 ###
+
+# curl -X GET --location "https://vdj-agave-api.tacc.utexas.edu/files/v2/media/system/data.vdjserver.org//irplus/data/lrqdata/lrq-60397b20d6aab6290c2e6542.gz" -H "Authorization: Bearer 64fc3d16ecb29b067956a28d44f29d3"
+
+

@@ -5,7 +5,7 @@
 ##############################################################
 
 ###   will list aggrs and other properties for this collection
-GET http://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_meta
+GET http://api-prod-agave.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_meta
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 ###

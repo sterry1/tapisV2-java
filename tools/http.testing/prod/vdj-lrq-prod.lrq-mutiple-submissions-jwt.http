@@ -7,7 +7,7 @@
 
 # status check
 ###   returns the status of the lrq by id
-GET http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/LRQ/vdjserver.org/5fbbeda247dff81e2d82173e
+GET http://vdj-lrq.tacc.utexas.edu:8199/meta/v3/LRQ/vdjserver.org/60397b20d6aab6290c2e6542
 X-JWT-Assertion-vdjserver.org: {{jwt}}
 Content-Type: application/json
 ###

@@ -1,6 +1,6 @@
 ###  sanity test to see if service is alive  token is from testuser7
 # use t7.token environment.
-GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/v1airr
+GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/v1airr/
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -101,7 +101,7 @@ Content-Type: application/json
 ##############################################################
 
 ###   db list collections
-GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/TestMetaDB
+GET https://dev.tenants.aloestaging.tacc.cloud/meta/v3/
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

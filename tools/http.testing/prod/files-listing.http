@@ -1,0 +1,10 @@
+###       # lrq-603d1d78113a520c3f0d02a5.gz large
+GET https://vdj-agave-api.tacc.utexas.edu/files/v2/media/system/data.vdjserver.org//irplus/data/lrqdata/lrq-60397b20d6aab6290c2e6542.gz
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+###
+
+# curl -X GET --location "https://vdj-agave-api.tacc.utexas.edu/files/v2/media/system/data.vdjserver.org//irplus/data/lrqdata/lrq-603bf81ad6aab6290c2e6545.gz" -H "Authorization: Bearer 64fc3d16ecb29b067956a28d44f29d3" --output results1.gz
+
+

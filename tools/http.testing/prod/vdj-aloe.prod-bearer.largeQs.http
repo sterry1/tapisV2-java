@@ -1,3 +1,5 @@
+
+
 ###   time out thru the frontend
 GET https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0/_aggrs/facets?avars={"match": {"repertoire_id": "7997882631039226346-242ac113-0001-012"}, "field": "$repertoire_id"}'
 Authorization: Bearer 30c1f314420f181b69f46d7395dad3
@@ -180,16 +182,6 @@ Content-Type: application/json
 
 ###  Response code: 200; Time: 8552ms; Content length: 1732312 bytes
 
-# curl --data @facets_large_query_1.json https://vdjserver.org/airr/v1/rearrangement
-
-###
-POST https://vdjserver.org/airr/v1/rearrangement
-Content-Type: application/x-www-form-urlencoded
-
-< facets_large_query_1.json
-
-###
-
 
 
 
@@ -250,4 +242,20 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 ###
 
+# curl -XPOST --data @data.json api.example.com/data
+POST api.example.com/data
+Content-Type: application/x-www-form-urlencoded
+
+< data.json
+
+###
+
+# curl --data @facets_large_query_1.json https://vdjserver.org/airr/v1/rearrangement
+###
+POST https://vdj-agave-api.tacc.utexas.edu/meta/v3/v1airr/rearrangement_0
+Content-Type: application/x-www-form-urlencoded
+
+< facets_large_query_1.json
+
+###
 

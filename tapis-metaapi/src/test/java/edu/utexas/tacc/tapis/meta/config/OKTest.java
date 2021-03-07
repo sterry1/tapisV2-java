@@ -310,11 +310,11 @@ public class OKTest {
   public static void main(String[] args) {
     OKTest okTest = new OKTest();
     // String hostBase = "http://aloe-dev06.tacc.utexas.edu:8080";
-    // String hostBase = "http://api-prod-agave.tacc.utexas.edu:8199/meta/v3";
-    String hostBase = "http://localhost:8199/meta/v3";
+    String hostBase = "http://api-prod-agave.tacc.utexas.edu:8199/meta/v3";
+    // String hostBase = "http://localhost:8199/meta/v3";
     // String hostBase = "https://vdj-agave-api.tacc.utexas.edu:8199/meta/v3";
     // okTest.frontdoorLargeFindQueryPOSTtoken(hostBase);
-    okTest.Scott916_aggregation(hostBase);
+    // okTest.Scott916_aggregation(hostBase);
     // okTest.largeAndLongTimeoutPOST(hostBase);
     // okTest.sanityCheck(hostBase);
     // okTest.largeAndLongTimeoutPOST(hostBase);
