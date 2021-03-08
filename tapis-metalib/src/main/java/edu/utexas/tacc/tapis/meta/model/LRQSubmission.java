@@ -39,6 +39,10 @@ public class LRQSubmission implements Serializable {
   @SerializedName("queryCollection")
   @Expose
   private String queryCollection;
+  @SerializedName("compressedOutput")
+  @Expose
+  private Boolean compressedOutput = false;
+  
   
   public enum qType {
     SIMPLE("SIMPLE"),
@@ -62,12 +66,14 @@ public class LRQSubmission implements Serializable {
    * @param queryType
    * @param query
    * @param notification
+   * @param compressedOutput
    */
-  public LRQSubmission( String name, String queryType, List<Object> query, String notification) {
+  public LRQSubmission( String name, String queryType, List<Object> query, String notification, Boolean compressedOutput) {
     this.name = name;
     this.queryType = queryType;
     this.query = query;
     this.notification = notification;
+    this.compressedOutput = compressedOutput;
   }
   
   /**
@@ -77,14 +83,16 @@ public class LRQSubmission implements Serializable {
    * @param queryType
    * @param query
    * @param notification
+   * @param compressedOutput
    */
-  public LRQSubmission(String id, String name, String queryType, List<Object> query, String notification) {
+  public LRQSubmission(String id, String name, String queryType, List<Object> query, String notification, Boolean compressedOutput) {
     super();
     this._id = id;
     this.name = name;
     this.queryType = queryType;
     this.query = query;
     this.notification = notification;
+    this.compressedOutput = compressedOutput;
   }
   
 /*------------------------------------------------------------------------
@@ -145,6 +153,8 @@ public class LRQSubmission implements Serializable {
     this.notification = notification;
   }
   
+  public Boolean getCompressedOutput() { return compressedOutput; }
+  public void setCompressedOutput(Boolean compressedOutput) { this.compressedOutput = compressedOutput; }
   
   public String toJson() {
     Gson gson = new Gson();

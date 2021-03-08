@@ -62,7 +62,7 @@ public class QueryExecutor {
   private void updateStatus(LRQTask lrqTask, LRQStatus lrqStatus){
     RuntimeParameters runtime = RuntimeParameters.getInstance();
     // TODO we need the tenant context here because we use it for queue identification
-    // and we use it for DAO storate location; this is not sustainable
+    // and we use it for DAO storage location; this is not sustainable
     LRQSubmissionDAO lrqSubDAO = new LRQSubmissionDAOImpl(tenant);
     lrqSubDAO.updateSubmissionStatus(lrqTask.get_id(), lrqStatus.status);
   }
@@ -96,7 +96,12 @@ public class QueryExecutor {
     // and call the query-export process.
     Map<String,String> cmdMap = this.createCommandMap();
     cmdMap.put("db",lrqTask.getQueryDb());
-    cmdMap.put("fileOutput","lrqdata/lrq-"+taskId+".gz");
+    // file output depends on whether we want compressed output or plain
+    if(lrqTask.getCompressedOutput()){
+      cmdMap.put("fileOutput"," | gzip > lrqdata/lrq-"+taskId+".gz");
+    }else {  // our default is plain
+      cmdMap.put("fileOutput","--out=lrqdata/lrq-"+taskId+".json");
+    }
   
     // This is a simple query
     if(lrqTask.getQueryType().equals(qType.SIMPLE.toString())){

@@ -9,11 +9,16 @@ public class MongoExportCommandT {
     // the Map must include the fields and query entries even if they are empty. In fact, they
     // must be empty if not used for a correct command to be returned.
   
-    Map<String,String> params = TestData.getSimpleCmdWithAuthAndFields();
-    MongoExportCommand mec = new MongoExportCommand(params);
+    Map<String,String> params;
+    MongoExportCommand mec;
+  
+/*
+    params = TestData.getSimpleCmdWithAuthAndFields();
+    mec = new MongoExportCommand(params);
     assert (mec.isReady);
     System.out.println("simple query with auth with fields");
     System.out.println(mec.exportCommandAsString());
+*/
   
     params = TestData.getSimpleCmdWithAuthWOFields();
     mec = new MongoExportCommand(params);
@@ -21,6 +26,7 @@ public class MongoExportCommandT {
     System.out.println("simple query with auth wo fields");
     System.out.println(mec.exportCommandAsString());
   
+/*
     params = TestData.getSimpleCmdWOAuthWOFields();
     mec = new MongoExportCommand(params);
     assert (mec.isReady);
@@ -43,6 +49,7 @@ public class MongoExportCommandT {
     mec = new MongoExportCommand(params);
     assert (mec.isReady);
     System.out.println(mec.exportCommandAsString());
+*/
   }
   
 }
@@ -53,6 +60,7 @@ mongoexport --quiet -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult
 
 simple query with auth wo fields
 mongoexport --quiet -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement   -q='{"repertoire_id":"1841923116114776551-242ac11c-0001-012"}'  | gzip > onejson.json.gz
+mongoexport --quiet -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement   -q='{"repertoire_id":"1841923116114776551-242ac11c-0001-012"}' --out=onejson.json
 
 simple query wo auth wo fields
 mongoexport --quiet -h=aloe-dev08.tacc.utexas.edu:27019    -d=v1airr -c=rearrangement   -q='{"repertoire_id":"1841923116114776551-242ac11c-0001-012"}'  | gzip > onejson.json.gz
