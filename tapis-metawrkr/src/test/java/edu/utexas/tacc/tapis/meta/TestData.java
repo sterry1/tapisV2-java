@@ -12,7 +12,7 @@ public class TestData {
       "  \"name\": \"myQuery\",\n" +
       "  \"queryType\": \"SIMPLE\",\n" +
       "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
-      "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
+      "  \"notification\": \"https://httpbin.org/delay/2\"\n" +
       "}";
   // put <priority>, <delay>, <time to reserve>, <bytes> <data>  number of bytes and the byte[] for data.
   // producer.putJob(1,0,5000, jobJson.getBytes());
@@ -81,7 +81,7 @@ public class TestData {
       "  \"queryDb\": \"v1airr\",\n" +
       "  \"queryCollection\": \"rearrangement\",\n" +
       "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
-      "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
+      "  \"notification\": \"https://httpbin.org/delay/2\"\n" +
       "}";
   
   public static final String taskJsonSimpleNoFields = "{\n" +
@@ -91,7 +91,7 @@ public class TestData {
       "  \"queryDb\": \"v1airr\",\n" +
       "  \"queryCollection\": \"rearrangement\",\n" +
       "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}],\n" +
-      "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
+      "  \"notification\": \"https://httpbin.org/delay/2\"\n" +
       "}";
   
   public static final String getTaskJsonSimpleFields(String id) {
@@ -102,7 +102,7 @@ public class TestData {
         "  \"queryDb\": \"v1airr\",\n" +
         "  \"queryCollection\": \"rearrangement\",\n" +
         "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}, {\"cdr1\": 1,\"cdr2\": 1}],\n" +
-        "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
+        "  \"notification\": \"https://httpbin.org/delay/2\"\n" +
         "}";
     return tmp;
   }
@@ -115,7 +115,8 @@ public class TestData {
         "  \"queryDb\": \"v1airr\",\n" +
         "  \"queryCollection\": \"rearrangement\",\n" +
         "  \"query\": [{\"repertoire_id\": \"1841923116114776551-242ac11c-0001-012\"}],\n" +
-        "  \"notification\": \"mailto:sterry1@tacc.utexas.edu\"\n" +
+        "  \"notification\": \"https://httpbin.org/delay/2\",\n" +
+        "  \"compressedOutput\": \"false\"\n" +
         "}";
     return tmp;
   }

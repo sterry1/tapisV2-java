@@ -12,7 +12,7 @@ public class MongoExportCommand {
   // there is a --sort flag as well
   // dev  example : "mongoexport -h=aloe-dev08.tacc.utexas.edu:27019 -u=tapisadmin -p=d3f@ult --authenticationDatabase=admin -d=v1airr -c=rearrangement -o=onejson.json -f=\"repertoire_id,locus\" -q='{\"repertoire_id\":\"1993707260355416551-242ac11c-0001-012\"}'";
   // prod example : "mongoexport -h=aloe-dev08.tacc.utexas.edu:27019 -d=v1airr -c=rearrangement -f=\"repertoire_id,locus\" -q='{\"repertoire_id\":\"1993707260355416551-242ac11c-0001-012\"}'" | gzip > {{fileOutput}}";
-  private final static String template = "mongoexport --quiet -h={{host}}:{{port}} {{user}} {{password}} {{authDB}} -d={{db}} -c={{collection}}  {{fields}} {{query}}  | gzip > {{fileOutput}}";
+  private final static String template = "mongoexport --quiet -h={{host}}:{{port}} {{user}} {{password}} {{authDB}} -d={{db}} -c={{collection}}  {{fields}} {{query}} {{fileOutput}}";
   private String hostFlag = "-h=";        // required
   private String portFlag = ":";          // required
   private String userFlag = "-u=";        // optional if no auth

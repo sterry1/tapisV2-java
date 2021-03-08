@@ -11,6 +11,7 @@ import edu.utexas.tacc.tapis.meta.config.RuntimeParameters;
 import edu.utexas.tacc.tapis.meta.model.LRQSubmission;
 import edu.utexas.tacc.tapis.mongo.MongoDBClientSingleton;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,11 +71,13 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
         submissionDocument.append("notification",dto.getNotification());
         submissionDocument.append("queryDb",queryDb);
         submissionDocument.append("queryCollection",queryCollection);
+        submissionDocument.append("compressedOutput", dto.getCompressedOutput());
 
         ObjectId newId = new ObjectId();
         submissionDocument.append("_id", newId );
         submissionDocument.append("status","SUBMITTED");
         submissionDocument.append("createdDate", new Date());
+        submissionDocument.append("finishedDate",null);
 
         // insert into db/collection
         try {
@@ -103,13 +106,21 @@ public class LRQSubmissionDAOImpl extends LRQAbstractDAO implements LRQSubmissio
   @Override
   public boolean updateSubmissionStatus(String id, String _status) {
     try {
+      UpdateResult result;
       // TODO this check is meaningless because there is always a client created and ready even if it can't connect
       if (isClientReady) {
         MongoDatabase db = client.getDatabase(LRQdb);
         MongoCollection<Document> collection = db.getCollection(LRQcollection);
-
-       UpdateResult result = collection.updateOne(eq("_id", new ObjectId(id)), Updates.set("status",_status));
-       System.out.println();
+        if(_status == "FINISHED"){
+          Date finishedDate = new Date();
+          Bson updates = Updates.combine(Updates.set("status",_status),Updates.set("finishedDate",new Date()));
+          result = collection.updateOne(eq("_id", new ObjectId(id)), updates);
+          _log.debug("Update "+id+" with status of "+_status+ " at "+finishedDate);
+        }else{
+          result = collection.updateOne(eq("_id", new ObjectId(id)), Updates.set("status",_status));
+          _log.debug("Update "+id+" with status of "+_status);
+        }
+        
       }
     } catch (Exception e) {
       

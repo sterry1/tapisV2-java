@@ -83,15 +83,15 @@ public class QueryExecutorT {
     // this is basically the doWork function of the LRQWorker Task
     QueryExecutorT t = new QueryExecutorT();
     
-    String aggrQTask = TestData.taskJsonAggr;
-    t.runTestAggr(aggrQTask);
+    // String aggrQTask = TestData.taskJsonAggr;
+    // t.runTestAggr(aggrQTask);
     // this comes in from the queue, appropiate transformation here.
-    // String simpleQTask = TestData.taskJson;
+    // String simpleQTask = TestData.getTaskJsonSimpleNoFields();
   
     //t.runTestSimple(TestData.getTaskJsonSimpleFields("123456"));
     //System.out.println("\n============================================================================\n");
-    //t.runTestSimple(TestData.getTaskJsonSimpleNoFields("574893"));
-    //System.out.println("\n============================================================================\n");
+    t.runTestSimple(TestData.getTaskJsonSimpleNoFields("60454c78e29c175bdc377029"));
+    System.out.println("\n============================================================================\n");
     //t.runTestSimple(TestData.getTaskJsonSimpleFields("789345"));
     // System.out.println("\n============================================================================\n");
     System.out.println("Done running tests.");

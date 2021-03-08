@@ -47,3 +47,49 @@ Content-Type: application/json
 }
 ###
 
+##############################################################
+#
+#    testing compression flag in submission
+#
+##############################################################
+
+###  testCompression-3.8-1.null
+POST http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "testCompression-3.8-1.null",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}],
+  "notification": "https://httpbin.org/delay/2"
+}
+###
+
+### testCompression-3.8-1.true
+POST http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "testCompression-3.8-1.true",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}],
+  "notification": "https://httpbin.org/delay/2",
+  "compressedOutput": true
+}
+###
+
+###  testCompression-3.8-1.false
+POST http://aloe-dev02.tacc.utexas.edu:8199/meta/v3/v1airr/rearrangement/_lrq
+X-JWT-Assertion-vdjserver.org: {{jwt}}
+Content-Type: application/json
+
+{
+  "name": "testCompression-3.8-1.false",
+  "queryType": "SIMPLE",
+  "query": [{"repertoire_id": "1841923116114776551-242ac11c-0001-012"}],
+  "notification": "https://httpbin.org/delay/2",
+  "compressedOutput": false
+}
+###
