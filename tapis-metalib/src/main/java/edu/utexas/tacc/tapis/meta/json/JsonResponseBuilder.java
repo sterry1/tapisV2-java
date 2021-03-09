@@ -2,6 +2,7 @@ package edu.utexas.tacc.tapis.meta.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.utexas.tacc.tapis.shared.utils.TapisUtils;
 
 public class JsonResponseBuilder {
   private final String location;
@@ -24,7 +25,7 @@ public class JsonResponseBuilder {
     
     lrqResponse.setStatus(status);
     lrqResponse.setMessage(coreMsg);
-    // TODO fix maven generation of files resp.version = TapisUtils.getTapisVersion();
+    // TODO fix maven generation of files resp.version = TapisUtils.getTapisVersion(); or pull from env
     lrqResponse.setVersion( "0.0.6");
     
     //  get the location of the resource
