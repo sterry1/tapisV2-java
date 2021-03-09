@@ -174,7 +174,12 @@ public class QueryExecutor {
       // Build response
       //TODO default storage location
       String defaultLocation = RuntimeParameters.getInstance().getTenantDefaultStorageLocation();
-      String location = defaultLocation+"/lrq-"+lrqTask.get_id()+".gz";
+      String location;
+      if(lrqTask.getCompressedOutput()){
+        location = defaultLocation+"/lrq-"+lrqTask.get_id()+".gz";
+      }else{
+        location = defaultLocation+"/lrq-"+lrqTask.get_id()+".json";
+      }
       
       JsonResponseBuilder builder = new JsonResponseBuilder(lrqTask.get_id(),location,LRQStatus.FINISHED.status,"LRQ results complete");
       notification.sendNotification(builder.getBasicResponse());

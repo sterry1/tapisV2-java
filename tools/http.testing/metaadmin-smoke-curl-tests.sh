@@ -1,5 +1,5 @@
 #!/bin/bash
-
+## made for V3 environment customise for v2
 source $1
 echo "Values used: "
 cat $1
@@ -12,6 +12,7 @@ echo " #   The test user is always the meta admin user"
 echo " #   with user name 'meta' and tenant 'admin'. The token will reflect these values."
 echo " #   The meta/admin user has permissions set to allow full access to all Databases hosted. "
 echo " #    A setup call to SK may be required. "
+echo " # Usage: metaadmin-smoke-curl-tests.sh dev/dev.smoke.env.sh"
 echo "------------------------ "
 echo ""
 export db="MetaTstDB"
